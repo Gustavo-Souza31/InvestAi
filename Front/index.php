@@ -1,3 +1,14 @@
+<?php
+require_once '../db/conexao.php';
+
+// Buscar o nome do usuário para teste de conexão
+$usuario_nome = 'Visitante';
+$result = $conexao->query("SELECT nome FROM usuarios LIMIT 1");
+if ($result && $result->num_rows > 0) {
+    $usuario = $result->fetch_assoc();
+    $usuario_nome = $usuario['nome'];
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -13,7 +24,7 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="Front/assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
@@ -28,6 +39,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3"><span class="text-light fw-semibold">Bem-vindo, <?php echo htmlspecialchars($usuario_nome); ?>!</span></li>
                     <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="#metas">Minhas Metas</a></li>
                     <li class="nav-item"><a class="nav-link" href="#ia">Sugestões IA</a></li>
@@ -103,6 +115,6 @@
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
-    <script src="Front/assets/js/main.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
