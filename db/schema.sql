@@ -27,6 +27,7 @@ CREATE TABLE perfil_financeiro (
     possui_patrimonio BOOLEAN NOT NULL DEFAULT FALSE,
     objetivo_financeiro VARCHAR(255),
     perfil_comportamento ENUM('conservador', 'moderado', 'gastador') DEFAULT 'moderado',
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_financeiro_usuario
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
@@ -114,7 +115,7 @@ CREATE TABLE metas_financeiras (
     descricao TEXT,
     valor_meta DECIMAL(12,2) NOT NULL,
     valor_atual DECIMAL(12,2) NOT NULL DEFAULT 0.00,
-    prazo DATE,
+    data_objetivo DATE,
     status ENUM('em_andamento', 'concluida', 'cancelada') DEFAULT 'em_andamento',
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -137,7 +138,6 @@ CREATE TABLE resumos_mensais (
     saldo_final_mes DECIMAL(12,2) NOT NULL DEFAULT 0.00,
     economia_mes DECIMAL(12,2) NOT NULL DEFAULT 0.00,
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_resumo_usuario
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
         ON DELETE CASCADE,
@@ -170,7 +170,7 @@ CREATE TABLE sugestoes_economia (
     fonte TEXT NOT NULL,
     prioridade ENUM('baixa', 'media', 'alta') NOT NULL,
     status ENUM('pendente', 'aceita', 'recusada') DEFAULT 'pendente',
-    criada_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     respondida_em DATETIME NULL,
     CONSTRAINT fk_sugestao_economia_usuario
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
@@ -189,7 +189,7 @@ CREATE TABLE sugestoes_investimento (
     fonte TEXT NOT NULL,
     risco ENUM('baixo', 'medio', 'alto') NOT NULL,
     status ENUM('pendente', 'aceita', 'recusada') DEFAULT 'pendente',
-    criada_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     respondida_em DATETIME NULL,
     CONSTRAINT fk_sugestao_investimento_usuario
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)

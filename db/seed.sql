@@ -103,7 +103,7 @@ INSERT INTO metas_financeiras (
     descricao,
     valor_meta,
     valor_atual,
-    prazo,
+    data_objetivo,
     status
 ) VALUES (
     1,
