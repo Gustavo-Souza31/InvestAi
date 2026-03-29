@@ -2,7 +2,7 @@
 // Conexão com MySQL usando MySQLi
 $servername = "localhost";
 $usuario = "root";
-$senha = "";
+$senha = "123456";
 $banco = "investai";
 
 $conexao = new mysqli($servername, $usuario, $senha, $banco);

@@ -44,7 +44,7 @@ if ($result && $result->num_rows > 0) {
                     <li class="nav-item"><a class="nav-link" href="#metas">Minhas Metas</a></li>
                     <li class="nav-item"><a class="nav-link" href="#ia">Sugestões IA</a></li>
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
-                        <button class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">Entrar</button>
+                        <a href="/login.php" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">Entrar</a>
                     </li>
                 </ul>
             </div>

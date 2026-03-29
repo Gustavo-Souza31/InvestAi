@@ -2,7 +2,7 @@
 // backend/includes/db.php — Conexão centralizada ao banco
 $servername = "localhost";
 $usuario_db = "root";
-$senha_db = "";
+$senha_db = "123456";
 $banco = "investai";
 
 $conexao = new mysqli($servername, $usuario_db, $senha_db, $banco);
