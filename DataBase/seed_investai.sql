@@ -1,4 +1,4 @@
-USE investia;
+USE investai;
 
 -- =========================
 -- USUÁRIO

@@ -1,10 +1,9 @@
-CREATE DATABASE investia;
-USE investia;
+USE investai;
 
 -- =========================
 -- 1. USUÁRIOS
 -- =========================
-CREATE TABLE usuarios (
+CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
@@ -18,7 +17,7 @@ CREATE TABLE usuarios (
 -- =========================
 -- 2. PERFIL FINANCEIRO
 -- =========================
-CREATE TABLE perfil_financeiro (
+CREATE TABLE IF NOT EXISTS perfil_financeiro (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL UNIQUE,
     renda_mensal DECIMAL(12,2) NOT NULL DEFAULT 0.00,
@@ -37,7 +36,7 @@ CREATE TABLE perfil_financeiro (
 -- =========================
 -- 3. GANHOS
 -- =========================
-CREATE TABLE ganhos (
+CREATE TABLE IF NOT EXISTS ganhos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     descricao VARCHAR(255) NOT NULL,
@@ -54,7 +53,7 @@ CREATE TABLE ganhos (
 -- =========================
 -- 4. DESPESAS
 -- =========================
-CREATE TABLE despesas (
+CREATE TABLE IF NOT EXISTS despesas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     descricao VARCHAR(255) NOT NULL,
@@ -71,7 +70,7 @@ CREATE TABLE despesas (
 -- =========================
 -- 5. INVESTIMENTOS
 -- =========================
-CREATE TABLE investimentos (
+CREATE TABLE IF NOT EXISTS investimentos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     tipo_investimento VARCHAR(100) NOT NULL,
@@ -91,7 +90,7 @@ CREATE TABLE investimentos (
 -- =========================
 -- 6. PATRIMÔNIOS
 -- =========================
-CREATE TABLE patrimonios (
+CREATE TABLE IF NOT EXISTS patrimonios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     tipo_bem VARCHAR(100) NOT NULL,
@@ -108,7 +107,7 @@ CREATE TABLE patrimonios (
 -- =========================
 -- 7. METAS FINANCEIRAS
 -- =========================
-CREATE TABLE metas_financeiras (
+CREATE TABLE IF NOT EXISTS metas_financeiras (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     titulo VARCHAR(150) NOT NULL,
@@ -127,7 +126,7 @@ CREATE TABLE metas_financeiras (
 -- =========================
 -- 8. RESUMOS MENSAIS
 -- =========================
-CREATE TABLE resumos_mensais (
+CREATE TABLE IF NOT EXISTS resumos_mensais (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     ano YEAR NOT NULL,
@@ -148,7 +147,7 @@ CREATE TABLE resumos_mensais (
 -- =========================
 -- 9. NOTÍCIAS FINANCEIRAS
 -- =========================
-CREATE TABLE noticias_financeiras (
+CREATE TABLE IF NOT EXISTS noticias_financeiras (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     fonte VARCHAR(150) NOT NULL,
@@ -162,7 +161,7 @@ CREATE TABLE noticias_financeiras (
 -- =========================
 -- 10. SUGESTÕES DE ECONOMIA
 -- =========================
-CREATE TABLE sugestoes_economia (
+CREATE TABLE IF NOT EXISTS sugestoes_economia (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     titulo VARCHAR(150) NOT NULL,
@@ -180,7 +179,7 @@ CREATE TABLE sugestoes_economia (
 -- =========================
 -- 11. SUGESTÕES DE INVESTIMENTO
 -- =========================
-CREATE TABLE sugestoes_investimento (
+CREATE TABLE IF NOT EXISTS sugestoes_investimento (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     noticia_id INT NULL,

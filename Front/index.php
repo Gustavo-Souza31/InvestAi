@@ -1,5 +1,5 @@
 <?php
-require_once '../db/conexao.php';
+require_once '../DataBase/conexao.php';
 
 // Buscar o nome do usuário para teste de conexão
 $usuario_nome = 'Visitante';
@@ -34,7 +34,7 @@ if ($result && $result->num_rows > 0) {
             <a class="navbar-brand fw-bold fs-3" href="#">
                 <i class="bi bi-graph-up-arrow text-primary me-2"></i>Invest<span class="text-primary">Ai</span>
             </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
