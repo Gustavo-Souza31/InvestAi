@@ -67,5 +67,5 @@ echo json_encode([
     'status'   => 'success',
     'message'  => 'Conta criada com sucesso!',
     'nome'     => $nome,
-    'redirect' => '/dashboard.php'
+    'redirect' => 'dashboard.php'
 ]);

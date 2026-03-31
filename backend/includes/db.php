@@ -1,11 +1,12 @@
 <?php
 // backend/includes/db.php — Conexão centralizada ao banco
-$servername = "localhost";
+$servername = "127.0.0.1";
 $usuario_db = "root";
-$senha_db = "123456";
+$senha_db = "";
 $banco = "investai";
+$porta = 3307;
 
-$conexao = new mysqli($servername, $usuario_db, $senha_db, $banco);
+$conexao = new mysqli($servername, $usuario_db, $senha_db, $banco, $porta);
 
 if ($conexao->connect_error) {
     http_response_code(500);

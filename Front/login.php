@@ -2,7 +2,7 @@
 session_start();
 // Se já está logado, vai direto pro dashboard
 if (isset($_SESSION['usuario_id'])) {
-    header('Location: /dashboard.php');
+    header('Location: dashboard.php');
     exit;
 }
 ?>
@@ -120,7 +120,7 @@ if (isset($_SESSION['usuario_id'])) {
 <div class="auth-card">
     <!-- Logo -->
     <div class="text-center mb-5">
-        <a href="/" class="logo"><i class="bi bi-graph-up-arrow me-1"></i>Invest<span>Ai</span></a>
+        <a href="index.php" class="logo"><i class="bi bi-graph-up-arrow me-1"></i>Invest<span>Ai</span></a>
         <p class="text-secondary mt-2 mb-0" style="font-size:0.88rem;">Sua inteligência financeira pessoal</p>
     </div>
 

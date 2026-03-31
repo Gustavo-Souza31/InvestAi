@@ -2,7 +2,7 @@
 session_start();
 // Redireciona para login se não estiver logado
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: /login.php');
+    header('Location: login.php');
     exit;
 }
 $nome = htmlspecialchars($_SESSION['usuario_nome']);

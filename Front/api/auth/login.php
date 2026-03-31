@@ -43,5 +43,5 @@ echo json_encode([
     'status'  => 'success',
     'message' => 'Login realizado com sucesso!',
     'nome'    => $usuario['nome'],
-    'redirect' => '/dashboard.php'
+    'redirect' => 'dashboard.php'
 ]);
