@@ -5,6 +5,7 @@ $usuario = "root";
 $senha = "";
 $banco = "investai";
 $porta = 3306;
+$porta = 3307;
 
 $conexao = new mysqli($servername, $usuario, $senha, $banco, $porta);
 
