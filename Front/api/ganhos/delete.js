@@ -1,6 +1,6 @@
 async function excluirGanho(id) {
     try {
-        const res = await fetch('/backend/api/ganhos/delete.php', {
+        const res = await fetch('../backend/api/ganhos/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: id })

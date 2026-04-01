@@ -1,6 +1,6 @@
 async function criarGanho(descricao, valor, dataGanho, fixo, usuarioId) {
     try {
-        const res = await fetch('/backend/api/ganhos/create.php', {
+        const res = await fetch('../backend/api/ganhos/create.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

@@ -1,6 +1,6 @@
 async function atualizarGanho(id, descricao, valor, dataGanho, fixo) {
     try {
-        const res = await fetch('/backend/api/ganhos/update.php', {
+        const res = await fetch('../backend/api/ganhos/update.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

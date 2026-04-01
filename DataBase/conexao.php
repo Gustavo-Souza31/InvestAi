@@ -1,10 +1,10 @@
 <?php
 // Conexão com MySQL usando MySQLi
-$servername = "127.0.0.1";
+$servername = "localhost";
 $usuario = "root";
 $senha = "";
 $banco = "investai";
-$porta = 3307;
+$porta = 3306;
 
 $conexao = new mysqli($servername, $usuario, $senha, $banco, $porta);
 
