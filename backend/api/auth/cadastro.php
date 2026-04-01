@@ -11,11 +11,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$nome     = trim($_POST['nome'] ?? '');
-$email    = trim($_POST['email'] ?? '');
-$cpf      = preg_replace('/\D/', '', $_POST['cpf'] ?? '');
-$telefone = preg_replace('/\D/', '', $_POST['telefone'] ?? '');
-$senha    = $_POST['senha'] ?? '';
+$data = json_decode(file_get_contents('php://input'), true);
+
+$nome     = trim($data['nome'] ?? '');
+$email    = trim($data['email'] ?? '');
+$cpf      = preg_replace('/\D/', '', $data['cpf'] ?? '');
+$telefone = preg_replace('/\D/', '', $data['telefone'] ?? '');
+$senha    = $data['senha'] ?? '';
 
 // Validações básicas
 if (empty($nome) || empty($email) || empty($cpf) || empty($telefone) || empty($senha)) {

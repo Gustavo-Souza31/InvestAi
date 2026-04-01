@@ -11,8 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$email = trim($_POST['email'] ?? '');
-$senha = $_POST['senha'] ?? '';
+$data = json_decode(file_get_contents('php://input'), true);
+
+$email = trim($data['email'] ?? '');
+$senha = $data['senha'] ?? '';
 
 if (empty($email) || empty($senha)) {
     echo json_encode(['status' => 'error', 'message' => 'Preencha e-mail e senha.']);
