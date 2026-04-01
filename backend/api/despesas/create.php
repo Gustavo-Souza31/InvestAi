@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../../../DataBase/conexao.php';
 header('Content-Type: application/json');
+require_once '../../includes/db.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 

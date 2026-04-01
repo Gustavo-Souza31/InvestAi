@@ -1,6 +1,7 @@
 <?php
 session_start();
-// Se já está logado, vai direto pro dashboard
+
+// Redirecionar para dashboard se já logado
 if (isset($_SESSION['usuario_id'])) {
     header('Location: dashboard.php');
     exit;
@@ -12,108 +13,22 @@ if (isset($_SESSION['usuario_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InvestAi — Entrar ou Cadastrar</title>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            background: #0d0f14;
-            color: #e0e0e0;
-            font-family: 'Outfit', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        /* Gradientes de fundo */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -200px; left: -200px;
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        body::after {
-            content: '';
-            position: fixed;
-            bottom: -200px; right: -200px;
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%);
-            pointer-events: none;
-        }
 
-        .auth-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.09);
-            border-radius: 20px;
-            padding: 40px 36px;
-            width: 100%;
-            max-width: 440px;
-            backdrop-filter: blur(12px);
-            position: relative;
-            z-index: 1;
-        }
-
-        .logo { font-size: 1.6rem; font-weight: 700; text-decoration: none; color: #fff; }
-        .logo span { color: #6366f1; }
-
-        /* Tabs customizadas */
-        .auth-tabs { display: flex; gap: 4px; background: rgba(255,255,255,0.06); border-radius: 10px; padding: 4px; margin-bottom: 28px; }
-        .auth-tab {
-            flex: 1; text-align: center; padding: 9px;
-            border-radius: 8px; cursor: pointer; font-weight: 600;
-            font-size: 0.9rem; color: #888; transition: all 0.25s;
-            border: none; background: transparent;
-        }
-        .auth-tab.active { background: #6366f1; color: #fff; }
-
-        /* Inputs */
-        .form-control {
-            background: rgba(255,255,255,0.06) !important;
-            border: 1px solid rgba(255,255,255,0.1) !important;
-            color: #e0e0e0 !important;
-            border-radius: 10px !important;
-            padding: 12px 14px !important;
-            font-family: 'Outfit', sans-serif;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .form-control:focus {
-            border-color: #6366f1 !important;
-            box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important;
-            background: rgba(99,102,241,0.06) !important;
-        }
-        .form-control::placeholder { color: #555 !important; }
-        .form-label { color: #aaa; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.03em; }
-
-        /* Botão principal */
-        .btn-auth {
-            width: 100%; padding: 13px;
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
-            border: none; border-radius: 10px;
-            color: #fff; font-weight: 700; font-size: 1rem;
-            font-family: 'Outfit', sans-serif;
-            cursor: pointer; transition: opacity 0.2s, transform 0.15s;
-        }
-        .btn-auth:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn-auth:active { transform: translateY(0); }
-        .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        /* Alert de feedback */
-        .auth-alert {
-            border-radius: 10px; font-size: 0.88rem;
-            padding: 11px 14px; margin-bottom: 18px; display: none;
-        }
-        .auth-alert.error { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
-        .auth-alert.success { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; }
-
-        .input-icon { position: relative; }
-        .input-icon i { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #555; font-size: 1rem; pointer-events: none; }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/style/css/variables.css">
+    <link rel="stylesheet" href="assets/style/css/auth.css">
+    <link rel="stylesheet" href="assets/style/css/animations.css">
 </head>
 <body>
 
@@ -200,9 +115,7 @@ if (isset($_SESSION['usuario_id'])) {
 </div>
 
 <script src="api/auth/login.js"></script>
-<script src="api/auth/cadastro.js"></script>
-<script src="assets/js/validations/masks.js"></script>
-<script src="assets/js/pages/login.js"></script>
+<script src="assets/style/js/pages/login.js"></script>
 
 </body>
 </html>

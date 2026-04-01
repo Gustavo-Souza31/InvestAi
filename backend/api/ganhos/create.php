@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../../../DataBase/conexao.php';
 header('Content-Type: application/json');
+require_once '../../includes/db.php';
 
 $descricao = $_POST['descricao'] ?? '';
 $valor = $_POST['valor'] ?? 0;
