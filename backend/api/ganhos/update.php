@@ -2,13 +2,11 @@
 require_once __DIR__ . '/../../../DataBase/conexao.php';
 header('Content-Type: application/json');
 
-$data = json_decode(file_get_contents("php://input"), true);
-
-$id = $data['id'] ?? 0;
-$descricao = $data['descricao'] ?? '';
-$valor = $data['valor'] ?? 0;
-$data_ganho = $data['data_ganho'] ?? '';
-$fixo = !empty($data['fixo']) ? 1 : 0;
+$id = $_POST['id'] ?? 0;
+$descricao = $_POST['descricao'] ?? '';
+$valor = $_POST['valor'] ?? 0;
+$data_ganho = $_POST['data_ganho'] ?? '';
+$fixo = !empty($_POST['fixo']) ? 1 : 0;
 
 if ($id <= 0 || empty($descricao) || $valor <= 0) {
     echo json_encode(["status" => "error", "message" => "Dados incompletos."]);

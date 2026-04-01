@@ -126,15 +126,15 @@ if (isset($_SESSION['usuario_id'])) {
 
     <!-- Tabs -->
     <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Entrar</button>
-        <button class="auth-tab" id="tab-cadastro" onclick="switchTab('cadastro')">Criar Conta</button>
+        <button class="auth-tab active" id="tab-login">Entrar</button>
+        <button class="auth-tab" id="tab-cadastro">Criar Conta</button>
     </div>
 
     <!-- Alert de feedback -->
     <div id="auth-alert" class="auth-alert"></div>
 
     <!-- ===== FORM LOGIN ===== -->
-    <form id="form-login" onsubmit="submitLogin(event)">
+    <form id="form-login">
         <div class="mb-3">
             <label class="form-label">E-MAIL</label>
             <div class="input-icon">
@@ -153,40 +153,40 @@ if (isset($_SESSION['usuario_id'])) {
             <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
         </button>
         <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
-            Não tem conta? <a href="#" onclick="switchTab('cadastro')" style="color:#6366f1;">Cadastre-se</a>
+            Não tem conta? <a href="#" id="link-to-cadastro" style="color:#6366f1;">Cadastre-se</a>
         </p>
     </form>
 
     <!-- ===== FORM CADASTRO ===== -->
-    <form id="form-cadastro" style="display:none;" onsubmit="submitCadastro(event)">
+    <form id="form-cadastro" style="display:none;">
         <div class="mb-3">
             <label class="form-label">NOME COMPLETO</label>
             <div class="input-icon">
-                <input type="text" id="cad-nome" class="form-control" placeholder="Seu nome" required>
+                <input type="text" id="cadastro-nome" class="form-control" placeholder="Seu nome" required>
                 <i class="bi bi-person"></i>
             </div>
         </div>
         <div class="mb-3">
             <label class="form-label">E-MAIL</label>
             <div class="input-icon">
-                <input type="email" id="cad-email" class="form-control" placeholder="seu@email.com" required>
+                <input type="email" id="cadastro-email" class="form-control" placeholder="seu@email.com" required>
                 <i class="bi bi-envelope"></i>
             </div>
         </div>
         <div class="row g-3 mb-3">
             <div class="col-6">
                 <label class="form-label">CPF</label>
-                <input type="text" id="cad-cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required>
+                <input type="text" id="cadastro-cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required>
             </div>
             <div class="col-6">
                 <label class="form-label">TELEFONE</label>
-                <input type="text" id="cad-telefone" class="form-control" placeholder="(41) 99999-9999" maxlength="15" required>
+                <input type="text" id="cadastro-telefone" class="form-control" placeholder="(41) 99999-9999" maxlength="15" required>
             </div>
         </div>
         <div class="mb-4">
             <label class="form-label">SENHA</label>
             <div class="input-icon">
-                <input type="password" id="cad-senha" class="form-control" placeholder="Mín. 6 caracteres" required>
+                <input type="password" id="cadastro-senha" class="form-control" placeholder="Mín. 6 caracteres" required>
                 <i class="bi bi-lock"></i>
             </div>
         </div>
@@ -194,120 +194,15 @@ if (isset($_SESSION['usuario_id'])) {
             <i class="bi bi-person-plus me-2"></i>Criar Conta
         </button>
         <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
-            Já tem conta? <a href="#" onclick="switchTab('login')" style="color:#6366f1;">Entrar</a>
+            Já tem conta? <a href="#" id="link-to-login" style="color:#6366f1;">Entrar</a>
         </p>
     </form>
 </div>
 
-<script>
-// ---- TABS ----
-function switchTab(tab) {
-    const isLogin = tab === 'login';
-    document.getElementById('form-login').style.display    = isLogin ? 'block' : 'none';
-    document.getElementById('form-cadastro').style.display = isLogin ? 'none'  : 'block';
-    document.getElementById('tab-login').classList.toggle('active', isLogin);
-    document.getElementById('tab-cadastro').classList.toggle('active', !isLogin);
-    hideAlert();
-}
-
-// ---- ALERT ----
-function showAlert(msg, type) {
-    const el = document.getElementById('auth-alert');
-    el.textContent = msg;
-    el.className = 'auth-alert ' + type;
-    el.style.display = 'block';
-}
-function hideAlert() {
-    const el = document.getElementById('auth-alert');
-    el.style.display = 'none';
-}
-
-// ---- MÁSCARA CPF ----
-document.getElementById('cad-cpf').addEventListener('input', function() {
-    let v = this.value.replace(/\D/g, '');
-    v = v.replace(/(\d{3})(\d)/, '$1.$2');
-    v = v.replace(/(\d{3})(\d)/, '$1.$2');
-    v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    this.value = v;
-});
-
-// ---- MÁSCARA TELEFONE ----
-document.getElementById('cad-telefone').addEventListener('input', function() {
-    let v = this.value.replace(/\D/g, '');
-    v = v.replace(/^(\d{2})(\d)/,  '($1) $2');
-    v = v.replace(/(\d{5})(\d{4})$/, '$1-$2');
-    this.value = v;
-});
-
-// ---- SUBMIT LOGIN ----
-async function submitLogin(e) {
-    e.preventDefault();
-    hideAlert();
-    const btn = document.getElementById('btn-login');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Entrando...';
-
-    const data = new FormData();
-    data.append('email', document.getElementById('login-email').value);
-    data.append('senha', document.getElementById('login-senha').value);
-
-    console.log("🚀 Enviando dados de login para o servidor...");
-    try {
-        const res  = await fetch('api/auth/login.php', { method: 'POST', body: data });
-        const json = await res.json();
-        console.log("📥 Resposta do servidor:", json);
-
-        if (json.status === 'success') {
-            showAlert('✅ ' + json.message, 'success');
-            setTimeout(() => window.location.href = json.redirect, 800);
-        } else {
-            showAlert('❌ ' + json.message, 'error');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Entrar';
-        }
-    } catch {
-        showAlert('❌ Erro de conexão. Tente novamente.', 'error');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Entrar';
-    }
-}
-
-// ---- SUBMIT CADASTRO ----
-async function submitCadastro(e) {
-    e.preventDefault();
-    hideAlert();
-    const btn = document.getElementById('btn-cadastro');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Criando conta...';
-
-    const data = new FormData();
-    data.append('nome',     document.getElementById('cad-nome').value);
-    data.append('email',    document.getElementById('cad-email').value);
-    data.append('cpf',      document.getElementById('cad-cpf').value);
-    data.append('telefone', document.getElementById('cad-telefone').value);
-    data.append('senha',    document.getElementById('cad-senha').value);
-
-    console.log("🚀 Enviando dados de cadastro para o servidor...");
-    try {
-        const res  = await fetch('api/auth/cadastro.php', { method: 'POST', body: data });
-        const json = await res.json();
-        console.log("📥 Resposta do servidor:", json);
-
-        if (json.status === 'success') {
-            showAlert('✅ ' + json.message, 'success');
-            setTimeout(() => window.location.href = json.redirect, 800);
-        } else {
-            showAlert('❌ ' + json.message, 'error');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-person-plus me-2"></i>Criar Conta';
-        }
-    } catch {
-        showAlert('❌ Erro de conexão. Tente novamente.', 'error');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-person-plus me-2"></i>Criar Conta';
-    }
-}
-</script>
+<script src="api/auth/login.js"></script>
+<script src="api/auth/cadastro.js"></script>
+<script src="assets/js/validations/masks.js"></script>
+<script src="assets/js/pages/login.js"></script>
 
 </body>
 </html>

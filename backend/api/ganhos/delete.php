@@ -2,8 +2,7 @@
 require_once __DIR__ . '/../../../DataBase/conexao.php';
 header('Content-Type: application/json');
 
-$data = json_decode(file_get_contents("php://input"), true);
-$id = $data['id'] ?? 0;
+$id = $_POST['id'] ?? 0;
 
 if ($id <= 0) {
     echo json_encode(["status" => "error", "message" => "ID inválido."]);

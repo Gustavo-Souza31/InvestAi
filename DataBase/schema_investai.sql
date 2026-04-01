@@ -1,3 +1,4 @@
+CREATE DATABASE investai IF NOT EXISTS
 USE investai;
 
 -- =========================
