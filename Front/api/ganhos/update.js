@@ -1,20 +1,48 @@
-async function atualizarGanho(id, descricao, valor, dataGanho, fixo) {
+async function atualizarGanho() {
+    const id        = document.getElementById('edit-id').value;
+    const descricao = document.getElementById('edit-descricao').value.trim();
+    const valor     = document.getElementById('edit-valor').value;
+    const data      = document.getElementById('edit-data').value;
+    const fixo      = document.getElementById('edit-fixo').checked;
+
+    if (!descricao || !valor || !data) {
+        showAlert('Preencha todos os campos.', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('id',        id);
+    formData.append('descricao', descricao);
+    formData.append('valor',     parseFloat(valor));
+    formData.append('data_ganho', data);
+    formData.append('fixo',      fixo ? 1 : 0);
+
     try {
-        const res = await fetch('../backend/api/ganhos/update.php', {
+        const resposta = await fetch('/inventai/backend/api/ganhos/update.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id: id,
-                descricao: descricao,
-                valor: parseFloat(valor),
-                data_ganho: dataGanho,
-                fixo: fixo
-            })
+            body: formData
         });
-        const json = await res.json();
-        return json;
+
+        const resultado = await resposta.json();
+
+        if (resultado.status !== 'success') {
+            showAlert(resultado.message || 'Erro ao atualizar ganho.', 'error');
+            return;
+        }
+
+        showAlert(resultado.message || 'Ganho atualizado!', 'success');
+        closeModal('modal-edit');
+
+        if (typeof carregarGanhos === 'function') {
+            carregarGanhos();
+        }
     } catch (error) {
         console.error('Erro ao atualizar ganho:', error);
-        return { status: 'error', message: 'Erro de conexão.' };
+        showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
+
+document.getElementById('form-edit')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    atualizarGanho();
+});

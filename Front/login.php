@@ -114,8 +114,10 @@ if (isset($_SESSION['usuario_id'])) {
     </form>
 </div>
 
+<script src="assets/style/js/ui.js"></script>
+<script src="assets/style/js/tabs.js"></script>
 <script src="api/auth/login.js"></script>
-<script src="assets/style/js/pages/login.js"></script>
+<script src="api/auth/cadastro.js"></script>
 
 </body>
 </html>

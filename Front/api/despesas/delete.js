@@ -1,14 +1,37 @@
-async function excluirDespesa(id) {
+async function excluirDespesa() {
+    const id = document.getElementById('delete-id').value;
+
+    if (!id) {
+        showAlert('ID não informado.', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('id', id);
+
     try {
-        const res = await fetch('../backend/api/despesas/delete.php', {
+        const resposta = await fetch('/inventai/backend/api/despesas/delete.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: id })
+            body: formData
         });
-        const json = await res.json();
-        return json;
+
+        const resultado = await resposta.json();
+
+        if (resultado.status !== 'success') {
+            showAlert(resultado.message || 'Erro ao excluir despesa.', 'error');
+            return;
+        }
+
+        showAlert(resultado.message || 'Despesa excluída!', 'success');
+        closeModal('modal-delete');
+
+        if (typeof carregarDespesas === 'function') {
+            carregarDespesas();
+        }
     } catch (error) {
         console.error('Erro ao excluir despesa:', error);
-        return { status: 'error', message: 'Erro de conexão.' };
+        showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
+
+document.getElementById('btn-confirm-delete')?.addEventListener('click', excluirDespesa);

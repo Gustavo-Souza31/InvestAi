@@ -2,7 +2,8 @@
 header('Content-Type: application/json');
 session_start();
 
-require_once '../../includes/db.php';
+$root = dirname(dirname(dirname(dirname(__FILE__))));
+require_once $root . '/DataBase/conexao.php';
 
 // Verificar se usuário está autenticado
 if (!isset($_SESSION['usuario_id'])) {

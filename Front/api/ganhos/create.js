@@ -1,20 +1,50 @@
-async function criarGanho(descricao, valor, dataGanho, fixo, usuarioId) {
+async function criarGanho() {
+    const descricao = document.getElementById('ganho-descricao').value.trim();
+    const valor     = document.getElementById('ganho-valor').value;
+    const data      = document.getElementById('ganho-data').value;
+    const fixo      = document.getElementById('ganho-fixo').checked;
+
+    if (!descricao || !valor || !data) {
+        showAlert('Preencha todos os campos antes de enviar.', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('descricao',  descricao);
+    formData.append('valor',      parseFloat(valor));
+    formData.append('data_ganho', data);
+    formData.append('fixo',       fixo ? 1 : 0);
+
     try {
-        const res = await fetch('../backend/api/ganhos/create.php', {
+        const resposta = await fetch('/inventai/backend/api/ganhos/create.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                descricao: descricao,
-                valor: parseFloat(valor),
-                data_ganho: dataGanho,
-                fixo: fixo,
-                usuario_id: usuarioId
-            })
+            body: formData
         });
-        const json = await res.json();
-        return json;
+
+        const resultado = await resposta.json();
+
+        if (resultado.status !== 'success') {
+            showAlert(resultado.message || 'Erro ao criar ganho.', 'error');
+            return;
+        }
+
+        showAlert(resultado.message || 'Ganho criado com sucesso.', 'success');
+
+        document.getElementById('ganho-descricao').value = '';
+        document.getElementById('ganho-valor').value     = '';
+        document.getElementById('ganho-data').value      = new Date().toISOString().split('T')[0];
+        document.getElementById('ganho-fixo').checked    = false;
+
+        if (typeof carregarGanhos === 'function') {
+            carregarGanhos();
+        }
     } catch (error) {
         console.error('Erro ao criar ganho:', error);
-        return { status: 'error', message: 'Erro de conexão.' };
+        showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
+
+document.getElementById('form-ganho')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    criarGanho();
+});

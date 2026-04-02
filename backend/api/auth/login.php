@@ -2,24 +2,34 @@
 session_start();
 header('Content-Type: application/json');
 
-require_once '../../includes/db.php';
-
+// Verificar método POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['status' => 'error', 'message' => 'Método não permitido.']);
     exit;
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
+$root = dirname(dirname(dirname(dirname(__FILE__))));
+require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/validators/AuthValidator.php';
 
-$email = trim($data['email'] ?? '');
-$senha = $data['senha'] ?? '';
+// Receber dados de FormData
+$data = [
+    'email' => $_POST['email'] ?? '',
+    'senha' => $_POST['senha'] ?? ''
+];
 
-if (empty($email) || empty($senha)) {
-    echo json_encode(['status' => 'error', 'message' => 'Preencha e-mail e senha.']);
+// Validar
+$validation = AuthValidator::validateLogin($data);
+if (!$validation['valid']) {
+    echo json_encode(['status' => 'error', 'message' => $validation['errors'][0]]);
     exit;
 }
 
+$email = $validation['data']['email'];
+$senha = $validation['data']['senha'];
+
+// Buscar usuário
 $stmt = $conexao->prepare("SELECT id, nome, senha_hash FROM usuarios WHERE email = ?");
 $stmt->bind_param('s', $email);
 $stmt->execute();
@@ -32,17 +42,20 @@ if ($result->num_rows === 0) {
 
 $usuario = $result->fetch_assoc();
 
+// Verificar senha
 if (!password_verify($senha, $usuario['senha_hash'])) {
     echo json_encode(['status' => 'error', 'message' => 'E-mail ou senha incorretos.']);
     exit;
 }
 
+// Iniciar sessão
 $_SESSION['usuario_id']   = $usuario['id'];
 $_SESSION['usuario_nome'] = $usuario['nome'];
 
 echo json_encode([
-    'status'  => 'success',
-    'message' => 'Login realizado com sucesso!',
-    'nome'    => $usuario['nome'],
+    'status'   => 'success',
+    'message'  => 'Login realizado com sucesso!',
+    'nome'     => $usuario['nome'],
     'redirect' => 'dashboard.php'
 ]);
+?>

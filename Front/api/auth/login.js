@@ -1,17 +1,40 @@
 async function efetuarLogin(email, senha) {
-    const res = await fetch('../backend/api/auth/login.php', {
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('senha', senha);
+
+    const resposta = await fetch('/inventai/backend/api/auth/login.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, senha: senha })
+        body: formData
     });
-    return await res.json();
+    return await resposta.json();
 }
 
-async function efetuarCadastro(nome, email, cpf, telefone, senha) {
-    const res = await fetch('../backend/api/auth/cadastro.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: nome, email: email, cpf: cpf, telefone: telefone, senha: senha })
-    });
-    return await res.json();
-}
+document.getElementById('form-login')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn   = document.getElementById('btn-login');
+    const email = document.getElementById('login-email').value.trim();
+    const senha = document.getElementById('login-senha').value;
+
+    btn.disabled  = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Entrando...';
+
+    try {
+        const resultado = await efetuarLogin(email, senha);
+
+        if (resultado.status === 'success') {
+            showAlert(resultado.message, 'success');
+            setTimeout(() => window.location.href = resultado.redirect, 800);
+        } else {
+            showAlert(resultado.message || 'Erro ao fazer login.', 'error');
+            btn.disabled  = false;
+            btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Entrar';
+        }
+    } catch (error) {
+        console.error('Erro ao fazer login:', error);
+        showAlert('Erro de conexão com o servidor.', 'error');
+        btn.disabled  = false;
+        btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Entrar';
+    }
+});

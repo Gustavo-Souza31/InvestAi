@@ -1,13 +1,16 @@
 /**
- * Estilos específicos para página de Ganhos
+ * ganhos.css — Estilos específicos para página de Ganhos
+ * 
+ * Apenas cores e temas específicos para ganhos (verde/success)
+ * Estilos genéricos estão em internal-pages.css
  */
 
-/* Header customizado para ganhos */
+/* Header icon */
 .page-header h1 i {
     color: var(--success-color);
 }
 
-/* Cards de resumo - cores de ganhos */
+/* Summary cards hover */
 .summary-card:hover {
     border-color: rgba(34, 197, 94, 0.3);
 }
@@ -16,11 +19,12 @@
     color: #4ade80;
 }
 
-/* Formulário de ganhos */
+/* Form icon */
 .form-card h2 i {
     color: var(--success-color);
 }
 
+/* Submit button - Ganho */
 .btn-submit {
     background: linear-gradient(135deg, var(--success-color), #16a34a);
 }
@@ -29,187 +33,32 @@
     color: #fff;
 }
 
-/* Tabela / Lista de ganhos */
-.list-container {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-color);
-    border-radius: 18px;
-    backdrop-filter: blur(12px);
-    overflow: hidden;
-}
-
-.list-header {
-    padding: 20px 26px;
-    border-bottom: 1px solid var(--border-light);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.list-header h2 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
+/* List header icon */
 .list-header h2 i {
     color: var(--success-color);
 }
 
+/* Badge colors */
 .badge-count {
     background: rgba(34, 197, 94, 0.15);
     color: #4ade80;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 700;
 }
 
-/* Items da lista */
-.list-item {
-    display: flex;
-    align-items: center;
-    padding: 16px 26px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    transition: background 0.2s;
-}
-
-.list-item:hover {
-    background: rgba(255, 255, 255, 0.02);
-}
-
-.list-item:last-child {
-    border-bottom: none;
-}
-
+/* Item icon background */
 .item-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
     background: rgba(34, 197, 94, 0.12);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 16px;
-    flex-shrink: 0;
 }
 
 .item-icon i {
     color: #4ade80;
-    font-size: 1.1rem;
 }
 
-.item-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.item-info .desc {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--text-main);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.item-info .meta {
-    font-size: 0.78rem;
-    color: #555;
-    margin-top: 2px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.item-meta-badge {
-    background: rgba(6, 182, 212, 0.15);
-    color: #22d3ee;
-    padding: 1px 8px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: 700;
-}
-
+/* Item value color */
 .item-value {
-    font-weight: 700;
-    font-size: 1.05rem;
     color: #4ade80;
-    margin-right: 16px;
-    white-space: nowrap;
 }
 
-.item-actions {
-    display: flex;
-    gap: 6px;
-}
-
-.item-actions button {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    color: #666;
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.85rem;
-}
-
-.item-actions .btn-edit:hover {
-    border-color: rgba(99, 102, 241, 0.4);
-    color: #818cf8;
-}
-
-.item-actions .btn-delete:hover {
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #f87171;
-}
-
-/* Empty state */
-.empty-state {
-    text-align: center;
-    padding: 50px 20px;
-    color: #444;
-}
-
-.empty-state i {
-    font-size: 2.5rem;
-    margin-bottom: 14px;
-    display: block;
-    color: #333;
-}
-
-.empty-state p {
-    font-size: 0.92rem;
-    margin: 0;
-}
-
-/* Modal específico para ganhos */
+/* Modal icon */
 .modal-card h2 i {
     color: var(--success-color);
-}
-
-/* Responsivo */
-@media (max-width: 600px) {
-    .list-item {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .item-value {
-        order: 3;
-        width: 100%;
-        margin-right: 0;
-    }
-
-    .item-actions {
-        order: 4;
-    }
 }

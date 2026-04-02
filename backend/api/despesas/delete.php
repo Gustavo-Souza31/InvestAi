@@ -1,21 +1,46 @@
 <?php
 header('Content-Type: application/json');
-require_once '../../includes/db.php';
 
-$data = json_decode(file_get_contents("php://input"), true);
-$id = $data['id'] ?? 0;
-
-if ($id <= 0) {
-    echo json_encode(["status" => "error", "message" => "ID inválido."]);
+// Verificar método POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['status' => 'error', 'message' => 'Método não permitido.']);
     exit;
 }
 
-$stmt = $conexao->prepare("DELETE FROM despesas WHERE id = ?");
-$stmt->bind_param("i", $id);
+$root = dirname(dirname(dirname(dirname(__FILE__))));
+require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/includes/auth_middleware.php';
+require_once $root . '/backend/validators/IdValidator.php';
+
+requireAuth();
+
+// Receber ID
+$id = intval($_POST['id'] ?? 0);
+
+// Validar ID
+$validation = IdValidator::validateId($id);
+if (!$validation['valid']) {
+    echo json_encode(['status' => 'error', 'message' => $validation['errors'][0]]);
+    exit;
+}
+
+// Verificar se existe
+$stmt = $conexao->prepare('SELECT id FROM despesas WHERE id = ?');
+$stmt->bind_param('i', $id);
+$stmt->execute();
+if ($stmt->get_result()->num_rows === 0) {
+    echo json_encode(['status' => 'error', 'message' => 'Despesa não encontrada.']);
+    exit;
+}
+
+// Deletar
+$stmt = $conexao->prepare('DELETE FROM despesas WHERE id = ?');
+$stmt->bind_param('i', $id);
 
 if ($stmt->execute() && $stmt->affected_rows > 0) {
-    echo json_encode(["status" => "success", "message" => "Despesa excluída!"]);
+    echo json_encode(['status' => 'success', 'message' => 'Despesa excluída!']);
 } else {
-    echo json_encode(["status" => "error", "message" => "Despesa não encontrada."]);
+    echo json_encode(['status' => 'error', 'message' => 'Erro ao excluir despesa.']);
 }
 ?>

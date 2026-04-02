@@ -2,42 +2,38 @@
 session_start();
 header('Content-Type: application/json');
 
-require_once '../../includes/db.php';
-
+// Verificar método POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['status' => 'error', 'message' => 'Método não permitido.']);
     exit;
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
+$root = dirname(dirname(dirname(dirname(__FILE__))));
+require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/validators/AuthValidator.php';
 
-$nome     = trim($data['nome'] ?? '');
-$email    = trim($data['email'] ?? '');
-$cpf      = preg_replace('/\D/', '', $data['cpf'] ?? '');
-$telefone = preg_replace('/\D/', '', $data['telefone'] ?? '');
-$senha    = $data['senha'] ?? '';
+// Receber dados de FormData
+$data = [
+    'nome' => $_POST['nome'] ?? '',
+    'email' => $_POST['email'] ?? '',
+    'cpf' => $_POST['cpf'] ?? '',
+    'telefone' => $_POST['telefone'] ?? '',
+    'senha' => $_POST['senha'] ?? ''
+];
 
-// Validações básicas
-if (empty($nome) || empty($email) || empty($cpf) || empty($telefone) || empty($senha)) {
-    echo json_encode(['status' => 'error', 'message' => 'Preencha todos os campos obrigatórios.']);
+// Validar
+$validation = AuthValidator::validateCadastro($data);
+if (!$validation['valid']) {
+    echo json_encode(['status' => 'error', 'message' => $validation['errors'][0]]);
     exit;
 }
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode(['status' => 'error', 'message' => 'E-mail inválido.']);
-    exit;
-}
-
-if (strlen($cpf) !== 11) {
-    echo json_encode(['status' => 'error', 'message' => 'CPF inválido. Use apenas os 11 dígitos.']);
-    exit;
-}
-
-if (strlen($senha) < 6) {
-    echo json_encode(['status' => 'error', 'message' => 'A senha deve ter ao menos 6 caracteres.']);
-    exit;
-}
+$nome = $validation['data']['nome'];
+$email = $validation['data']['email'];
+$cpf = $validation['data']['cpf'];
+$telefone = $validation['data']['telefone'];
+$senha = $validation['data']['senha'];
 
 // Verifica duplicatas
 $stmt = $conexao->prepare("SELECT id FROM usuarios WHERE email = ? OR cpf = ? OR telefone = ?");
@@ -48,19 +44,19 @@ if ($stmt->get_result()->num_rows > 0) {
     exit;
 }
 
-// Insere o usuário
+// Inserir usuário
 $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
 $stmt = $conexao->prepare("INSERT INTO usuarios (nome, email, cpf, telefone, senha_hash) VALUES (?, ?, ?, ?, ?)");
 $stmt->bind_param('sssss', $nome, $email, $cpf, $telefone, $senha_hash);
 
 if (!$stmt->execute()) {
-    echo json_encode(['status' => 'error', 'message' => 'Erro ao criar conta. Tente novamente.']);
+    echo json_encode(['status' => 'error', 'message' => 'Erro ao criar conta.']);
     exit;
 }
 
 $usuario_id = $conexao->insert_id;
 
-// Inicia sessão
+// Iniciar sessão
 $_SESSION['usuario_id']   = $usuario_id;
 $_SESSION['usuario_nome'] = $nome;
 
@@ -70,3 +66,4 @@ echo json_encode([
     'nome'     => $nome,
     'redirect' => 'dashboard.php'
 ]);
+?>

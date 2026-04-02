@@ -1,14 +1,37 @@
-async function excluirGanho(id) {
+async function excluirGanho() {
+    const id = document.getElementById('delete-id').value;
+
+    if (!id) {
+        showAlert('ID não informado.', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('id', id);
+
     try {
-        const res = await fetch('../backend/api/ganhos/delete.php', {
+        const resposta = await fetch('/inventai/backend/api/ganhos/delete.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: id })
+            body: formData
         });
-        const json = await res.json();
-        return json;
+
+        const resultado = await resposta.json();
+
+        if (resultado.status !== 'success') {
+            showAlert(resultado.message || 'Erro ao excluir ganho.', 'error');
+            return;
+        }
+
+        showAlert(resultado.message || 'Ganho excluído!', 'success');
+        closeModal('modal-delete');
+
+        if (typeof carregarGanhos === 'function') {
+            carregarGanhos();
+        }
     } catch (error) {
         console.error('Erro ao excluir ganho:', error);
-        return { status: 'error', message: 'Erro de conexão.' };
+        showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
+
+document.getElementById('btn-confirm-delete')?.addEventListener('click', excluirGanho);
