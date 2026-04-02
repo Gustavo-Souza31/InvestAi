@@ -22,6 +22,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/style/css/variables.css">
     <link rel="stylesheet" href="assets/style/css/animations.css">
+    <link rel="stylesheet" href="assets/style/css/navbar.css">
     <link rel="stylesheet" href="assets/style/css/internal-pages.css">
     <link rel="stylesheet" href="assets/style/css/ganhos.css">
 </head>
@@ -34,8 +35,8 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
             <a href="dashboard.php" class="logo"><i class="bi bi-graph-up-arrow me-1"></i>Invest<span>Ai</span></a>
             <div class="d-flex align-items-center gap-4">
                 <a href="dashboard.php" class="nav-link-custom">Dashboard</a>
-                <a href="ganhos.php" class="nav-link-custom active">Ganhos</a>
-                <a href="despesas.php" class="nav-link-custom">Despesas</a>
+                <a href="ganhos.php" class="nav-link-custom active nav-ganhos">Ganhos</a>
+                <a href="despesas.php" class="nav-link-custom nav-despesas">Despesas</a>
                 <span class="user-badge"><i class="bi bi-person-fill me-1"></i><?= $nome ?></span>
                 <a href="logout.php" class="nav-link-custom" title="Sair"><i class="bi bi-box-arrow-right"></i></a>
             </div>
@@ -170,7 +171,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <script>
         const USUARIO_ID = <?= $usuario_id ?>;
     </script>
-    <script src="api/shared.js"></script>
+    <script src="api/utils/shared.js"></script>
     <script src="assets/style/js/ui.js"></script>
     <script src="api/ganhos/read.js"></script>
     <script src="api/ganhos/render.js"></script>

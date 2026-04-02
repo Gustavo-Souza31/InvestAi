@@ -17,6 +17,7 @@ async function atualizarDespesa() {
     formData.append('data_despesa', data);
     formData.append('fixo',         fixo ? 1 : 0);
 
+
     try {
         const resposta = await fetch('/inventai/backend/api/despesas/update.php', {
             method: 'POST',
@@ -41,6 +42,7 @@ async function atualizarDespesa() {
         showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
+
 
 document.getElementById('form-edit')?.addEventListener('submit', function(e) {
     e.preventDefault();

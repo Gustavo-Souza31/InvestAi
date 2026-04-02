@@ -1,3 +1,13 @@
+/**
+ * auth/cadastro.js — Lógica de cadastro de usuário
+ *
+ * Funções:
+ * - enviarCadastro(): Coleta dados, valida e envia para o backend
+ *
+ * O listener do formulário está em auth/render.js
+ */
+
+// Função auxiliar para enviar dados de cadastro
 async function efetuarCadastro(nome, email, cpf, telefone, senha) {
     const formData = new FormData();
     formData.append('nome', nome);
@@ -13,15 +23,20 @@ async function efetuarCadastro(nome, email, cpf, telefone, senha) {
     return await resposta.json();
 }
 
-document.getElementById('form-cadastro')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
+// Função principal de envio de cadastro
+async function enviarCadastro() {
     const btn      = document.getElementById('btn-cadastro');
     const nome     = document.getElementById('cadastro-nome').value.trim();
     const email    = document.getElementById('cadastro-email').value.trim();
     const cpf      = document.getElementById('cadastro-cpf').value.replace(/\D/g, '');
     const telefone = document.getElementById('cadastro-telefone').value.replace(/\D/g, '');
     const senha    = document.getElementById('cadastro-senha').value;
+
+    // Validar campos nulos
+    if (!nome || !email || !cpf || !telefone || !senha) {
+        showAlert('Preencha todos os campos.', 'error');
+        return;
+    }
 
     btn.disabled  = true;
     btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Criando...';
@@ -31,7 +46,8 @@ document.getElementById('form-cadastro')?.addEventListener('submit', async (e) =
 
         if (resultado.status === 'success') {
             showAlert(resultado.message, 'success');
-            setTimeout(() => window.location.href = resultado.redirect, 800);
+            document.getElementById('form-cadastro').reset();
+            setTimeout(() => window.location.href = resultado.redirect, 1500);
         } else {
             showAlert(resultado.message || 'Erro ao criar conta.', 'error');
             btn.disabled  = false;
@@ -43,4 +59,4 @@ document.getElementById('form-cadastro')?.addEventListener('submit', async (e) =
         btn.disabled  = false;
         btn.innerHTML = '<i class="bi bi-person-plus me-2"></i>Criar Conta';
     }
-});
+}

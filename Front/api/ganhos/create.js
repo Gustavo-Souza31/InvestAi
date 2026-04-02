@@ -15,6 +15,7 @@ async function criarGanho() {
     formData.append('data_ganho', data);
     formData.append('fixo',       fixo ? 1 : 0);
 
+
     try {
         const resposta = await fetch('/inventai/backend/api/ganhos/create.php', {
             method: 'POST',
@@ -28,9 +29,7 @@ async function criarGanho() {
             return;
         }
 
-        showAlert(resultado.message || 'Ganho criado com sucesso.', 'success');
 
-        document.getElementById('ganho-descricao').value = '';
         document.getElementById('ganho-valor').value     = '';
         document.getElementById('ganho-data').value      = new Date().toISOString().split('T')[0];
         document.getElementById('ganho-fixo').checked    = false;
@@ -43,6 +42,7 @@ async function criarGanho() {
         showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
+
 
 document.getElementById('form-ganho')?.addEventListener('submit', function(e) {
     e.preventDefault();

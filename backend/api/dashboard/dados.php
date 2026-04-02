@@ -1,44 +1,64 @@
 <?php
-header('Content-Type: application/json');
 session_start();
+header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/DataBase/conexao.php';
 
+
 // Verificar se usuário está autenticado
 if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401);
-    echo json_encode(['status' => 'error', 'message' => 'Não autenticado.']);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Não autenticado.'
+    ]);
     exit;
 }
 
 $usuario_id = $_SESSION['usuario_id'];
 
+
 // Buscar dados do usuário
-$stmt = $conexao->prepare("SELECT nome FROM usuarios WHERE id = ?");
+$stmt = $conexao->prepare(
+    "SELECT nome FROM usuarios WHERE id = ?"
+);
 $stmt->bind_param("i", $usuario_id);
 $stmt->execute();
 $usuario = $stmt->get_result()->fetch_assoc();
 
+
 // Buscar perfil financeiro
-$stmt = $conexao->prepare("SELECT saldo_inicial, renda_mensal, objetivo_financeiro FROM perfil_financeiro WHERE usuario_id = ?");
+$stmt = $conexao->prepare(
+    "SELECT saldo_inicial, renda_mensal, objetivo_financeiro 
+     FROM perfil_financeiro WHERE usuario_id = ?"
+);
 $stmt->bind_param("i", $usuario_id);
 $stmt->execute();
 $perfil = $stmt->get_result()->fetch_assoc();
 
+
 // Buscar totals de ganhos e despesas
-$stmt = $conexao->prepare("SELECT COALESCE(SUM(valor), 0) as total FROM ganhos WHERE usuario_id = ?");
+$stmt = $conexao->prepare(
+    "SELECT COALESCE(SUM(valor), 0) as total 
+     FROM ganhos WHERE usuario_id = ?"
+);
 $stmt->bind_param("i", $usuario_id);
 $stmt->execute();
 $total_ganhos = $stmt->get_result()->fetch_assoc()['total'];
 
-$stmt = $conexao->prepare("SELECT COALESCE(SUM(valor), 0) as total FROM despesas WHERE usuario_id = ?");
+$stmt = $conexao->prepare(
+    "SELECT COALESCE(SUM(valor), 0) as total 
+     FROM despesas WHERE usuario_id = ?"
+);
 $stmt->bind_param("i", $usuario_id);
 $stmt->execute();
 $total_despesas = $stmt->get_result()->fetch_assoc()['total'];
 
+
 // Calcular saldo atual
 $saldo_atual = ($perfil['saldo_inicial'] ?? 0) + $total_ganhos - $total_despesas;
+
 
 // Retornar dados
 echo json_encode([

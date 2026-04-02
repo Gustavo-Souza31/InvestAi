@@ -15,6 +15,7 @@ async function criarDespesa() {
     formData.append('data_despesa', data);
     formData.append('fixo',         fixo ? 1 : 0);
 
+
     try {
         const resposta = await fetch('/inventai/backend/api/despesas/create.php', {
             method: 'POST',
@@ -28,9 +29,7 @@ async function criarDespesa() {
             return;
         }
 
-        showAlert(resultado.message || 'Despesa criada com sucesso.', 'success');
 
-        document.getElementById('despesa-descricao').value = '';
         document.getElementById('despesa-valor').value     = '';
         document.getElementById('despesa-data').value      = new Date().toISOString().split('T')[0];
         document.getElementById('despesa-fixo').checked    = false;
@@ -43,6 +42,7 @@ async function criarDespesa() {
         showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
+
 
 document.getElementById('form-despesa')?.addEventListener('submit', function(e) {
     e.preventDefault();

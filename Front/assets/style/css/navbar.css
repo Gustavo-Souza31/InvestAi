@@ -1,0 +1,67 @@
+/**
+ * Navbar customizada (centralizada)
+ * Usado em: index.php, dashboard.php, ganhos.php, despesas.php
+ */
+
+/* Navbar customizada */
+.navbar-custom {
+    background: rgba(13, 15, 20, 0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border-light);
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.logo span {
+    color: var(--success-color);
+}
+
+.nav-link-custom {
+    color: #888;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+.nav-link-custom:hover,
+.nav-link-custom.active {
+    color: var(--success-color);
+}
+
+/* Cores específicas para abas */
+.nav-ganhos:hover {
+    color: var(--success-color) !important;
+}
+
+.nav-despesas:hover {
+    color: var(--danger-color) !important;
+}
+
+/* User badge */
+.user-badge {
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: #4ade80;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}

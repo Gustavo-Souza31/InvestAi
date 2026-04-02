@@ -1,110 +1,86 @@
 /**
- * dashboard.css — Estilos específicos do Dashboard
- * Tema: Roxo/Purple (#a855f7)
+ * dashboard.css — Estilos específicos para página de Dashboard
+ * 
+ * Apenas cores e temas específicos para dashboard (roxo/purple #a855f7)
+ * Estilos genéricos estão em internal-pages.css
  */
 
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
+/* Header icon */
+.page-header h1 i {
+    color: #a855f7;
 }
 
-.card-value {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(168, 85, 247, 0.2);
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
-    transition: transform 0.2s, border-color 0.2s;
+/* Summary cards hover */
+.summary-card:hover {
+    border-color: rgba(168, 85, 247, 0.3);
 }
 
-.card-value:hover {
-    transform: translateY(-2px);
-    border-color: rgba(168, 85, 247, 0.4);
+.summary-card .value {
+    color: #d8b4fe;
 }
 
-.card-value .label {
-    font-size: 0.9rem;
-    color: #999;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    display: block;
+/* Form icon */
+.form-card h2 i {
+    color: #a855f7;
 }
 
-.card-value .value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #fff;
-}
-
-.value.positive {
-    color: var(--success-color);
-}
-
-.value.negative {
-    color: var(--danger-color);
-}
-
-.value.neutral {
-    color: var(--primary-color);
-}
-
-.actions {
-    margin-top: 40px;
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.btn-action {
-    flex: 1;
-    min-width: 120px;
-    padding: 12px 20px;
-    border-radius: 10px;
-    border: none;
+/* Submit button - Dashboard */
+.btn-submit {
     background: linear-gradient(135deg, #a855f7, #9333ea);
+}
+
+.btn-submit:hover {
     color: #fff;
-    cursor: pointer;
-    text-decoration: none;
-    text-align: center;
-    transition: all 0.3s;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+}
+
+/* List header icon */
+.list-header h2 i {
+    color: #a855f7;
+}
+
+/* Badge colors */
+.badge-count {
+    background: rgba(168, 85, 247, 0.15);
+    color: #d8b4fe;
+}
+
+/* Item icon background */
+.item-icon {
+    background: rgba(168, 85, 247, 0.12);
+}
+
+.item-icon i {
+    color: #d8b4fe;
+}
+
+/* Item value color */
+.item-value {
+    color: #d8b4fe;
+}
+
+/* Modal icon */
+.modal-card h2 i {
+    color: #a855f7;
+}
+
+/* User badge for dashboard */
+.user-badge {
+    background: rgba(168, 85, 247, 0.12);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    color: #d8b4fe;
+}
+
+/* Nav link active state for dashboard */
+.nav-link-custom.active,
+.logo span {
+    color: #a855f7;
+}
+
+/* Actions buttons */
+.btn-action {
+    background: linear-gradient(135deg, #a855f7, #9333ea);
 }
 
 .btn-action:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
     color: #fff;
-}
-
-.btn-logout {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: var(--danger-color);
-    color: var(--danger-color);
-}
-
-.btn-logout:hover {
-    background: rgba(239, 68, 68, 0.2);
-    color: var(--danger-color);
-}
-
-.loading {
-    text-align: center;168, 85, 247, 0.2);
-    border-top: 3px solid #a855f7
-}
-
-.loading-spinner {
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top: 3px solid var(--primary-color);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 15px;
 }

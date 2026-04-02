@@ -157,6 +157,10 @@ body::after {
     animation: slideDown 0.3s ease;
 }
 
+.auth-alert.show {
+    display: block;
+}
+
 .auth-alert.error {
     background: rgba(239, 68, 68, 0.12);
     border: 1px solid rgba(239, 68, 68, 0.3);

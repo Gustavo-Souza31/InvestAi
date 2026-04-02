@@ -9,6 +9,7 @@ async function excluirGanho() {
     const formData = new FormData();
     formData.append('id', id);
 
+
     try {
         const resposta = await fetch('/inventai/backend/api/ganhos/delete.php', {
             method: 'POST',
@@ -33,5 +34,6 @@ async function excluirGanho() {
         showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
+
 
 document.getElementById('btn-confirm-delete')?.addEventListener('click', excluirGanho);

@@ -98,9 +98,9 @@ class AuthValidator {
             $errors[] = 'Telefone inválido. Use 10 dígitos (fixo) ou 11 (celular).';
         }
 
-        // Validar senha forte
-        if (!empty($senha) && !ValidatorHelper::validateSenha($senha)) {
-            $errors[] = 'Senha deve ter no mínimo 8 caracteres com letra maiúscula, minúscula e número.';
+        // Validar senha - apenas mínimo de 6 caracteres por enquanto
+        if (!empty($senha) && strlen($senha) < 6) {
+            $errors[] = 'Senha deve ter no mínimo 6 caracteres.';
         }
 
         return [
@@ -117,3 +117,4 @@ class AuthValidator {
     }
 }
 ?>
+

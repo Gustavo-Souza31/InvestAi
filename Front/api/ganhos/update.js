@@ -17,6 +17,7 @@ async function atualizarGanho() {
     formData.append('data_ganho', data);
     formData.append('fixo',      fixo ? 1 : 0);
 
+
     try {
         const resposta = await fetch('/inventai/backend/api/ganhos/update.php', {
             method: 'POST',
@@ -41,6 +42,7 @@ async function atualizarGanho() {
         showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
+
 
 document.getElementById('form-edit')?.addEventListener('submit', function(e) {
     e.preventDefault();

@@ -1,20 +1,15 @@
 <?php
 header('Content-Type: application/json');
 
-// Verificar método POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['status' => 'error', 'message' => 'Método não permitido.']);
-    exit;
-}
-
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/DataBase/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 require_once $root . '/backend/validators/DespesasValidator.php';
 require_once $root . '/backend/validators/IdValidator.php';
 
+
 requireAuth();
+
 
 // Receber dados
 $id = intval($_POST['id'] ?? 0);
@@ -25,17 +20,25 @@ $data = [
     'fixo' => $_POST['fixo'] ?? 0
 ];
 
+
 // Validar ID
 $idValidation = IdValidator::validateId($id);
 if (!$idValidation['valid']) {
-    echo json_encode(['status' => 'error', 'message' => $idValidation['errors'][0]]);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $idValidation['errors'][0]
+    ]);
     exit;
 }
+
 
 // Validar dados
 $validation = DespesasValidator::validate($data);
 if (!$validation['valid']) {
-    echo json_encode(['status' => 'error', 'message' => $validation['errors'][0]]);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $validation['errors'][0]
+    ]);
     exit;
 }
 
@@ -44,13 +47,24 @@ $valor = $validation['data']['valor'];
 $data_despesa = $validation['data']['data_despesa'];
 $fixo = $validation['data']['fixo'];
 
+
 // Atualizar
-$stmt = $conexao->prepare('UPDATE despesas SET descricao = ?, valor = ?, data_despesa = ?, fixo = ? WHERE id = ?');
+$stmt = $conexao->prepare(
+    'UPDATE despesas 
+     SET descricao = ?, valor = ?, data_despesa = ?, fixo = ? 
+     WHERE id = ?'
+);
 $stmt->bind_param('sdsii', $descricao, $valor, $data_despesa, $fixo, $id);
 
 if ($stmt->execute() && $stmt->affected_rows > 0) {
-    echo json_encode(['status' => 'success', 'message' => 'Despesa atualizada!']);
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'Despesa atualizada!'
+    ]);
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Despesa não encontrada.']);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Despesa não encontrada.'
+    ]);
 }
 ?>

@@ -9,6 +9,7 @@ async function excluirDespesa() {
     const formData = new FormData();
     formData.append('id', id);
 
+
     try {
         const resposta = await fetch('/inventai/backend/api/despesas/delete.php', {
             method: 'POST',
@@ -33,5 +34,6 @@ async function excluirDespesa() {
         showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
+
 
 document.getElementById('btn-confirm-delete')?.addEventListener('click', excluirDespesa);

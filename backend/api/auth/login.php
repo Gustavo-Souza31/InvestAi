@@ -2,16 +2,21 @@
 session_start();
 header('Content-Type: application/json');
 
-// Verificar método POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['status' => 'error', 'message' => 'Método não permitido.']);
-    exit;
-}
-
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/DataBase/conexao.php';
 require_once $root . '/backend/validators/AuthValidator.php';
+
+
+// Verificar método POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Método não permitido.'
+    ]);
+    exit;
+}
+
 
 // Receber dados de FormData
 $data = [
@@ -19,38 +24,54 @@ $data = [
     'senha' => $_POST['senha'] ?? ''
 ];
 
+
 // Validar
 $validation = AuthValidator::validateLogin($data);
 if (!$validation['valid']) {
-    echo json_encode(['status' => 'error', 'message' => $validation['errors'][0]]);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $validation['errors'][0]
+    ]);
     exit;
 }
 
 $email = $validation['data']['email'];
 $senha = $validation['data']['senha'];
 
+
 // Buscar usuário
-$stmt = $conexao->prepare("SELECT id, nome, senha_hash FROM usuarios WHERE email = ?");
+$stmt = $conexao->prepare(
+    "SELECT id, nome, senha_hash FROM usuarios WHERE email = ?"
+);
 $stmt->bind_param('s', $email);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-    echo json_encode(['status' => 'error', 'message' => 'E-mail ou senha incorretos.']);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'E-mail ou senha incorretos.'
+    ]);
     exit;
 }
 
 $usuario = $result->fetch_assoc();
 
+
 // Verificar senha
 if (!password_verify($senha, $usuario['senha_hash'])) {
-    echo json_encode(['status' => 'error', 'message' => 'E-mail ou senha incorretos.']);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'E-mail ou senha incorretos.'
+    ]);
     exit;
 }
+
 
 // Iniciar sessão
 $_SESSION['usuario_id']   = $usuario['id'];
 $_SESSION['usuario_nome'] = $usuario['nome'];
+
 
 echo json_encode([
     'status'   => 'success',
