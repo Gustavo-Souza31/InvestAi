@@ -1,0 +1,132 @@
+:root {
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg-dark: #0f172a;
+    --bg-card: rgba(30, 41, 59, 0.7);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+/* Typography & Colors */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+.text-secondary {
+    color: var(--text-muted) !important;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #a855f7, #6366f1, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Glassmorphism Navigation */
+.glass-nav {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    padding-top: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Beautiful Background Gradients */
+.hero-bg-gradient-1 {
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+    border-radius: 50%;
+    z-index: 0;
+}
+.hero-bg-gradient-2 {
+    position: absolute;
+    bottom: -10%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    transform: translateY(0);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px -12px rgba(99, 102, 241, 0.3);
+}
+
+/* Interactive Elements */
+.glow-effect {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    transition: all 0.3s ease;
+}
+.glow-effect:hover {
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.6);
+    transform: translateY(-2px);
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.8s ease forwards;
+    opacity: 0;
+}
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+
+.progress-animation {
+    animation: loadProgress 1.5s ease-out forwards;
+    width: 0 !important;
+}
+
+@keyframes loadProgress {
+    to { width: 65%; }
+}
