@@ -19,7 +19,7 @@ async function atualizarDespesa() {
 
 
     try {
-        const resposta = await fetch('/inventai/backend/api/despesas/update.php', {
+        const resposta = await fetch('../backend/api/despesas/update.php', {
             method: 'POST',
             body: formData
         });

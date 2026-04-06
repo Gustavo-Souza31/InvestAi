@@ -88,10 +88,10 @@ class AuthValidator {
             $errors[] = 'E-mail inválido.';
         }
 
-        // Validar CPF com dígito verificador
-        if (!empty($cpf) && !ValidatorHelper::validateCPF($cpf)) {
-            $errors[] = 'CPF inválido.';
-        }
+        // Validar CPF com dígito verificador (desabilitado por enquanto)
+        // if (!empty($cpf) && !ValidatorHelper::validateCPF($cpf)) {
+        //     $errors[] = 'CPF inválido.';
+        // }
 
         // Validar telefone real
         if (!empty($telefone) && !ValidatorHelper::validateTelefone($telefone)) {

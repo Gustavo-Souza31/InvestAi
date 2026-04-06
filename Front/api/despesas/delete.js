@@ -11,7 +11,7 @@ async function excluirDespesa() {
 
 
     try {
-        const resposta = await fetch('/inventai/backend/api/despesas/delete.php', {
+        const resposta = await fetch('../backend/api/despesas/delete.php', {
             method: 'POST',
             body: formData
         });

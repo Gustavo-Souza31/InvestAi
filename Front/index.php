@@ -39,7 +39,7 @@ if ($result && $result->num_rows > 0) {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item me-3"><span class="text-light fw-semibold">Bem-vindo, <?php echo htmlspecialchars($usuario_nome); ?>!</span></li>
+                    <li class="nav-item me-3"><span class="text-light fw-semibold">Bem-vindo</span></li>
                     <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="#metas">Minhas Metas</a></li>
                     <li class="nav-item"><a class="nav-link" href="#ia">Sugestões IA</a></li>

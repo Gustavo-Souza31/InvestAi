@@ -1,8 +1,8 @@
 async function criarDespesa() {
     const descricao = document.getElementById('despesa-descricao').value.trim();
-    const valor     = document.getElementById('despesa-valor').value;
-    const data      = document.getElementById('despesa-data').value;
-    const fixo      = document.getElementById('despesa-fixo').checked;
+    const valor = document.getElementById('despesa-valor').value;
+    const data = document.getElementById('despesa-data').value;
+    const fixo = document.getElementById('despesa-fixo').checked;
 
     if (!descricao || !valor || !data) {
         showAlert('Preencha todos os campos antes de enviar.', 'error');
@@ -10,14 +10,14 @@ async function criarDespesa() {
     }
 
     const formData = new FormData();
-    formData.append('descricao',    descricao);
-    formData.append('valor',        parseFloat(valor));
+    formData.append('descricao', descricao);
+    formData.append('valor', parseFloat(valor));
     formData.append('data_despesa', data);
-    formData.append('fixo',         fixo ? 1 : 0);
+    formData.append('fixo', fixo ? 1 : 0);
 
 
     try {
-        const resposta = await fetch('/inventai/backend/api/despesas/create.php', {
+        const resposta = await fetch('../backend/api/despesas/create.php', {
             method: 'POST',
             body: formData
         });
@@ -30,9 +30,9 @@ async function criarDespesa() {
         }
 
 
-        document.getElementById('despesa-valor').value     = '';
-        document.getElementById('despesa-data').value      = new Date().toISOString().split('T')[0];
-        document.getElementById('despesa-fixo').checked    = false;
+        document.getElementById('despesa-valor').value = '';
+        document.getElementById('despesa-data').value = new Date().toISOString().split('T')[0];
+        document.getElementById('despesa-fixo').checked = false;
 
         if (typeof carregarDespesas === 'function') {
             carregarDespesas();
@@ -44,7 +44,7 @@ async function criarDespesa() {
 }
 
 
-document.getElementById('form-despesa')?.addEventListener('submit', function(e) {
+document.getElementById('form-despesa')?.addEventListener('submit', function (e) {
     e.preventDefault();
     criarDespesa();
 });

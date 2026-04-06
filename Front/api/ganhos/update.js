@@ -19,7 +19,7 @@ async function atualizarGanho() {
 
 
     try {
-        const resposta = await fetch('/inventai/backend/api/ganhos/update.php', {
+        const resposta = await fetch('../backend/api/ganhos/update.php', {
             method: 'POST',
             body: formData
         });

@@ -17,7 +17,7 @@ async function criarGanho() {
 
 
     try {
-        const resposta = await fetch('/inventai/backend/api/ganhos/create.php', {
+        const resposta = await fetch('../backend/api/ganhos/create.php', {
             method: 'POST',
             body: formData
         });

@@ -16,7 +16,7 @@ async function efetuarCadastro(nome, email, cpf, telefone, senha) {
     formData.append('telefone', telefone);
     formData.append('senha', senha);
 
-    const resposta = await fetch('/inventai/backend/api/auth/cadastro.php', {
+    const resposta = await fetch('../backend/api/auth/cadastro.php', {
         method: 'POST',
         body: formData
     });
@@ -25,12 +25,12 @@ async function efetuarCadastro(nome, email, cpf, telefone, senha) {
 
 // Função principal de envio de cadastro
 async function enviarCadastro() {
-    const btn      = document.getElementById('btn-cadastro');
-    const nome     = document.getElementById('cadastro-nome').value.trim();
-    const email    = document.getElementById('cadastro-email').value.trim();
-    const cpf      = document.getElementById('cadastro-cpf').value.replace(/\D/g, '');
+    const btn = document.getElementById('btn-cadastro');
+    const nome = document.getElementById('cadastro-nome').value.trim();
+    const email = document.getElementById('cadastro-email').value.trim();
+    const cpf = document.getElementById('cadastro-cpf').value.replace(/\D/g, '');
     const telefone = document.getElementById('cadastro-telefone').value.replace(/\D/g, '');
-    const senha    = document.getElementById('cadastro-senha').value;
+    const senha = document.getElementById('cadastro-senha').value;
 
     // Validar campos nulos
     if (!nome || !email || !cpf || !telefone || !senha) {
@@ -38,7 +38,7 @@ async function enviarCadastro() {
         return;
     }
 
-    btn.disabled  = true;
+    btn.disabled = true;
     btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Criando...';
 
     try {
@@ -50,13 +50,13 @@ async function enviarCadastro() {
             setTimeout(() => window.location.href = resultado.redirect, 1500);
         } else {
             showAlert(resultado.message || 'Erro ao criar conta.', 'error');
-            btn.disabled  = false;
+            btn.disabled = false;
             btn.innerHTML = '<i class="bi bi-person-plus me-2"></i>Criar Conta';
         }
     } catch (error) {
         console.error('Erro ao cadastrar:', error);
         showAlert('Erro de conexão com o servidor.', 'error');
-        btn.disabled  = false;
+        btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-person-plus me-2"></i>Criar Conta';
     }
 }
