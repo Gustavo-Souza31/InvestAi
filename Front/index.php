@@ -40,9 +40,9 @@ if ($result && $result->num_rows > 0) {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item me-3"><span class="text-light fw-semibold">Bem-vindo</span></li>
-                    <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#metas">Minhas Metas</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#ia">Sugestões IA</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.php">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.php">Minhas Metas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.php">Sugestões IA</a></li>
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
                         <a href="login.php" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold">Entrar</a>
                     </li>
@@ -66,12 +66,12 @@ if ($result && $result->num_rows > 0) {
                         Utilize comandos de voz para cadastrar despesas, receba sugestões de investimentos em tempo real e atinja suas metas de forma rápida e segura.
                     </p>
                     <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start fade-in-up delay-3">
-                        <button id="btnVoiceCommand" class="btn btn-primary btn-lg rounded-pill d-flex align-items-center justify-content-center gap-2 glow-effect">
-                            <i class="bi bi-mic-fill fs-5"></i> Falar Despesa
-                        </button>
-                        <button class="btn btn-outline-light btn-lg rounded-pill px-4">
+                        <a href="login.php" id="btnVoiceCommand" class="btn btn-primary btn-lg rounded-pill d-flex align-items-center justify-content-center gap-2 glow-effect text-decoration-none">
+                            <i class="bi bi-mic-fill fs-5"></i> Falar Despesa 
+                        </a>
+                        <a href="login.php" class="btn btn-outline-light btn-lg rounded-pill px-4 text-decoration-none d-flex align-items-center justify-content-center">
                             Ver Dashboard
-                        </button>
+                        </a>
                     </div>
                 </div>
                 <div class="col-lg-6 position-relative fade-in-up delay-2">
