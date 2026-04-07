@@ -56,7 +56,7 @@ if ($result && $result->num_rows > 0) {
         <div class="container text-center text-lg-start position-relative z-1">
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-5 mb-lg-0">
-                    <div class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 mb-3 border border-primary border-opacity-25 fade-in-up">
+                    <div class="badge bg-primary bg-opacity-10 text-white rounded-pill px-3 py-2 mb-3 border border-primary border-opacity-25 fade-in-up">
                         <i class="bi bi-robot me-1"></i> Inteligência Artificial Integrada
                     </div>
                     <h1 class="display-4 fw-bold mb-4 fade-in-up delay-1">
