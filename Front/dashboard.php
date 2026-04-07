@@ -26,7 +26,10 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <link rel="stylesheet" href="assets/style/css/animations.css">
     <link rel="stylesheet" href="assets/style/css/navbar.css">
     <link rel="stylesheet" href="assets/style/css/internal-pages.css">
-    <link rel="stylesheet" href="assets/style/css/dashboard.css">
+    <link rel="stylesheet" href="assets/style/css/dashboard.css?v=<?= time() ?>">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
 </head>
 
@@ -91,6 +94,78 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                 </div>
             </div>
 
+            <!-- ===== GRÁFICOS DE RELATÓRIO ===== -->
+            <div class="charts-section">
+                <div class="charts-section-header">
+                    <h2><i class="bi bi-bar-chart-line"></i>Relatório Financeiro</h2>
+                    <div class="chart-filters">
+                        <button class="chart-filter-btn" data-periodo="1s">1 Semana</button>
+                        <button class="chart-filter-btn active" data-periodo="3m">3 Meses</button>
+                        <button class="chart-filter-btn" data-periodo="6m">6 Meses</button>
+                        <button class="chart-filter-btn" data-periodo="1a">1 Ano</button>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <!-- Loading -->
+                    <div class="charts-loading" id="charts-loading">
+                        <div style="text-align:center;">
+                            <div class="loading-spinner"></div>
+                            <p class="text-secondary">Carregando gráficos...</p>
+                        </div>
+                    </div>
+
+                    <!-- Conteúdo dos gráficos -->
+                    <div id="charts-content" style="display:none; grid-column: 1 / -1; grid-template-columns: 1.6fr 1fr; gap: 20px;">
+                        <!-- Gráfico de Linha -->
+                        <div class="chart-container">
+                            <h3><i class="bi bi-graph-up"></i> Evolução Mensal</h3>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="grafico-linha"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Rosca -->
+                        <div class="chart-container">
+                            <h3><i class="bi bi-pie-chart"></i> Proporção</h3>
+                            <div class="chart-doughnut-wrapper">
+                                <div class="chart-doughnut-canvas">
+                                    <canvas id="grafico-rosca"></canvas>
+                                </div>
+
+                                <div class="chart-legend">
+                                    <div class="chart-legend-item">
+                                        <div class="legend-left">
+                                            <span class="legend-dot ganhos"></span>
+                                            <span class="legend-label">Ganhos</span>
+                                        </div>
+                                        <div class="legend-right">
+                                            <span class="legend-value" id="legenda-ganhos-valor">R$ 0,00</span>
+                                            <span class="legend-perc" id="legenda-ganhos-perc">0%</span>
+                                        </div>
+                                    </div>
+                                    <div class="chart-legend-item">
+                                        <div class="legend-left">
+                                            <span class="legend-dot despesas"></span>
+                                            <span class="legend-label">Despesas</span>
+                                        </div>
+                                        <div class="legend-right">
+                                            <span class="legend-value" id="legenda-despesas-valor">R$ 0,00</span>
+                                            <span class="legend-perc" id="legenda-despesas-perc">0%</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="chart-saldo-wrapper">
+                                    <div class="chart-saldo-label">Saldo do Período</div>
+                                    <div class="chart-saldo positivo" id="saldo-periodo">R$ 0,00</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -98,6 +173,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <script src="api/utils/shared.js"></script>
     <script src="api/dashboard/dashboard.js"></script>
     <script src="api/dashboard/render.js"></script>
+    <script src="api/dashboard/charts.js"></script>
 
 </body>
 
