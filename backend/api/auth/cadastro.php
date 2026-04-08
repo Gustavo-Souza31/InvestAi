@@ -102,6 +102,7 @@ $usuario_id = $conexao->insert_id;
 // Iniciar sessão
 $_SESSION['usuario_id']   = $usuario_id;
 $_SESSION['usuario_nome'] = $nome;
+$_SESSION['is_first_login'] = true; // Flag for Product Tour
 
 
 echo json_encode([

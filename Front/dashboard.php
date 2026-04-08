@@ -8,6 +8,13 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 $usuario_id = $_SESSION['usuario_id'];
 $nome = htmlspecialchars($_SESSION['usuario_nome']);
+
+$is_first_login = false;
+if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) {
+    $is_first_login = true;
+    // Remove flag to avoid showing the tour repeatedly
+    unset($_SESSION['is_first_login']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -27,6 +34,10 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <link rel="stylesheet" href="assets/style/css/navbar.css">
     <link rel="stylesheet" href="assets/style/css/internal-pages.css">
     <link rel="stylesheet" href="assets/style/css/dashboard.css?v=<?= time() ?>">
+
+    <?php if ($is_first_login): ?>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
+    <?php endif; ?>
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
@@ -174,6 +185,11 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <script src="api/dashboard/dashboard.js"></script>
     <script src="api/dashboard/render.js"></script>
     <script src="api/dashboard/charts.js"></script>
+
+    <?php if ($is_first_login): ?>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+    <script src="api/dashboard/tour.js"></script>
+    <?php endif; ?>
 
 </body>
 
