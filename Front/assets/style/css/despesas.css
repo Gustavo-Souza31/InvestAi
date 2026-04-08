@@ -62,3 +62,11 @@
 .modal-card h2 i {
     color: var(--danger-color);
 }
+
+.nav-link-custom.active.nav-despesas {
+    color: var(--danger-color);
+}
+
+.nav-link-custom.nav-dashboard:hover {
+    color: #a855f7;
+}

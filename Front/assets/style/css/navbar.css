@@ -37,7 +37,6 @@
     cursor: pointer;
 }
 
-.nav-link-custom:hover,
 .nav-link-custom.active {
     color: var(--success-color);
 }
@@ -49,6 +48,10 @@
 
 .nav-despesas:hover {
     color: var(--danger-color) !important;
+}
+
+.nav-link-custom:hover {
+    color: #a855f7;
 }
 
 /* User badge */
