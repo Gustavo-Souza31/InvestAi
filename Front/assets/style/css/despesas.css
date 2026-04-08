@@ -70,3 +70,13 @@
 .nav-link-custom.nav-dashboard:hover {
     color: #a855f7;
 }
+
+.logo span {
+    color: var(--danger-color);
+}
+
+.user-badge {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #f87171;
+}
