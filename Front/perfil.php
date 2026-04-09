@@ -1,0 +1,268 @@
+<?php
+session_start();
+
+// Redirecionar se não logado
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: login.php');
+    exit;
+}
+$usuario_id = $_SESSION['usuario_id'];
+$nome = htmlspecialchars($_SESSION['usuario_nome']);
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvestAi — Meu Perfil</title>
+    <meta name="description" content="Gerencie seu perfil pessoal e financeiro no InvestAi.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/style/css/variables.css">
+    <link rel="stylesheet" href="assets/style/css/animations.css">
+    <link rel="stylesheet" href="assets/style/css/navbar.css">
+    <link rel="stylesheet" href="assets/style/css/internal-pages.css">
+    <link rel="stylesheet" href="assets/style/css/perfil.css?v=<?= time() ?>">
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar-custom">
+        <div class="container d-flex align-items-center justify-content-between" style="max-width:960px;">
+            <a href="dashboard.php" class="logo"><i class="bi bi-graph-up-arrow me-1"></i>Invest<span>Ai</span></a>
+            <div class="d-flex align-items-center gap-4">
+                <a href="dashboard.php" class="nav-link-custom">Dashboard</a>
+                <a href="ganhos.php" class="nav-link-custom nav-ganhos">Ganhos</a>
+                <a href="despesas.php" class="nav-link-custom nav-despesas">Despesas</a>
+                <a href="perfil.php" class="user-badge active"><i class="bi bi-person-fill me-1"></i><?= $nome ?></a>
+                <a href="logout.php" class="nav-link-custom" title="Sair"><i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+
+        <!-- ===== HEADER ===== -->
+        <div class="page-header">
+            <h1><i class="bi bi-person-gear"></i>Meu Perfil</h1>
+            <p>Gerencie suas informações pessoais e preferências financeiras.</p>
+        </div>
+
+        <!-- ===== LOADING STATE ===== -->
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p class="text-secondary">Carregando perfil...</p>
+        </div>
+
+        <!-- ===== CONTENT ===== -->
+        <div id="content" style="display: none;">
+
+            <!-- ===== PROFILE HEADER ===== -->
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <span id="avatar-initials">--</span>
+                    <div class="status-dot"></div>
+                </div>
+                <div class="profile-info">
+                    <h2 id="profile-name">—</h2>
+                    <p class="member-since">
+                        <i class="bi bi-calendar3"></i>
+                        <span id="member-since">—</span>
+                    </p>
+                    <p class="member-since" style="margin-top: -4px;">
+                        <i class="bi bi-envelope"></i>
+                        <span id="profile-email-display">—</span>
+                    </p>
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <i class="bi bi-arrow-up-right" style="color:#4ade80;"></i>
+                            <span class="stat-value" id="stat-ganhos">0</span> ganhos
+                        </div>
+                        <div class="profile-stat">
+                            <i class="bi bi-arrow-down-left" style="color:#f87171;"></i>
+                            <span class="stat-value" id="stat-despesas">0</span> despesas
+                        </div>
+                        <div class="profile-stat">
+                            <i class="bi bi-wallet2" style="color:#818cf8;"></i>
+                            <span class="stat-value" id="stat-saldo">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTIONS ===== -->
+            <div class="profile-sections">
+
+                <!-- ===== DADOS PESSOAIS ===== -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <div class="section-icon personal"><i class="bi bi-person"></i></div>
+                        <div style="flex:1;">
+                            <h3>Dados Pessoais</h3>
+                            <p class="section-subtitle">Nome, e-mail e telefone</p>
+                        </div>
+                        <i class="bi bi-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="perfil-nome">NOME COMPLETO</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-person"></i>
+                                    <input type="text" id="perfil-nome" class="form-control" placeholder="Seu nome completo">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="perfil-email">E-MAIL</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-envelope"></i>
+                                    <input type="email" id="perfil-email" class="form-control" placeholder="seu@email.com">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="perfil-cpf">CPF</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-fingerprint"></i>
+                                    <input type="text" id="perfil-cpf" class="form-control" disabled placeholder="000.000.000-00">
+                                </div>
+                                <span class="field-hint"><i class="bi bi-lock-fill"></i> O CPF não pode ser alterado.</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="perfil-telefone">TELEFONE</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-phone"></i>
+                                    <input type="text" id="perfil-telefone" class="form-control" placeholder="(00) 00000-0000" maxlength="15">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PERFIL FINANCEIRO ===== -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <div class="section-icon financial"><i class="bi bi-cash-coin"></i></div>
+                        <div style="flex:1;">
+                            <h3>Perfil Financeiro</h3>
+                            <p class="section-subtitle">Renda, metas e comportamento</p>
+                        </div>
+                        <i class="bi bi-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="perfil-renda">RENDA MENSAL (R$)</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-currency-dollar"></i>
+                                    <input type="number" id="perfil-renda" class="form-control" placeholder="0,00" step="0.01" min="0">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="perfil-objetivo">OBJETIVO FINANCEIRO</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-bullseye"></i>
+                                    <input type="text" id="perfil-objetivo" class="form-control" placeholder="Ex: Comprar um carro, viajar...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 8px;">
+                            <label>PERFIL DE COMPORTAMENTO</label>
+                            <div class="behavior-pills">
+                                <div class="behavior-pill conservador" data-value="conservador">
+                                    <span class="pill-icon">🛡️</span>
+                                    <span class="pill-label">Conservador</span>
+                                    <span class="pill-desc">Prioriza economizar</span>
+                                </div>
+                                <div class="behavior-pill moderado" data-value="moderado">
+                                    <span class="pill-icon">⚖️</span>
+                                    <span class="pill-label">Moderado</span>
+                                    <span class="pill-desc">Equilíbrio entre gastar e poupar</span>
+                                </div>
+                                <div class="behavior-pill gastador" data-value="gastador">
+                                    <span class="pill-icon">🔥</span>
+                                    <span class="pill-label">Gastador</span>
+                                    <span class="pill-desc">Tende a gastar mais</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SEGURANÇA ===== -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <div class="section-icon security"><i class="bi bi-shield-lock"></i></div>
+                        <div style="flex:1;">
+                            <h3>Segurança</h3>
+                            <p class="section-subtitle">Altere sua senha de acesso</p>
+                        </div>
+                        <i class="bi bi-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="section-body">
+                        <div class="form-row single">
+                            <div class="form-group">
+                                <label for="perfil-senha-atual">SENHA ATUAL</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-lock"></i>
+                                    <input type="password" id="perfil-senha-atual" class="form-control" placeholder="••••••••">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="perfil-nova-senha">NOVA SENHA</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-key"></i>
+                                    <input type="password" id="perfil-nova-senha" class="form-control" placeholder="Mín. 6 caracteres">
+                                </div>
+                                <div class="password-strength">
+                                    <div class="strength-bar"></div>
+                                    <div class="strength-bar"></div>
+                                    <div class="strength-bar"></div>
+                                </div>
+                                <span class="strength-label" id="strength-label"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="perfil-confirma-senha">CONFIRMAR NOVA SENHA</label>
+                                <div class="input-with-icon">
+                                    <i class="bi bi-key-fill"></i>
+                                    <input type="password" id="perfil-confirma-senha" class="form-control" placeholder="Repita a nova senha">
+                                </div>
+                            </div>
+                        </div>
+                        <span class="field-hint"><i class="bi bi-info-circle"></i> Deixe em branco se não deseja alterar a senha.</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===== ACTION BAR ===== -->
+            <div class="action-bar">
+                <button class="btn-discard" id="btn-discard" style="opacity: 0.5;">
+                    <i class="bi bi-x-lg me-1"></i>Descartar
+                </button>
+                <button class="btn-save" id="btn-save" disabled>
+                    <i class="bi bi-check2-all me-1"></i>Salvar Alterações
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="api/utils/shared.js"></script>
+    <script src="api/perfil/perfil.js?v=<?= time() ?>"></script>
+
+</body>
+
+</html>

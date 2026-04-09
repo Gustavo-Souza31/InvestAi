@@ -54,7 +54,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
                 <a href="dashboard.php" class="nav-link-custom active">Dashboard</a>
                 <a href="ganhos.php" class="nav-link-custom nav-ganhos">Ganhos</a>
                 <a href="despesas.php" class="nav-link-custom nav-despesas">Despesas</a>
-                <span class="user-badge"><i class="bi bi-person-fill me-1"></i><?= $nome ?></span>
+                <a href="perfil.php" class="user-badge"><i class="bi bi-person-fill me-1"></i><?= $nome ?></a>
                 <a href="logout.php" class="nav-link-custom" title="Sair"><i class="bi bi-box-arrow-right"></i></a>
             </div>
         </div>
