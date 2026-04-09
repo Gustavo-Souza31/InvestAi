@@ -174,8 +174,23 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                             </div>
                         </div>
 
-                        <div class="form-group" style="margin-top: 8px;">
-                            <label>PERFIL DE COMPORTAMENTO</label>
+                        <div class="form-group" style="margin-top: 12px;">
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3" style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); padding: 16px 20px; border-radius: 16px; margin-bottom: 24px;">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="background: rgba(99, 102, 241, 0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #818cf8;">
+                                        <i class="bi bi-patch-question-fill"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0 0 2px 0; color: #e0e7ff;">Descubra o seu Perfil</h4>
+                                        <p style="font-size: 0.8rem; margin: 0; color: #a5b4fc;">Não tem certeza? Faça um quiz rápido e nós ajudamos.</p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="showToast('Em breve! O Quiz de Perfil de Investidor será adicionado nas próximas atualizações. Fique ligado!', 'success')" style="background: linear-gradient(135deg, #6366f1, #4f46e5); border: none; color: white; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                    Fazer Quiz
+                                </button>
+                            </div>
+
+                            <label>SELECIONE SEU PERFIL DE COMPORTAMENTO</label>
                             <div class="behavior-pills">
                                 <div class="behavior-pill conservador" data-value="conservador">
                                     <span class="pill-icon">🛡️</span>

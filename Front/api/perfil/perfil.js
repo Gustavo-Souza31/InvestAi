@@ -47,9 +47,13 @@ function renderProfile(data) {
     const pf = data.perfil_financeiro;
     const stats = data.estatisticas;
 
-    // Avatar (iniciais)
-    const initials = u.nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
-    document.getElementById('avatar-initials').textContent = initials;
+    // Avatar (iniciais) - Forma simplificada
+    let palavrasDoNome = u.nome.split(' ');
+    let iniciais = palavrasDoNome[0][0]; // Pega a primeira letra do primeiro nome
+    if (palavrasDoNome.length > 1) {
+        iniciais += palavrasDoNome[1][0]; // Pega a primeira letra do segundo nome
+    }
+    document.getElementById('avatar-initials').textContent = iniciais.toUpperCase();
 
     // Header info
     document.getElementById('profile-name').textContent = u.nome;
@@ -233,83 +237,120 @@ function setupEventListeners() {
     });
 }
 
+// ===== VALIDAÇÃO =====
+// ===== VALIDAÇÃO =====
+function validateProfileData(data) {
+    // Validar Nome
+    if (data.nome === '' || data.nome.length < 3) {
+        return 'O nome deve ter pelo menos 3 caracteres.';
+    }
+
+    // Validar E-mail básico
+    if (data.email === '' || data.email.indexOf('@') === -1 || data.email.indexOf('.') === -1) {
+        return 'E-mail inválido.';
+    }
+
+    // Validação de telefone básico (tamanho mínimo da máscara)
+    if (data.telefone === '' || data.telefone.length < 14) {
+        return 'Telefone inválido. Verifique o DDD e o número.';
+    }
+    
+    // Validação de senha (apenas se o campo estiver preenchido)
+    if (data.novaSenha !== '') {
+        if (data.novaSenha.length < 6) {
+            return 'A nova senha deve ter no mínimo 6 caracteres.';
+        }
+        if (data.novaSenha !== data.confirmaSenha) {
+            return 'As senhas não coincidem.';
+        }
+        if (data.senhaAtual === '') {
+            return 'Informe a senha atual para alterar a senha.';
+        }
+    }
+    
+    // Retorna nulo se tudo estiver correto
+    return null;
+}
+
 // ===== SALVAR PERFIL =====
 async function saveProfile() {
     const btn = document.getElementById('btn-save');
     const originalContent = btn.innerHTML;
 
-    // Validações
-    const novaSenha = document.getElementById('perfil-nova-senha').value;
-    const confirmaSenha = document.getElementById('perfil-confirma-senha').value;
-    const senhaAtual = document.getElementById('perfil-senha-atual').value;
+    // Coletar dados
+    const formVals = {
+        nome: document.getElementById('perfil-nome').value,
+        email: document.getElementById('perfil-email').value,
+        telefone: document.getElementById('perfil-telefone').value,
+        renda_mensal: document.getElementById('perfil-renda').value || 0,
+        objetivo_financeiro: document.getElementById('perfil-objetivo').value,
+        perfil_comportamento: getSelectedBehavior(),
+        senhaAtual: document.getElementById('perfil-senha-atual').value,
+        novaSenha: document.getElementById('perfil-nova-senha').value,
+        confirmaSenha: document.getElementById('perfil-confirma-senha').value
+    };
 
-    if (novaSenha && novaSenha !== confirmaSenha) {
-        showToast('As senhas não coincidem.', 'error');
-        return;
-    }
+    // Validar
+    const errorMsg = validateProfileData(formVals);
+    if (errorMsg) return showToast(errorMsg, 'error');
 
-    if (novaSenha && !senhaAtual) {
-        showToast('Informe a senha atual para alterar a senha.', 'error');
-        return;
-    }
-
-    // Preparar FormData
+    // Preparar FormData definindo os campos um por um de forma clara
     const formData = new FormData();
-    formData.append('nome', document.getElementById('perfil-nome').value.trim());
-    formData.append('email', document.getElementById('perfil-email').value.trim());
-    formData.append('telefone', document.getElementById('perfil-telefone').value.trim());
-    formData.append('renda_mensal', document.getElementById('perfil-renda').value || 0);
-    formData.append('objetivo_financeiro', document.getElementById('perfil-objetivo').value.trim());
-    formData.append('perfil_comportamento', getSelectedBehavior());
+    formData.append('nome', formVals.nome);
+    formData.append('email', formVals.email);
+    formData.append('telefone', formVals.telefone);
+    formData.append('renda_mensal', formVals.renda_mensal);
+    formData.append('objetivo_financeiro', formVals.objetivo_financeiro);
+    formData.append('perfil_comportamento', formVals.perfil_comportamento);
 
-    if (novaSenha) {
-        formData.append('senha_atual', senhaAtual);
-        formData.append('nova_senha', novaSenha);
+    // Se o usuário digitou uma nova senha, enviar as senhas para o PHP
+    if (formVals.novaSenha !== '') {
+        formData.append('senha_atual', formVals.senhaAtual);
+        formData.append('nova_senha', formVals.novaSenha);
     }
 
-    // Loading state
+    // Loading
     btn.disabled = true;
     btn.innerHTML = '<div class="loading-spinner" style="width:18px;height:18px;border-width:2px;margin:0;"></div>Salvando...';
 
     try {
-        const res = await fetch(`${API_BASE}/update.php`, {
-            method: 'POST',
-            body: formData
-        });
-
+        const res = await fetch(`${API_BASE}/update.php`, { method: 'POST', body: formData });
         const data = await res.json();
 
         if (data.status === 'success') {
             showToast(data.message, 'success');
-
-            // Atualizar nome na navbar
+            
+            // Atualizar UI
             if (data.nome) {
                 const badge = document.querySelector('.user-badge');
-                if (badge) {
-                    badge.innerHTML = `<i class="bi bi-person-fill me-1"></i>${escapeHtml(data.nome)}`;
-                }
+                if (badge) badge.innerHTML = `<i class="bi bi-person-fill me-1"></i>${escapeHtml(data.nome)}`;
                 document.getElementById('profile-name').textContent = data.nome;
-                const initials = data.nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
-                document.getElementById('avatar-initials').textContent = initials;
+                
+                // Atualizar Iniciais após salvar
+                let nomesAtuais = data.nome.split(' ');
+                let novasIniciais = nomesAtuais[0][0];
+                if (nomesAtuais.length > 1) {
+                    novasIniciais += nomesAtuais[1][0];
+                }
+                document.getElementById('avatar-initials').textContent = novasIniciais.toUpperCase();
             }
 
-            // Clear password fields
+            // Limpar todos os campos de senhas do formulário visualmente
             document.getElementById('perfil-senha-atual').value = '';
             document.getElementById('perfil-nova-senha').value = '';
             document.getElementById('perfil-confirma-senha').value = '';
+            
             document.querySelectorAll('.strength-bar').forEach(b => b.className = 'strength-bar');
             document.getElementById('strength-label').textContent = '';
 
             hasChanges = false;
             document.getElementById('btn-discard').style.opacity = '0.5';
 
-            // Recarregar dados
-            loadProfile();
+            loadProfile(); // Recarrega dados completos
         } else {
             showToast(data.message, 'error');
         }
     } catch (err) {
-        console.error('Erro ao salvar:', err);
         showToast('Erro de conexão com o servidor.', 'error');
     } finally {
         btn.disabled = false;
