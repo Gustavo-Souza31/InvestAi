@@ -1,4 +1,5 @@
 <?php
+// backend/api/ganhos/delete.php — Deleta ganho após validação
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
@@ -10,7 +11,7 @@ require_once $root . '/backend/validators/IdValidator.php';
 requireAuth();
 
 
-// Receber ID
+// Receber ID do ganho
 $id = intval($_POST['id'] ?? 0);
 
 
@@ -25,7 +26,7 @@ if (!$validation['valid']) {
 }
 
 
-// Verificar se existe
+// Verificar se ganho existe
 $stmt = $conexao->prepare(
     'SELECT id FROM ganhos WHERE id = ?'
 );
@@ -40,12 +41,13 @@ if ($stmt->get_result()->num_rows === 0) {
 }
 
 
-// Deletar
+// Deletar ganho do banco de dados
 $stmt = $conexao->prepare(
     'DELETE FROM ganhos WHERE id = ?'
 );
 $stmt->bind_param('i', $id);
 
+// Executar e verificar delecao
 if ($stmt->execute() && $stmt->affected_rows > 0) {
     echo json_encode([
         'status' => 'success',

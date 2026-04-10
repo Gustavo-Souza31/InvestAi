@@ -1,4 +1,5 @@
 <?php
+// backend/api/ganhos/create.php — Cria novo ganho com validação
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
@@ -10,7 +11,7 @@ require_once $root . '/backend/validators/GanhosValidator.php';
 $usuario_id = requireAuth();
 
 
-// Receber dados
+// Receber dados de FormData
 $data = [
     'descricao' => $_POST['descricao'] ?? '',
     'valor' => $_POST['valor'] ?? 0,
@@ -19,7 +20,7 @@ $data = [
 ];
 
 
-// Validar
+// Validar dados contra regras de negócio
 $validation = GanhosValidator::validate($data);
 if (!$validation['valid']) {
     echo json_encode([
@@ -35,13 +36,14 @@ $data_ganho = $validation['data']['data_ganho'];
 $fixo = $validation['data']['fixo'];
 
 
-// Inserir
+// Inserir ganho no banco de dados
 $stmt = $conexao->prepare(
     "INSERT INTO ganhos (usuario_id, descricao, valor, data_ganho, fixo) 
      VALUES (?, ?, ?, ?, ?)"
 );
 $stmt->bind_param("isdsi", $usuario_id, $descricao, $valor, $data_ganho, $fixo);
 
+// Executar e verificar inserção
 if ($stmt->execute()) {
     echo json_encode([
         'status' => 'success',
@@ -49,6 +51,7 @@ if ($stmt->execute()) {
         'id' => $stmt->insert_id
     ]);
 } else {
+    // Erro ao inserir
     echo json_encode([
         'status' => 'error',
         'message' => 'Erro ao registrar ganho.'

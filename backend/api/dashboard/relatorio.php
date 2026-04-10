@@ -27,7 +27,7 @@ if (!isset($_SESSION['usuario_id'])) {
 $usuario_id = $_SESSION['usuario_id'];
 $periodo = $_GET['periodo'] ?? '3m';
 
-// Calcular data inicial e tipo de agrupamento
+// Definir período e tipo de agrupamento baseado no parâmetro
 $hoje = date('Y-m-d');
 
 switch ($periodo) {
@@ -53,7 +53,7 @@ switch ($periodo) {
 }
 
 
-// ===== GANHOS agrupados =====
+// Consultar ganhos agrupados por período
 if ($agrupamento === 'dia') {
     $sql_ganhos = "SELECT DATE(data_ganho) AS periodo, COALESCE(SUM(valor), 0) AS total
                    FROM ganhos
@@ -73,6 +73,7 @@ $stmt->bind_param("iss", $usuario_id, $data_inicio, $hoje);
 $stmt->execute();
 $result_ganhos = $stmt->get_result();
 
+// Armazenar ganhos em mapa associativo para lookup rápido
 $ganhos_map = [];
 while ($row = $result_ganhos->fetch_assoc()) {
     $ganhos_map[$row['periodo']] = floatval($row['total']);

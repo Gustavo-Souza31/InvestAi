@@ -1,42 +1,36 @@
-/**
- * dashboard/render.js — Renderização e lógica da página de dashboard
- *
- * Responsável por:
- * - Carregar dados do dashboard
- * - Renderizar informações financeiras
- * - Inicializar a página
- *
- * Funções compartilhadas em shared.js:
- * - formatMoney() - Formata valores em moeda brasileira
- */
-
-
-// Carrega dados e renderiza dashboard
 async function inicializar() {
-    try {
-        const json = await carregarDashboard();
-        
-        if (json.status === 'success') {
-            // Dados financeiros
-            document.getElementById('saldo-inicial').textContent = formatMoney(json.financeiro.saldo_inicial);
-            document.getElementById('saldo-atual').textContent = formatMoney(json.financeiro.saldo_atual);
-            document.getElementById('renda-mensal').textContent = formatMoney(json.financeiro.renda_mensal);
-            document.getElementById('total-ganhos').textContent = formatMoney(json.financeiro.total_ganhos);
-            document.getElementById('total-despesas').textContent = formatMoney(json.financeiro.total_despesas);
-            document.getElementById('objetivo').textContent = json.financeiro.objetivo_financeiro;
 
-            // Mostrar dados
+    try {
+        // Carrega dados do dashboard
+        const resultado = await carregarDashboard();
+        
+        // Se sucesso, renderiza dados
+        if (resultado.status === 'success') {
+            
+            // Atualiza valores finaceiros
+            document.getElementById('saldo-inicial').textContent = formatMoney(resultado.financeiro.saldo_inicial);
+            document.getElementById('saldo-atual').textContent = formatMoney(resultado.financeiro.saldo_atual);
+            document.getElementById('renda-mensal').textContent = formatMoney(resultado.financeiro.renda_mensal);
+            document.getElementById('total-ganhos').textContent = formatMoney(resultado.financeiro.total_ganhos);
+            document.getElementById('total-despesas').textContent = formatMoney(resultado.financeiro.total_despesas);
+            document.getElementById('objetivo').textContent = resultado.financeiro.objetivo_financeiro;
+
+            // ✅ EXEMPLO DE NOVO CAMPO - Para adicionar um novo valor financeiro:
+            // document.getElementById('novo-campo').textContent = formatMoney(resultado.financeiro.novo_campo);
+
+            // Esconde loading e mostra conteúdo
             document.getElementById('loading').style.display = 'none';
             document.getElementById('content').style.display = 'block';
         } else {
+            // Se erro, mostra mensagem
             document.getElementById('loading').innerHTML = '<p class="text-danger">Erro ao carregar dados</p>';
         }
     } catch (error) {
+        // Erro de conexão
         console.error('Erro ao inicializar dashboard:', error);
         document.getElementById('loading').innerHTML = '<p class="text-danger">Erro ao carregar dados</p>';
     }
 }
 
-
-// Inicialize quando o DOM estiver pronto
+// Listener do DOM
 document.addEventListener('DOMContentLoaded', inicializar);

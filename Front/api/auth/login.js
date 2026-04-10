@@ -1,56 +1,51 @@
-/**
- * auth/login.js — Lógica de login de usuário
- *
- * Funções:
- * - enviarLogin(): Coleta dados, valida e envia para o backend
- *
- * O listener do formulário está em auth/render.js
- */
+async function fazerLogin() {
 
-// Função auxiliar para enviar dados de login
-async function efetuarLogin(email, senha) {
+    // Coleta valores do formulário
+    const email = document.getElementById('login-email').value.trim();
+    const senha = document.getElementById('login-senha').value;
+
+    // Valida campos vazios
+    if (!email || !senha) {
+        showAlert('Preencha todos os campos.', 'error');
+        return;
+    }
+
+    // Prepara dados para envio
     const formData = new FormData();
     formData.append('email', email);
     formData.append('senha', senha);
 
-    const resposta = await fetch('../backend/api/auth/login.php', {
-        method: 'POST',
-        body: formData
-    });
-    return await resposta.json();
-}
-
-// Função principal de envio de login
-async function enviarLogin() {
-    const btn = document.getElementById('btn-login');
-    const email = document.getElementById('login-email').value.trim();
-    const senha = document.getElementById('login-senha').value;
-
-    // Validar campos nulos
-    if (!email || !senha) {
-        showAlert('Preencha e-mail e senha.', 'error');
-        return;
-    }
-
-    btn.disabled = true;
-    btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Entrando...';
-
     try {
-        const resultado = await efetuarLogin(email, senha);
+        // Envia para backend
+        const resposta = await fetch('../backend/api/auth/login.php', {
+            method: 'POST',
+            body: formData
+        });
 
-        if (resultado.status === 'success') {
-            showAlert(resultado.message, 'success');
-            setTimeout(() => window.location.href = resultado.redirect, 1500);
-        } else {
-            showAlert(resultado.message || 'Erro ao fazer login.', 'error');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Entrar';
+        const resultado = await resposta.json();
+
+        // Se erro no login, mostra mensagem
+        if (resultado.status !== 'success') {
+            showAlert(resultado.message || 'E-mail ou senha inválidos.', 'error');
+            return;
         }
+
+        // Sucesso: mostra alerta e redireciona
+        showAlert(resultado.message || 'Login realizado!', 'success');
+
+        // Redireciona para dashboard após 1.5s
+        setTimeout(() => window.location.href = resultado.redirect, 1500);
+
     } catch (error) {
+        // Erro de conexão
         console.error('Erro ao fazer login:', error);
         showAlert('Erro de conexão com o servidor.', 'error');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Entrar';
     }
 }
+
+// Listener do formulário
+document.getElementById('form-login')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    fazerLogin();
+});
 

@@ -182,9 +182,11 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     </div>
 
     <script src="api/utils/shared.js"></script>
+    <script src="api/utils/nav.js"></script>
+    <script src="assets/style/js/ui.js"></script>
     <script src="api/dashboard/dashboard.js"></script>
-    <script src="api/dashboard/render.js"></script>
     <script src="api/dashboard/charts.js"></script>
+    <script src="api/dashboard/render.js"></script>
 
     <?php if ($is_first_login): ?>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>

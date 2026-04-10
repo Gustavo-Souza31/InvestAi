@@ -27,6 +27,7 @@ if (isset($_SESSION['usuario_id'])) {
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/style/css/variables.css">
+    <link rel="stylesheet" href="assets/style/css/navbar.css">
     <link rel="stylesheet" href="assets/style/css/auth.css">
     <link rel="stylesheet" href="assets/style/css/animations.css">
 </head>
@@ -39,7 +40,7 @@ if (isset($_SESSION['usuario_id'])) {
         <p class="text-secondary mt-2 mb-0" style="font-size:0.88rem;">Sua inteligência financeira pessoal</p>
     </div>
 
-    <!-- Tabs -->
+    <!-- Abas -->
     <div class="auth-tabs">
         <button class="auth-tab active" id="tab-login">Entrar</button>
         <button class="auth-tab" id="tab-cadastro">Criar Conta</button>
@@ -64,11 +65,11 @@ if (isset($_SESSION['usuario_id'])) {
                 <i class="bi bi-lock"></i>
             </div>
         </div>
-        <button type="submit" class="btn-auth" id="btn-login">
+        <button type="submit" class="btn-auth">
             <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
         </button>
         <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
-            Não tem conta? <a href="#" id="link-to-cadastro" style="color:#6366f1;">Cadastre-se</a>
+            Não tem conta? <a href="#" id="link-to-cadastro" style="color:#6366f1;">Cadastre-se aqui</a>
         </p>
     </form>
 
@@ -88,37 +89,40 @@ if (isset($_SESSION['usuario_id'])) {
                 <i class="bi bi-envelope"></i>
             </div>
         </div>
-        <div class="row g-3 mb-3">
-            <div class="col-6">
-                <label class="form-label">CPF</label>
+        <div class="mb-3">
+            <label class="form-label">CPF</label>
+            <div class="input-icon">
                 <input type="text" id="cadastro-cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required>
+                <i class="bi bi-card-text"></i>
             </div>
-            <div class="col-6">
-                <label class="form-label">TELEFONE</label>
-                <input type="text" id="cadastro-telefone" class="form-control" placeholder="(41) 99999-9999" maxlength="15" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">TELEFONE</label>
+            <div class="input-icon">
+                <input type="tel" id="cadastro-telefone" class="form-control" placeholder="(11) 99999-9999" maxlength="14" required>
+                <i class="bi bi-telephone"></i>
             </div>
         </div>
         <div class="mb-4">
             <label class="form-label">SENHA</label>
             <div class="input-icon">
-                <input type="password" id="cadastro-senha" class="form-control" placeholder="Mín. 6 caracteres" required>
+                <input type="password" id="cadastro-senha" class="form-control" placeholder="••••••••" required>
                 <i class="bi bi-lock"></i>
             </div>
         </div>
-        <button type="submit" class="btn-auth" id="btn-cadastro">
-            <i class="bi bi-person-plus me-2"></i>Criar Conta
+        <button type="submit" class="btn-auth">
+            <i class="bi bi-plus-circle me-2"></i>Criar Conta
         </button>
         <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
-            Já tem conta? <a href="#" id="link-to-login" style="color:#6366f1;">Entrar</a>
+            Já tem conta? <a href="#" id="link-to-login" style="color:#6366f1;">Faça login</a>
         </p>
     </form>
 </div>
 
 <script src="api/utils/shared.js"></script>
 <script src="assets/style/js/ui.js"></script>
+<script src="api/auth/authUI.js"></script>
 <script src="api/auth/login.js"></script>
-<script src="api/auth/cadastro.js"></script>
-<script src="api/auth/render.js"></script>
 <script src="api/auth/cadastro.js"></script>
 
 </body>

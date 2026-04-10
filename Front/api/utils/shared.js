@@ -1,52 +1,22 @@
-/**
- * shared.js — Funções auxiliares compartilhadas por TODOS os arquivos render.js
- *
- * Funções implementadas:
- * - formatMoney(val): Formata número em moeda brasileira
- * - formatDate(dateStr): Converte YYYY-MM-DD para DD/MM/YYYY
- * - escapeHtml(text): Escapa caracteres HTML para prevenir XSS
- * - openEdit(id, desc, valor, data, fixo): Abre modal de edição
- * - openDelete(id): Abre modal de confirmação de deleção
- */
-
-/**
- * Formata valor numérico em moeda brasileira (R$)
- * @param {number} val - Valor a formatar
- * @returns {string} Valor formatado como moeda
- */
-function formatMoney(val) {
-    return parseFloat(val).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+// Formata número para padrão de dinheiro brasileiro (R$ 1.234,56)
+function formatMoney(valor) {
+    return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-/**
- * Formata data de YYYY-MM-DD para DD/MM/YYYY
- * @param {string} dateStr - Data no formato YYYY-MM-DD
- * @returns {string} Data formatada como DD/MM/YYYY
- */
-function formatDate(dateStr) {
-    const [y, m, d] = dateStr.split('-');
-    return `${d}/${m}/${y}`;
+// Formata data de YYYY-MM-DD para DD/MM/YYYY
+function formatDate(dataString) {
+    const [ano, mes, dia] = dataString.split('-');
+    return `${dia}/${mes}/${ano}`;
 }
 
-/**
- * Escapa caracteres HTML para prevenir ataques XSS
- * @param {string} text - Texto a escapar
- * @returns {string} Texto com HTML escapado
- */
-function escapeHtml(text) {
+// Escapa caracteres HTML especiais para prevenir XSS (segurança)
+function escapeHtml(texto) {
     const div = document.createElement('div');
-    div.textContent = text;
+    div.textContent = texto;
     return div.innerHTML;
 }
 
-/**
- * Abre modal de edição preenchendo os campos com dados atuais
- * @param {number} id - ID do registro
- * @param {string} descricao - Descrição do registro
- * @param {number} valor - Valor do registro
- * @param {string} data - Data do registro (YYYY-MM-DD)
- * @param {number} fixo - 0 ou 1 indicando se é fixo
- */
+// Abre modal de edição e preenche os campos com valores atuais
 function openEdit(id, descricao, valor, data, fixo) {
     document.getElementById('edit-id').value        = id;
     document.getElementById('edit-descricao').value = descricao;
@@ -56,10 +26,7 @@ function openEdit(id, descricao, valor, data, fixo) {
     document.getElementById('modal-edit').classList.add('show');
 }
 
-/**
- * Abre modal de confirmação para exclusão
- * @param {number} id - ID do registro a excluir
- */
+// Abre modal de confirmação para deletar item
 function openDelete(id) {
     document.getElementById('delete-id').value = id;
     document.getElementById('modal-delete').classList.add('show');

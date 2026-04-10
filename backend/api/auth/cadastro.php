@@ -1,4 +1,5 @@
 <?php
+// backend/api/auth/cadastro.php — Cria nova conta com validação de campos e duplicatas
 session_start();
 header('Content-Type: application/json');
 
@@ -45,7 +46,7 @@ $telefone = $validation['data']['telefone'];
 $senha = $validation['data']['senha'];
 
 
-// Verifica duplicatas com mensagens específicas
+// Verificar email duplicado
 $stmt = $conexao->prepare("SELECT id FROM usuarios WHERE email = ?");
 $stmt->bind_param('s', $email);
 $stmt->execute();
@@ -57,6 +58,8 @@ if ($stmt->get_result()->num_rows > 0) {
     exit;
 }
 
+
+// Verificar CPF duplicado
 $stmt = $conexao->prepare("SELECT id FROM usuarios WHERE cpf = ?");
 $stmt->bind_param('s', $cpf);
 $stmt->execute();
@@ -68,6 +71,8 @@ if ($stmt->get_result()->num_rows > 0) {
     exit;
 }
 
+
+// Verificar telefone duplicado
 $stmt = $conexao->prepare("SELECT id FROM usuarios WHERE telefone = ?");
 $stmt->bind_param('s', $telefone);
 $stmt->execute();
@@ -88,6 +93,8 @@ $stmt = $conexao->prepare(
 );
 $stmt->bind_param('sssss', $nome, $email, $cpf, $telefone, $senha_hash);
 
+
+// Executar e verificar inserção
 if (!$stmt->execute()) {
     echo json_encode([
         'status' => 'error',
@@ -105,6 +112,7 @@ $_SESSION['usuario_nome'] = $nome;
 $_SESSION['is_first_login'] = true; // Flag for Product Tour
 
 
+// Retornar sucesso
 echo json_encode([
     'status'   => 'success',
     'message'  => 'Conta criada com sucesso!',

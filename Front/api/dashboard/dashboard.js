@@ -1,5 +1,5 @@
-// Dashboard - GET dados
+// Dashboard - Busca dados financeiros do dashboard
 async function carregarDashboard() {
-    const res = await fetch('../backend/api/dashboard/dados.php');
-    return await res.json();
+    const resultado = await fetch('../backend/api/dashboard/dados.php');
+    return await resultado.json();
 }

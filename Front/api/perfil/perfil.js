@@ -1,384 +1,378 @@
-/**
- * perfil.js — Lógica do perfil do usuário
- * Carrega dados, gerencia formulário e envia atualizações
- */
-
 const API_BASE = '../backend/api/perfil';
+let dadosPerfil = null;
+let temAlteracoes = false;
 
-// ===== ESTADO =====
-let profileData = null;
-let hasChanges = false;
-
-// ===== INICIALIZAÇÃO =====
+// Listener DOM para inicializar
 document.addEventListener('DOMContentLoaded', () => {
-    loadProfile();
-    setupEventListeners();
-    setupCollapsible();
-    setupPasswordStrength();
-    setupPhoneMask();
+    carregarPerfil();
+    configurarEventListeners();
+    configurarSesoes();
+    configurarForcaSenha();
+    configurarMascaraTelefone();
 });
 
 // ===== CARREGAR PERFIL =====
-async function loadProfile() {
-    try {
-        const res = await fetch(`${API_BASE}/read.php`);
-        const data = await res.json();
 
-        if (data.status !== 'success') {
-            showToast(data.message || 'Erro ao carregar perfil.', 'error');
+async function carregarPerfil() {
+
+    try {
+        // Busca dados do backend
+        const resposta = await fetch(`${API_BASE}/read.php`);
+        const dados = await resposta.json();
+
+        // Se erro, mostra mensagem
+        if (dados.status !== 'success') {
+            showAlert(dados.message || 'Erro ao carregar perfil.', 'error');
             return;
         }
 
-        profileData = data;
-        renderProfile(data);
+        // Salva dados e renderiza
+        dadosPerfil = dados;
+        renderizarPerfil(dados);
 
-        // Esconder loading, mostrar conteúdo
+        // Esconde loading e mostra conteúdo
         document.getElementById('loading').style.display = 'none';
         document.getElementById('content').style.display = 'block';
-    } catch (err) {
-        console.error('Erro ao carregar perfil:', err);
-        showToast('Erro de conexão com o servidor.', 'error');
+    } catch (erro) {
+        // Erro de conexão
+        console.error('Erro ao carregar perfil:', erro);
+        showAlert('Erro de conexão com o servidor.', 'error');
     }
 }
 
 // ===== RENDERIZAR PERFIL =====
-function renderProfile(data) {
-    const u = data.usuario;
-    const pf = data.perfil_financeiro;
-    const stats = data.estatisticas;
 
-    // Avatar (iniciais) - Forma simplificada
-    let palavrasDoNome = u.nome.split(' ');
-    let iniciais = palavrasDoNome[0][0]; // Pega a primeira letra do primeiro nome
-    if (palavrasDoNome.length > 1) {
-        iniciais += palavrasDoNome[1][0]; // Pega a primeira letra do segundo nome
+function renderizarPerfil(dados) {
+
+    const usuario = dados.usuario;
+    const perfilFinanceiro = dados.perfil_financeiro;
+    const estatisticas = dados.estatisticas;
+
+    // Gera iniciais do avatar
+    let palavrasNome = usuario.nome.split(' ');
+    let iniciais = palavrasNome[0][0];
+    if (palavrasNome.length > 1) {
+        iniciais += palavrasNome[1][0];
     }
     document.getElementById('avatar-initials').textContent = iniciais.toUpperCase();
 
-    // Header info
-    document.getElementById('profile-name').textContent = u.nome;
-    document.getElementById('profile-email-display').textContent = u.email;
+    // Preenche dados do header
+    document.getElementById('profile-name').textContent = usuario.nome;
+    document.getElementById('profile-email-display').textContent = usuario.email;
 
-    // Member since
-    const criado = new Date(u.criado_em);
+    // Data de membro
+    const dataCriacao = new Date(usuario.criado_em);
     const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-    document.getElementById('member-since').textContent = `Membro desde ${meses[criado.getMonth()]} ${criado.getFullYear()}`;
+    document.getElementById('member-since').textContent = `Membro desde ${meses[dataCriacao.getMonth()]} ${dataCriacao.getFullYear()}`;
 
-    // Stats
-    document.getElementById('stat-ganhos').textContent = stats.count_ganhos;
-    document.getElementById('stat-despesas').textContent = stats.count_despesas;
-    document.getElementById('stat-saldo').textContent = formatMoney(stats.total_ganhos - stats.total_despesas);
+    // Preenche estatísticas
+    document.getElementById('stat-ganhos').textContent = estatisticas.count_ganhos;
+    document.getElementById('stat-despesas').textContent = estatisticas.count_despesas;
+    document.getElementById('stat-saldo').textContent = formatMoney(estatisticas.total_ganhos - estatisticas.total_despesas);
 
-    // Form fields — Dados pessoais
-    document.getElementById('perfil-nome').value = u.nome;
-    document.getElementById('perfil-email').value = u.email;
-    document.getElementById('perfil-cpf').value = formatCPF(u.cpf);
-    document.getElementById('perfil-telefone').value = formatPhone(u.telefone);
+    // Preenche formulário - dados pessoais
+    document.getElementById('perfil-nome').value = usuario.nome;
+    document.getElementById('perfil-email').value = usuario.email;
+    document.getElementById('perfil-cpf').value = formatarCPF(usuario.cpf);
+    document.getElementById('perfil-telefone').value = formatarTelefone(usuario.telefone);
 
-    // Form fields — Perfil financeiro
-    if (pf) {
-        document.getElementById('perfil-renda').value = pf.renda_mensal || '';
-        document.getElementById('perfil-objetivo').value = pf.objetivo_financeiro || '';
-        selectBehavior(pf.perfil_comportamento || 'moderado');
+    // Preenche formulário - perfil financeiro
+    if (perfilFinanceiro) {
+        document.getElementById('perfil-renda').value = perfilFinanceiro.renda_mensal || '';
+        document.getElementById('perfil-objetivo').value = perfilFinanceiro.objetivo_financeiro || '';
+        selecionarComportamento(perfilFinanceiro.perfil_comportamento || 'moderado');
     } else {
-        selectBehavior('moderado');
+        selecionarComportamento('moderado');
     }
 }
 
-// ===== FORMAT HELPERS =====
-function formatCPF(cpf) {
+// ===== FORMATAÇÃO =====
+
+function formatarCPF(cpf) {
     if (!cpf) return '';
     cpf = cpf.replace(/\D/g, '');
     if (cpf.length !== 11) return cpf;
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
 }
 
-function formatPhone(phone) {
-    if (!phone) return '';
-    phone = phone.replace(/\D/g, '');
-    if (phone.length === 11) {
-        return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-    } else if (phone.length === 10) {
-        return phone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+function formatarTelefone(telefone) {
+    if (!telefone) return '';
+    telefone = telefone.replace(/\D/g, '');
+    if (telefone.length === 11) {
+        return telefone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    } else if (telefone.length === 10) {
+        return telefone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
     }
-    return phone;
+    return telefone;
 }
 
-function setupPhoneMask() {
+function configurarMascaraTelefone() {
     const input = document.getElementById('perfil-telefone');
-    input.addEventListener('input', (e) => {
-        let val = e.target.value.replace(/\D/g, '');
-        if (val.length > 11) val = val.slice(0, 11);
-        if (val.length >= 7) {
-            e.target.value = val.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
-        } else if (val.length >= 3) {
-            e.target.value = val.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+    input.addEventListener('input', (evento) => {
+        let valor = evento.target.value.replace(/\D/g, '');
+        if (valor.length > 11) valor = valor.slice(0, 11);
+        if (valor.length >= 7) {
+            evento.target.value = valor.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+        } else if (valor.length >= 3) {
+            evento.target.value = valor.replace(/(\d{2})(\d{0,5})/, '($1) $2');
         } else {
-            e.target.value = val;
+            evento.target.value = valor;
         }
-        markChanged();
+        marcarAlterado();
     });
 }
 
-// ===== BEHAVIOR PILLS =====
-function selectBehavior(tipo) {
-    document.querySelectorAll('.behavior-pill').forEach(pill => {
-        pill.classList.toggle('active', pill.dataset.value === tipo);
+// ===== COMPORTAMENTO =====
+
+function selecionarComportamento(tipo) {
+    document.querySelectorAll('.behavior-pill').forEach(botao => {
+        botao.classList.toggle('active', botao.dataset.value === tipo);
     });
 }
 
-function getSelectedBehavior() {
-    const active = document.querySelector('.behavior-pill.active');
-    return active ? active.dataset.value : 'moderado';
+function obterComportamentoSelecionado() {
+    const ativo = document.querySelector('.behavior-pill.active');
+    return ativo ? ativo.dataset.value : 'moderado';
 }
 
-// ===== COLLAPSIBLE SECTIONS =====
-function setupCollapsible() {
-    document.querySelectorAll('.section-header').forEach(header => {
-        header.addEventListener('click', () => {
-            const body = header.nextElementSibling;
-            const isCollapsed = body.classList.contains('collapsed');
+// ===== SEÇÕES RETRÁTEIS =====
 
-            if (isCollapsed) {
-                body.classList.remove('collapsed');
-                header.classList.remove('collapsed');
+function configurarSesoes() {
+    document.querySelectorAll('.section-header').forEach(cabecalho => {
+        cabecalho.addEventListener('click', () => {
+            const corpo = cabecalho.nextElementSibling;
+            const estaRetraido = corpo.classList.contains('collapsed');
+
+            if (estaRetraido) {
+                corpo.classList.remove('collapsed');
+                cabecalho.classList.remove('collapsed');
             } else {
-                body.classList.add('collapsed');
-                header.classList.add('collapsed');
+                corpo.classList.add('collapsed');
+                cabecalho.classList.add('collapsed');
             }
         });
     });
 }
 
-// ===== PASSWORD STRENGTH =====
-function setupPasswordStrength() {
+// ===== FORÇA SENHA =====
+
+function configurarForcaSenha() {
     const input = document.getElementById('perfil-nova-senha');
-    const bars = document.querySelectorAll('.strength-bar');
+    const barras = document.querySelectorAll('.strength-bar');
     const label = document.getElementById('strength-label');
 
     input.addEventListener('input', () => {
-        const val = input.value;
-        let strength = 0;
+        const valor = input.value;
+        let forca = 0;
 
-        if (val.length >= 6) strength++;
-        if (val.length >= 10) strength++;
-        if (/[A-Z]/.test(val) && /[a-z]/.test(val)) strength++;
-        if (/\d/.test(val)) strength++;
-        if (/[^a-zA-Z0-9]/.test(val)) strength++;
+        if (valor.length >= 6) forca++;
+        if (valor.length >= 10) forca++;
+        if (/[A-Z]/.test(valor) && /[a-z]/.test(valor)) forca++;
+        if (/\d/.test(valor)) forca++;
+        if (/[^a-zA-Z0-9]/.test(valor)) forca++;
 
-        // Reset
-        bars.forEach(b => { b.className = 'strength-bar'; });
+        // Limpa
+        barras.forEach(barra => { barra.className = 'strength-bar'; });
         label.className = 'strength-label';
         label.textContent = '';
 
-        if (val.length === 0) return;
+        if (valor.length === 0) return;
 
-        if (strength <= 2) {
-            bars[0].classList.add('weak');
+        if (forca <= 2) {
+            barras[0].classList.add('weak');
             label.classList.add('weak');
             label.textContent = 'Fraca';
-        } else if (strength <= 3) {
-            bars[0].classList.add('medium');
-            bars[1].classList.add('medium');
+        } else if (forca <= 3) {
+            barras[0].classList.add('medium');
+            barras[1].classList.add('medium');
             label.classList.add('medium');
             label.textContent = 'Média';
         } else {
-            bars[0].classList.add('strong');
-            bars[1].classList.add('strong');
-            bars[2].classList.add('strong');
+            barras[0].classList.add('strong');
+            barras[1].classList.add('strong');
+            barras[2].classList.add('strong');
             label.classList.add('strong');
             label.textContent = 'Forte';
         }
 
-        markChanged();
+        marcarAlterado();
     });
 }
 
-// ===== CHANGE TRACKING =====
-function markChanged() {
-    hasChanges = true;
+// ===== RASTREAMENTO DE ALTERAÇÕES =====
+
+function marcarAlterado() {
+    temAlteracoes = true;
     document.getElementById('btn-save').disabled = false;
     document.getElementById('btn-discard').style.opacity = '1';
 }
 
-function setupEventListeners() {
-    // Track changes on inputs
+function configurarEventListeners() {
+
+    // Rastreia mudanças em inputs
     document.querySelectorAll('#content input:not([disabled]), #content select').forEach(input => {
-        input.addEventListener('input', markChanged);
-        input.addEventListener('change', markChanged);
+        input.addEventListener('input', marcarAlterado);
+        input.addEventListener('change', marcarAlterado);
     });
 
-    // Behavior pills
-    document.querySelectorAll('.behavior-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-            selectBehavior(pill.dataset.value);
-            markChanged();
+    // Botões de comportamento
+    document.querySelectorAll('.behavior-pill').forEach(botao => {
+        botao.addEventListener('click', () => {
+            selecionarComportamento(botao.dataset.value);
+            marcarAlterado();
         });
     });
 
-    // Save button
-    document.getElementById('btn-save').addEventListener('click', saveProfile);
+    // Botão salvar
+    document.getElementById('btn-save').addEventListener('click', salvarPerfil);
 
-    // Discard button
+    // Botão descartar
     document.getElementById('btn-discard').addEventListener('click', () => {
-        if (profileData) {
-            renderProfile(profileData);
+        if (dadosPerfil) {
+            renderizarPerfil(dadosPerfil);
             document.getElementById('perfil-senha-atual').value = '';
             document.getElementById('perfil-nova-senha').value = '';
             document.getElementById('perfil-confirma-senha').value = '';
-            // Reset strength
-            document.querySelectorAll('.strength-bar').forEach(b => b.className = 'strength-bar');
+            // Limpa barra de força
+            document.querySelectorAll('.strength-bar').forEach(barra => barra.className = 'strength-bar');
             document.getElementById('strength-label').textContent = '';
-            hasChanges = false;
+            temAlteracoes = false;
             document.getElementById('btn-save').disabled = true;
             document.getElementById('btn-discard').style.opacity = '0.5';
-            showToast('Alterações descartadas.', 'error');
+            showAlert('Alterações descartadas.', 'error');
         }
     });
 }
 
 // ===== VALIDAÇÃO =====
-// ===== VALIDAÇÃO =====
-function validateProfileData(data) {
-    // Validar Nome
-    if (data.nome === '' || data.nome.length < 3) {
+
+function validarDadosPerfil(dados) {
+
+    // Valida nome
+    if (dados.nome === '' || dados.nome.length < 3) {
         return 'O nome deve ter pelo menos 3 caracteres.';
     }
 
-    // Validar E-mail básico
-    if (data.email === '' || data.email.indexOf('@') === -1 || data.email.indexOf('.') === -1) {
+    // Valida email
+    if (dados.email === '' || dados.email.indexOf('@') === -1 || dados.email.indexOf('.') === -1) {
         return 'E-mail inválido.';
     }
 
-    // Validação de telefone básico (tamanho mínimo da máscara)
-    if (data.telefone === '' || data.telefone.length < 14) {
+    // Valida telefone
+    if (dados.telefone === '' || dados.telefone.length < 14) {
         return 'Telefone inválido. Verifique o DDD e o número.';
     }
     
-    // Validação de senha (apenas se o campo estiver preenchido)
-    if (data.novaSenha !== '') {
-        if (data.novaSenha.length < 6) {
+    // Valida senha (se preenchido)
+    if (dados.novaSenha !== '') {
+        if (dados.novaSenha.length < 6) {
             return 'A nova senha deve ter no mínimo 6 caracteres.';
         }
-        if (data.novaSenha !== data.confirmaSenha) {
+        if (dados.novaSenha !== dados.confirmaSenha) {
             return 'As senhas não coincidem.';
         }
-        if (data.senhaAtual === '') {
+        if (dados.senhaAtual === '') {
             return 'Informe a senha atual para alterar a senha.';
         }
     }
     
-    // Retorna nulo se tudo estiver correto
     return null;
 }
 
 // ===== SALVAR PERFIL =====
-async function saveProfile() {
-    const btn = document.getElementById('btn-save');
-    const originalContent = btn.innerHTML;
 
-    // Coletar dados
-    const formVals = {
+async function salvarPerfil() {
+
+    const botao = document.getElementById('btn-save');
+    const textoOriginal = botao.innerHTML;
+
+    // Coleta valores do formulário
+    const valores = {
         nome: document.getElementById('perfil-nome').value,
         email: document.getElementById('perfil-email').value,
         telefone: document.getElementById('perfil-telefone').value,
         renda_mensal: document.getElementById('perfil-renda').value || 0,
         objetivo_financeiro: document.getElementById('perfil-objetivo').value,
-        perfil_comportamento: getSelectedBehavior(),
+        perfil_comportamento: obterComportamentoSelecionado(),
         senhaAtual: document.getElementById('perfil-senha-atual').value,
         novaSenha: document.getElementById('perfil-nova-senha').value,
         confirmaSenha: document.getElementById('perfil-confirma-senha').value
     };
 
-    // Validar
-    const errorMsg = validateProfileData(formVals);
-    if (errorMsg) return showToast(errorMsg, 'error');
+    // Valida dados
+    const erroValidacao = validarDadosPerfil(valores);
+    if (erroValidacao) return showAlert(erroValidacao, 'error');
 
-    // Preparar FormData definindo os campos um por um de forma clara
+    // Prepara FormData
     const formData = new FormData();
-    formData.append('nome', formVals.nome);
-    formData.append('email', formVals.email);
-    formData.append('telefone', formVals.telefone);
-    formData.append('renda_mensal', formVals.renda_mensal);
-    formData.append('objetivo_financeiro', formVals.objetivo_financeiro);
-    formData.append('perfil_comportamento', formVals.perfil_comportamento);
+    formData.append('nome', valores.nome);
+    formData.append('email', valores.email);
+    formData.append('telefone', valores.telefone);
+    formData.append('renda_mensal', valores.renda_mensal);
+    formData.append('objetivo_financeiro', valores.objetivo_financeiro);
+    formData.append('perfil_comportamento', valores.perfil_comportamento);
 
-    // Se o usuário digitou uma nova senha, enviar as senhas para o PHP
-    if (formVals.novaSenha !== '') {
-        formData.append('senha_atual', formVals.senhaAtual);
-        formData.append('nova_senha', formVals.novaSenha);
+    // Se nova senha, envia senhas
+    if (valores.novaSenha !== '') {
+        formData.append('senha_atual', valores.senhaAtual);
+        formData.append('nova_senha', valores.novaSenha);
     }
 
-    // Loading
-    btn.disabled = true;
-    btn.innerHTML = '<div class="loading-spinner" style="width:18px;height:18px;border-width:2px;margin:0;"></div>Salvando...';
+    // Loading state
+    botao.disabled = true;
+    botao.innerHTML = '<div class="loading-spinner" style="width:18px;height:18px;border-width:2px;margin:0;"></div>Salvando...';
 
     try {
-        const res = await fetch(`${API_BASE}/update.php`, { method: 'POST', body: formData });
-        const data = await res.json();
+        // Envia para backend
+        const resposta = await fetch(`${API_BASE}/update.php`, { 
+            method: 'POST', 
+            body: formData 
+        });
+        
+        const dados = await resposta.json();
 
-        if (data.status === 'success') {
-            showToast(data.message, 'success');
+        // Se sucesso, atualiza UI e recarrega
+        if (dados.status === 'success') {
+            showAlert(dados.message, 'success');
             
-            // Atualizar UI
-            if (data.nome) {
+            if (dados.nome) {
                 const badge = document.querySelector('.user-badge');
-                if (badge) badge.innerHTML = `<i class="bi bi-person-fill me-1"></i>${escapeHtml(data.nome)}`;
-                document.getElementById('profile-name').textContent = data.nome;
+                if (badge) badge.innerHTML = `<i class="bi bi-person-fill me-1"></i>${escapeHtml(dados.nome)}`;
+                document.getElementById('profile-name').textContent = dados.nome;
                 
-                // Atualizar Iniciais após salvar
-                let nomesAtuais = data.nome.split(' ');
-                let novasIniciais = nomesAtuais[0][0];
-                if (nomesAtuais.length > 1) {
-                    novasIniciais += nomesAtuais[1][0];
+                // Atualiza iniciais
+                let nomesAtualizados = dados.nome.split(' ');
+                let novasIniciais = nomesAtualizados[0][0];
+                if (nomesAtualizados.length > 1) {
+                    novasIniciais += nomesAtualizados[1][0];
                 }
                 document.getElementById('avatar-initials').textContent = novasIniciais.toUpperCase();
             }
 
-            // Limpar todos os campos de senhas do formulário visualmente
+            // Limpa campos de senha
             document.getElementById('perfil-senha-atual').value = '';
             document.getElementById('perfil-nova-senha').value = '';
             document.getElementById('perfil-confirma-senha').value = '';
             
-            document.querySelectorAll('.strength-bar').forEach(b => b.className = 'strength-bar');
+            document.querySelectorAll('.strength-bar').forEach(barra => barra.className = 'strength-bar');
             document.getElementById('strength-label').textContent = '';
 
-            hasChanges = false;
+            temAlteracoes = false;
             document.getElementById('btn-discard').style.opacity = '0.5';
 
-            loadProfile(); // Recarrega dados completos
+            // Recarrega dados completos
+            carregarPerfil();
         } else {
-            showToast(data.message, 'error');
+            // Se erro, mostra mensagem
+            showAlert(dados.message || 'Erro ao salvar perfil.', 'error');
         }
-    } catch (err) {
-        showToast('Erro de conexão com o servidor.', 'error');
+    } catch (erro) {
+        // Erro de conexão
+        console.error('Erro ao salvar perfil:', erro);
+        showAlert('Erro de conexão com o servidor.', 'error');
     } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalContent;
+        // Restaura botão
+        botao.disabled = false;
+        botao.innerHTML = textoOriginal;
     }
-}
-
-// ===== TOAST =====
-function showToast(message, type = 'success') {
-    // Remove existing
-    const existing = document.querySelector('.toast-notification');
-    if (existing) existing.remove();
-
-    const toast = document.createElement('div');
-    toast.className = `toast-notification ${type}`;
-    toast.innerHTML = `
-        <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-circle-fill'}"></i>
-        ${message}
-    `;
-
-    document.body.appendChild(toast);
-
-    requestAnimationFrame(() => {
-        toast.classList.add('show');
-    });
-
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 400);
-    }, 3500);
 }

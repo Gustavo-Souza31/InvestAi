@@ -32,20 +32,6 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
 
 <body>
 
-    <!-- ===== NAVBAR ===== -->
-    <nav class="navbar-custom">
-        <div class="container d-flex align-items-center justify-content-between" style="max-width:960px;">
-            <a href="dashboard.php" class="logo"><i class="bi bi-graph-up-arrow me-1"></i>Invest<span>Ai</span></a>
-            <div class="d-flex align-items-center gap-4">
-                <a href="dashboard.php" class="nav-link-custom">Dashboard</a>
-                <a href="ganhos.php" class="nav-link-custom nav-ganhos">Ganhos</a>
-                <a href="despesas.php" class="nav-link-custom nav-despesas">Despesas</a>
-                <a href="perfil.php" class="user-badge active"><i class="bi bi-person-fill me-1"></i><?= $nome ?></a>
-                <a href="logout.php" class="nav-link-custom" title="Sair"><i class="bi bi-box-arrow-right"></i></a>
-            </div>
-        </div>
-    </nav>
-
     <div class="main-container">
 
         <!-- ===== HEADER ===== -->
@@ -53,6 +39,9 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
             <h1><i class="bi bi-person-gear"></i>Meu Perfil</h1>
             <p>Gerencie suas informações pessoais e preferências financeiras.</p>
         </div>
+
+        <!-- ===== ALERT ===== -->
+        <div id="perfil-alert" class="alert-message"></div>
 
         <!-- ===== LOADING STATE ===== -->
         <div id="loading" class="loading">
@@ -276,6 +265,8 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
 
     <!-- ===== SCRIPTS ===== -->
     <script src="api/utils/shared.js"></script>
+    <script src="api/utils/nav.js"></script>
+    <script src="assets/style/js/ui.js"></script>
     <script src="api/perfil/perfil.js?v=<?= time() ?>"></script>
 
 </body>

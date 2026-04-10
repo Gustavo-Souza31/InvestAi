@@ -1,4 +1,5 @@
 <?php
+// backend/api/despesas/delete.php — Deleta despesa após validação
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
@@ -7,10 +8,11 @@ require_once $root . '/backend/includes/auth_middleware.php';
 require_once $root . '/backend/validators/IdValidator.php';
 
 
+// Autenticação
 requireAuth();
 
 
-// Receber ID
+// Receber ID da despesa
 $id = intval($_POST['id'] ?? 0);
 
 
@@ -25,7 +27,7 @@ if (!$validation['valid']) {
 }
 
 
-// Verificar se existe
+// Verificar se despesa existe
 $stmt = $conexao->prepare(
     'SELECT id FROM despesas WHERE id = ?'
 );
@@ -40,12 +42,14 @@ if ($stmt->get_result()->num_rows === 0) {
 }
 
 
-// Deletar
+// Deletar despesa do banco de dados
 $stmt = $conexao->prepare(
     'DELETE FROM despesas WHERE id = ?'
 );
 $stmt->bind_param('i', $id);
 
+
+// Executar e verificar delecao
 if ($stmt->execute() && $stmt->affected_rows > 0) {
     echo json_encode([
         'status' => 'success',

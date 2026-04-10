@@ -1,4 +1,5 @@
 <?php
+// backend/api/ganhos/update.php — Atualiza ganho existente com validação
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
@@ -8,10 +9,11 @@ require_once $root . '/backend/validators/GanhosValidator.php';
 require_once $root . '/backend/validators/IdValidator.php';
 
 
+// Autenticação
 requireAuth();
 
 
-// Receber dados
+// Receber dados de FormData
 $id = intval($_POST['id'] ?? 0);
 $data = [
     'descricao' => $_POST['descricao'] ?? '',
@@ -32,7 +34,7 @@ if (!$idValidation['valid']) {
 }
 
 
-// Validar dados
+// Validar dados contra regras de negócio
 $validation = GanhosValidator::validate($data);
 if (!$validation['valid']) {
     echo json_encode([
@@ -48,7 +50,7 @@ $data_ganho = $validation['data']['data_ganho'];
 $fixo = $validation['data']['fixo'];
 
 
-// Atualizar
+// Atualizar ganho no banco de dados
 $stmt = $conexao->prepare(
     'UPDATE ganhos 
      SET descricao = ?, valor = ?, data_ganho = ?, fixo = ? 
@@ -56,6 +58,7 @@ $stmt = $conexao->prepare(
 );
 $stmt->bind_param('sdsii', $descricao, $valor, $data_ganho, $fixo, $id);
 
+// Executar e verificar atualizacao
 if ($stmt->execute() && $stmt->affected_rows > 0) {
     echo json_encode([
         'status' => 'success',

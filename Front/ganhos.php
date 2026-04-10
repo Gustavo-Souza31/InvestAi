@@ -172,6 +172,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
         const USUARIO_ID = <?= $usuario_id ?>;
     </script>
     <script src="api/utils/shared.js"></script>
+    <script src="api/utils/nav.js"></script>
     <script src="assets/style/js/ui.js"></script>
     <script src="api/ganhos/read.js"></script>
     <script src="api/ganhos/render.js"></script>

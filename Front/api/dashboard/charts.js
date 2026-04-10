@@ -1,28 +1,19 @@
-/**
- * charts.js — Lógica dos gráficos do Dashboard (Chart.js)
- *
- * Responsável por:
- * - Buscar dados do relatório por período
- * - Renderizar gráfico de linha (evolução ganhos vs despesas)
- * - Renderizar gráfico de rosca (proporção ganhos vs despesas)
- * - Gerenciar filtros de período
- */
+// Lógica dos gráficos do Dashboard (Chart.js)
+// Responsável por:
+// - Buscar dados do relatório por período
+// - Renderizar gráfico de linha (evolução ganhos vs despesas)
+// - Renderizar gráfico de rosca (proporção ganhos vs despesas)
+// - Gerenciar filtros de período
 
 let graficoLinha = null;
 let graficoRosca = null;
 
-/**
- * Busca dados do relatório do backend
- * @param {string} periodo - '1s', '3m', '6m', '1a'
- */
 async function carregarRelatorio(periodo) {
-    const res = await fetch(`../backend/api/dashboard/relatorio.php?periodo=${periodo}`);
-    return await res.json();
+    const resultado = await fetch(`../backend/api/dashboard/relatorio.php?periodo=${periodo}`);
+    return await resultado.json();
 }
 
-/**
- * Renderiza ou atualiza o gráfico de linha
- */
+// Renderiza ou atualiza o gráfico de linha
 function renderizarGraficoLinha(dados) {
     const ctx = document.getElementById('grafico-linha').getContext('2d');
 
@@ -151,9 +142,7 @@ function renderizarGraficoLinha(dados) {
     });
 }
 
-/**
- * Renderiza ou atualiza o gráfico de rosca
- */
+// Renderiza ou atualiza o gráfico de rosca
 function renderizarGraficoRosca(dados) {
     const ctx = document.getElementById('grafico-rosca').getContext('2d');
 
@@ -239,9 +228,7 @@ function renderizarGraficoRosca(dados) {
 }
 
 
-/**
- * Carrega dados e renderiza ambos os gráficos
- */
+// Carrega dados e renderiza ambos os gráficos
 async function atualizarGraficos(periodo) {
     const chartLoading = document.getElementById('charts-loading');
     const chartContent = document.getElementById('charts-content');
@@ -270,20 +257,18 @@ async function atualizarGraficos(periodo) {
 }
 
 
-/**
- * Inicializar filtros e gráficos
- */
+// Inicializar filtros e gráficos
 function inicializarGraficos() {
     const botoes = document.querySelectorAll('.chart-filter-btn');
 
-    botoes.forEach(btn => {
-        btn.addEventListener('click', () => {
+    botoes.forEach(botao => {
+        botao.addEventListener('click', () => {
             // Atualizar estado ativo
-            botoes.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            botoes.forEach(botaoItem => botaoItem.classList.remove('active'));
+            botao.classList.add('active');
 
-            // Carregar gráficos
-            const periodo = btn.dataset.periodo;
+            // Carregar gr\u00e1ficos
+            const periodo = botao.dataset.periodo;
             atualizarGraficos(periodo);
         });
     });

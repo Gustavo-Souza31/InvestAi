@@ -1,4 +1,5 @@
 <?php
+// backend/api/auth/login.php — Autentica usuário via email e senha
 session_start();
 header('Content-Type: application/json');
 
@@ -25,7 +26,7 @@ $data = [
 ];
 
 
-// Validar
+// Validar dados contra regras de negócio
 $validation = AuthValidator::validateLogin($data);
 if (!$validation['valid']) {
     echo json_encode([
@@ -39,7 +40,7 @@ $email = $validation['data']['email'];
 $senha = $validation['data']['senha'];
 
 
-// Buscar usuário
+// Buscar usuário no banco de dados
 $stmt = $conexao->prepare(
     "SELECT id, nome, senha_hash FROM usuarios WHERE email = ?"
 );
@@ -58,7 +59,7 @@ if ($result->num_rows === 0) {
 $usuario = $result->fetch_assoc();
 
 
-// Verificar senha
+// Verificar se a senha está correta usando hashing seguro
 if (!password_verify($senha, $usuario['senha_hash'])) {
     echo json_encode([
         'status' => 'error',
@@ -68,11 +69,12 @@ if (!password_verify($senha, $usuario['senha_hash'])) {
 }
 
 
-// Iniciar sessão
+// Iniciar sessão com dados do usuário
 $_SESSION['usuario_id']   = $usuario['id'];
 $_SESSION['usuario_nome'] = $usuario['nome'];
 
 
+// Retornar sucesso
 echo json_encode([
     'status'   => 'success',
     'message'  => 'Login realizado com sucesso!',

@@ -8,7 +8,7 @@ require_once $root . '/backend/includes/auth_middleware.php';
 
 $usuario_id = requireAuth();
 
-// Buscar dados pessoais
+// Buscar dados pessoais completos
 $stmt = $conexao->prepare(
     "SELECT id, nome, email, cpf, telefone, criado_em FROM usuarios WHERE id = ?"
 );
@@ -22,7 +22,7 @@ if (!$usuario) {
     exit;
 }
 
-// Buscar perfil financeiro
+// Buscar perfil financeiro completo
 $stmt2 = $conexao->prepare(
     "SELECT renda_mensal, saldo_inicial, possui_investimentos, possui_patrimonio, 
             objetivo_financeiro, perfil_comportamento 
@@ -32,27 +32,31 @@ $stmt2->bind_param('i', $usuario_id);
 $stmt2->execute();
 $perfil = $stmt2->get_result()->fetch_assoc();
 
-// Buscar totais
+// Calcular total de ganhos
 $stmtG = $conexao->prepare("SELECT COALESCE(SUM(valor), 0) as total FROM ganhos WHERE usuario_id = ?");
 $stmtG->bind_param('i', $usuario_id);
 $stmtG->execute();
 $totalGanhos = $stmtG->get_result()->fetch_assoc()['total'];
 
+// Calcular total de despesas
 $stmtD = $conexao->prepare("SELECT COALESCE(SUM(valor), 0) as total FROM despesas WHERE usuario_id = ?");
 $stmtD->bind_param('i', $usuario_id);
 $stmtD->execute();
 $totalDespesas = $stmtD->get_result()->fetch_assoc()['total'];
 
+// Contar registros de ganhos
 $stmtCountG = $conexao->prepare("SELECT COUNT(*) as total FROM ganhos WHERE usuario_id = ?");
 $stmtCountG->bind_param('i', $usuario_id);
 $stmtCountG->execute();
 $countGanhos = $stmtCountG->get_result()->fetch_assoc()['total'];
 
+// Contar registros de despesas
 $stmtCountD = $conexao->prepare("SELECT COUNT(*) as total FROM despesas WHERE usuario_id = ?");
 $stmtCountD->bind_param('i', $usuario_id);
 $stmtCountD->execute();
 $countDespesas = $stmtCountD->get_result()->fetch_assoc()['total'];
 
+// Retornar dados completos do perfil
 echo json_encode([
     'status' => 'success',
     'usuario' => [
