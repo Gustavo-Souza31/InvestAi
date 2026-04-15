@@ -80,3 +80,9 @@
     border: 1px solid rgba(239, 68, 68, 0.25);
     color: #f87171;
 }
+
+.form-control:focus {
+    border-color: var(--danger-color) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+    background: rgba(239, 68, 68, 0.04) !important;
+}
