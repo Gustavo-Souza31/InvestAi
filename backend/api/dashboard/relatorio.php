@@ -31,8 +31,8 @@ $periodo = $_GET['periodo'] ?? '3m';
 $hoje = date('Y-m-d');
 
 switch ($periodo) {
-    case '1s':
-        $data_inicio = date('Y-m-d', strtotime('-7 days'));
+    case '1m':
+        $data_inicio = date('Y-m-d', strtotime('-1 month'));
         $agrupamento = 'dia';
         break;
     case '3m':

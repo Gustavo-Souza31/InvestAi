@@ -36,7 +36,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     <link rel="stylesheet" href="assets/style/css/dashboard.css?v=<?= time() ?>">
 
     <?php if ($is_first_login): ?>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css" />
     <?php endif; ?>
 
     <!-- Chart.js -->
@@ -52,6 +52,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
             <a href="dashboard.php" class="logo"><i class="bi bi-graph-up-arrow me-1"></i>Invest<span>Ai</span></a>
             <div class="d-flex align-items-center gap-4">
                 <a href="dashboard.php" class="nav-link-custom active">Dashboard</a>
+                <a href="resumo.php" class="nav-link-custom nav-resumo">Resumo Financeiro</a>
                 <a href="ganhos.php" class="nav-link-custom nav-ganhos">Ganhos</a>
                 <a href="despesas.php" class="nav-link-custom nav-despesas">Despesas</a>
                 <a href="perfil.php" class="user-badge"><i class="bi bi-person-fill me-1"></i><?= $nome ?></a>
@@ -105,92 +106,24 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
                 </div>
             </div>
 
-            <!-- ===== GRÁFICOS DE RELATÓRIO ===== -->
-            <div class="charts-section">
-                <div class="charts-section-header">
-                    <h2><i class="bi bi-bar-chart-line"></i>Relatório Financeiro</h2>
-                    <div class="chart-filters">
-                        <button class="chart-filter-btn" data-periodo="1s">1 Semana</button>
-                        <button class="chart-filter-btn active" data-periodo="3m">3 Meses</button>
-                        <button class="chart-filter-btn" data-periodo="6m">6 Meses</button>
-                        <button class="chart-filter-btn" data-periodo="1a">1 Ano</button>
-                    </div>
-                </div>
 
-                <div class="charts-grid">
-                    <!-- Loading -->
-                    <div class="charts-loading" id="charts-loading">
-                        <div style="text-align:center;">
-                            <div class="loading-spinner"></div>
-                            <p class="text-secondary">Carregando gráficos...</p>
-                        </div>
-                    </div>
-
-                    <!-- Conteúdo dos gráficos -->
-                    <div id="charts-content" style="display:none; grid-column: 1 / -1; grid-template-columns: 1.6fr 1fr; gap: 20px;">
-                        <!-- Gráfico de Linha -->
-                        <div class="chart-container">
-                            <h3><i class="bi bi-graph-up"></i> Evolução Mensal</h3>
-                            <div class="chart-canvas-wrapper">
-                                <canvas id="grafico-linha"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Gráfico de Rosca -->
-                        <div class="chart-container">
-                            <h3><i class="bi bi-pie-chart"></i> Proporção</h3>
-                            <div class="chart-doughnut-wrapper">
-                                <div class="chart-doughnut-canvas">
-                                    <canvas id="grafico-rosca"></canvas>
-                                </div>
-
-                                <div class="chart-legend">
-                                    <div class="chart-legend-item">
-                                        <div class="legend-left">
-                                            <span class="legend-dot ganhos"></span>
-                                            <span class="legend-label">Ganhos</span>
-                                        </div>
-                                        <div class="legend-right">
-                                            <span class="legend-value" id="legenda-ganhos-valor">R$ 0,00</span>
-                                            <span class="legend-perc" id="legenda-ganhos-perc">0%</span>
-                                        </div>
-                                    </div>
-                                    <div class="chart-legend-item">
-                                        <div class="legend-left">
-                                            <span class="legend-dot despesas"></span>
-                                            <span class="legend-label">Despesas</span>
-                                        </div>
-                                        <div class="legend-right">
-                                            <span class="legend-value" id="legenda-despesas-valor">R$ 0,00</span>
-                                            <span class="legend-perc" id="legenda-despesas-perc">0%</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="chart-saldo-wrapper">
-                                    <div class="chart-saldo-label">Saldo do Período</div>
-                                    <div class="chart-saldo positivo" id="saldo-periodo">R$ 0,00</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
         </div>
 
     </div>
 
-    <script src="api/utils/shared.js"></script>
-    <script src="api/utils/nav.js"></script>
-    <script src="assets/style/js/ui.js"></script>
-    <script src="api/dashboard/dashboard.js"></script>
-    <script src="api/dashboard/charts.js"></script>
-    <script src="api/dashboard/render.js"></script>
+    <script src="api/utils/shared.js?v=<?= time() ?>"></script>
+    <script src="api/utils/nav.js?v=<?= time() ?>"></script>
+    <script src="assets/style/js/ui.js?v=<?= time() ?>"></script>
+    <script src="api/dashboard/dashboard.js?v=<?= time() ?>"></script>
+    <script>
+        window.DEFAULT_PERIODO = 'all';
+    </script>
+    <script src="api/dashboard/render.js?v=<?= time() ?>"></script>
 
     <?php if ($is_first_login): ?>
-    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
-    <script src="api/dashboard/tour.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+        <script src="api/dashboard/tour.js"></script>
     <?php endif; ?>
 
 </body>

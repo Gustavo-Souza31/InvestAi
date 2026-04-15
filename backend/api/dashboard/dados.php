@@ -18,6 +18,27 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 $usuario_id = $_SESSION['usuario_id'];
+$periodo = $_GET['periodo'] ?? '3m';
+
+// Definir período e tipo de agrupamento baseado no parâmetro
+$hoje = date('Y-m-d');
+
+switch ($periodo) {
+    case '1m':
+        $data_inicio = date('Y-m-d', strtotime('-1 month'));
+        break;
+    case '3m':
+        $data_inicio = date('Y-m-d', strtotime('-3 months'));
+        break;
+    case '6m':
+        $data_inicio = date('Y-m-d', strtotime('-6 months'));
+        break;
+    case '1a':
+        $data_inicio = date('Y-m-d', strtotime('-1 year'));
+        break;
+    default:
+        $data_inicio = date('Y-m-d', strtotime('-1 month'));
+}
 
 
 // Buscar dados pessoais do usuário
@@ -39,23 +60,41 @@ $stmt->execute();
 $perfil = $stmt->get_result()->fetch_assoc();
 
 
-// Calcular total de ganhos
-$stmt = $conexao->prepare(
-    "SELECT COALESCE(SUM(valor), 0) as total 
-     FROM ganhos WHERE usuario_id = ?"
-);
-$stmt->bind_param("i", $usuario_id);
-$stmt->execute();
-$total_ganhos = $stmt->get_result()->fetch_assoc()['total'];
+// Calcular total de ganhos para o período selecionado
+if ($periodo === 'all') {
+    $stmt_ganhos = $conexao->prepare(
+        "SELECT COALESCE(SUM(valor), 0) as total 
+         FROM ganhos WHERE usuario_id = ?"
+    );
+    $stmt_ganhos->bind_param("i", $usuario_id);
+} else {
+    $stmt_ganhos = $conexao->prepare(
+        "SELECT COALESCE(SUM(valor), 0) as total 
+         FROM ganhos WHERE usuario_id = ? AND data_ganho BETWEEN ? AND ?"
+    );
+    $stmt_ganhos->bind_param("iss", $usuario_id, $data_inicio, $hoje);
+}
+$stmt_ganhos->execute();
+$total_ganhos = $stmt_ganhos->get_result()->fetch_assoc()['total'];
 
-// Calcular total de despesas
-$stmt = $conexao->prepare(
-    "SELECT COALESCE(SUM(valor), 0) as total 
-     FROM despesas WHERE usuario_id = ?"
-);
-$stmt->bind_param("i", $usuario_id);
-$stmt->execute();
-$total_despesas = $stmt->get_result()->fetch_assoc()['total'];
+
+// ===== Despesas =====
+// Calcular total de despesas para o período selecionado
+if ($periodo === 'all') {
+    $stmt_despesas = $conexao->prepare(
+        "SELECT COALESCE(SUM(valor), 0) as total 
+         FROM despesas WHERE usuario_id = ?"
+    );
+    $stmt_despesas->bind_param("i", $usuario_id);
+} else {
+    $stmt_despesas = $conexao->prepare(
+        "SELECT COALESCE(SUM(valor), 0) as total 
+         FROM despesas WHERE usuario_id = ? AND data_despesa BETWEEN ? AND ?"
+    );
+    $stmt_despesas->bind_param("iss", $usuario_id, $data_inicio, $hoje);
+}
+$stmt_despesas->execute();
+$total_despesas = $stmt_despesas->get_result()->fetch_assoc()['total'];
 
 
 // Calcular saldo atual (saldo_inicial + ganhos - despesas)

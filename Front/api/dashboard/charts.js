@@ -267,9 +267,13 @@ function inicializarGraficos() {
             botoes.forEach(botaoItem => botaoItem.classList.remove('active'));
             botao.classList.add('active');
 
-            // Carregar gr\u00e1ficos
+            // Carregar gráficos e resumo
             const periodo = botao.dataset.periodo;
             atualizarGraficos(periodo);
+            
+            if (typeof inicializar === 'function') {
+                inicializar(periodo, true);
+            }
         });
     });
 

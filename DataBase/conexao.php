@@ -2,7 +2,7 @@
 // backend/includes/db.php — Conexão centralizada ao banco
 $servername = "localhost";
 $usuario_db = "root";
-$senha_db = "AfonsoPTZ#6113";
+$senha_db = "";
 $banco = "investai";
 $porta = 3306;
 
