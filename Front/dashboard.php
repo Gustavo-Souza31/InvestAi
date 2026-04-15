@@ -123,7 +123,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
 
     <?php if ($is_first_login): ?>
         <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
-        <script src="api/dashboard/tour.js"></script>
+        <script src="api/dashboard/tour.js?v=<?= time() ?>"></script>
     <?php endif; ?>
 
 </body>
