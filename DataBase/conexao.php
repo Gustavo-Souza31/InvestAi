@@ -1,10 +1,10 @@
 <?php
 // backend/includes/db.php — Conexão centralizada ao banco
-$servername = "localhost";
+$servername = "127.0.0.1";
 $usuario_db = "root";
-$senha_db = "";
+$senha_db = "root";
 $banco = "investai";
-$porta = 3306;
+$porta = 8889;
 
 $conexao = new mysqli($servername, $usuario_db, $senha_db, $banco, $porta);
 

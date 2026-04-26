@@ -20,11 +20,11 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/style/css/variables.css">
-    <link rel="stylesheet" href="assets/style/css/animations.css">
-    <link rel="stylesheet" href="assets/style/css/navbar.css">
-    <link rel="stylesheet" href="assets/style/css/internal-pages.css">
-    <link rel="stylesheet" href="assets/style/css/ganhos.css">
+    <link rel="stylesheet" href="assets/style/css/variables.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/animations.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/navbar.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/internal-pages.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/ganhos.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -32,12 +32,22 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar-custom">
         <div class="container d-flex align-items-center justify-content-between" style="max-width:960px;">
-            <a href="dashboard.php" class="logo"><i class="bi bi-graph-up-arrow me-1"></i>Invest<span>Ai</span></a>
+            <a href="dashboard.php" class="logo">
+                <svg class="neural-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="4" cy="18" r="2" fill="currentColor"/>
+                    <circle cx="9" cy="13" r="2" fill="currentColor"/>
+                    <circle cx="15" cy="15" r="2" fill="currentColor"/>
+                    <circle cx="20" cy="6" r="3" fill="var(--brand-accent)"/>
+                </svg>
+                Invest<span>AI</span>
+            </a>
             <div class="d-flex align-items-center gap-4">
                 <a href="dashboard.php" class="nav-link-custom">Dashboard</a>
                 <a href="resumo.php" class="nav-link-custom nav-resumo">Resumo Financeiro</a>
                 <a href="ganhos.php" class="nav-link-custom active nav-ganhos">Ganhos</a>
                 <a href="despesas.php" class="nav-link-custom nav-despesas">Despesas</a>
+                <a href="noticias.php" class="nav-link-custom nav-noticias">Notícias IA</a>
                 <a href="perfil.php" class="user-badge"><i class="bi bi-person-fill me-1"></i><?= $nome ?></a>
                 <a href="logout.php" class="nav-link-custom" title="Sair"><i class="bi bi-box-arrow-right"></i></a>
             </div>

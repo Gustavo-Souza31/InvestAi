@@ -7,58 +7,51 @@
 
 /* Header icon */
 .page-header h1 i {
-    color: var(--success-color);
+    color: var(--brand-accent);
 }
 
 /* Summary cards hover */
 .summary-card:hover {
-    border-color: rgba(34, 197, 94, 0.3);
+    border-color: var(--brand-accent);
 }
 
 .summary-card .value {
-    color: #4ade80;
+    color: var(--color-gain);
 }
 
 /* Form icon */
 .form-card h2 i {
-    color: var(--success-color);
+    color: var(--brand-accent);
 }
 
-/* Submit button - Ganho */
-.btn-submit {
-    background: linear-gradient(135deg, var(--success-color), #16a34a);
-}
 
-.btn-submit:hover {
-    color: #fff;
-}
 
 /* List header icon */
 .list-header h2 i {
-    color: var(--success-color);
+    color: var(--brand-accent);
 }
 
 /* Badge colors */
 .badge-count {
-    background: rgba(34, 197, 94, 0.15);
-    color: #4ade80;
+    background: rgba(179, 157, 219, 0.15);
+    color: var(--brand-accent);
 }
 
 /* Item icon background */
 .item-icon {
-    background: rgba(34, 197, 94, 0.12);
+    background: rgba(179, 157, 219, 0.12);
 }
 
 .item-icon i {
-    color: #4ade80;
+    color: var(--brand-accent);
 }
 
 /* Item value color */
 .item-value {
-    color: #4ade80;
+    color: var(--color-gain);
 }
 
 /* Modal icon */
 .modal-card h2 i {
-    color: var(--success-color);
+    color: var(--brand-accent);
 }

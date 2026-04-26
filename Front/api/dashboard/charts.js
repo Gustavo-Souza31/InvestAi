@@ -29,11 +29,11 @@ function renderizarGraficoLinha(dados) {
                 {
                     label: 'Ganhos',
                     data: dados.ganhos,
-                    borderColor: '#22c55e',
-                    backgroundColor: 'rgba(34, 197, 94, 0.08)',
+                    borderColor: '#66bb6a',
+                    backgroundColor: 'rgba(102, 187, 106, 0.08)',
                     borderWidth: 2.5,
-                    pointBackgroundColor: '#22c55e',
-                    pointBorderColor: '#22c55e',
+                    pointBackgroundColor: '#66bb6a',
+                    pointBorderColor: '#66bb6a',
                     pointRadius: 4,
                     pointHoverRadius: 7,
                     tension: 0.4,
@@ -42,11 +42,11 @@ function renderizarGraficoLinha(dados) {
                 {
                     label: 'Despesas',
                     data: dados.despesas,
-                    borderColor: '#ef4444',
-                    backgroundColor: 'rgba(239, 68, 68, 0.08)',
+                    borderColor: '#ef9a9a',
+                    backgroundColor: 'rgba(239, 154, 154, 0.08)',
                     borderWidth: 2.5,
-                    pointBackgroundColor: '#ef4444',
-                    pointBorderColor: '#ef4444',
+                    pointBackgroundColor: '#ef9a9a',
+                    pointBorderColor: '#ef9a9a',
                     pointRadius: 4,
                     pointHoverRadius: 7,
                     tension: 0.4,
@@ -173,17 +173,17 @@ function renderizarGraficoRosca(dados) {
             datasets: [{
                 data: [dados.total_ganhos || 0, dados.total_despesas || 0],
                 backgroundColor: [
-                    'rgba(34, 197, 94, 0.85)',
-                    'rgba(239, 68, 68, 0.85)'
+                    'rgba(102, 187, 106, 0.85)',
+                    'rgba(239, 154, 154, 0.85)'
                 ],
                 borderColor: [
-                    'rgba(34, 197, 94, 1)',
-                    'rgba(239, 68, 68, 1)'
+                    'rgba(102, 187, 106, 1)',
+                    'rgba(239, 154, 154, 1)'
                 ],
                 borderWidth: 2,
                 hoverBackgroundColor: [
-                    'rgba(34, 197, 94, 1)',
-                    'rgba(239, 68, 68, 1)'
+                    'rgba(102, 187, 106, 1)',
+                    'rgba(239, 154, 154, 1)'
                 ],
                 hoverBorderWidth: 3,
                 spacing: 4,

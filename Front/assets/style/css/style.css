@@ -38,7 +38,7 @@ body {
 }
 
 .text-gradient {
-    background: linear-gradient(135deg, #a855f7, #6366f1, #3b82f6);
+    background: linear-gradient(135deg, var(--brand-accent), #9333ea, #6366f1);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -78,7 +78,7 @@ body {
     left: -10%;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+    background: radial-gradient(circle, rgba(179, 157, 219, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
     border-radius: 50%;
     z-index: 0;
 }

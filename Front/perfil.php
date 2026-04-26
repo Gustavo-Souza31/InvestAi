@@ -23,14 +23,40 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/style/css/variables.css">
-    <link rel="stylesheet" href="assets/style/css/animations.css">
-    <link rel="stylesheet" href="assets/style/css/navbar.css">
-    <link rel="stylesheet" href="assets/style/css/internal-pages.css">
+    <link rel="stylesheet" href="assets/style/css/variables.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/animations.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/navbar.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/internal-pages.css?v=<?= time() ?>">
     <link rel="stylesheet" href="assets/style/css/perfil.css?v=<?= time() ?>">
 </head>
 
 <body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar-custom">
+        <div class="container d-flex align-items-center justify-content-between" style="max-width:960px;">
+            <a href="dashboard.php" class="logo">
+                <svg class="neural-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" />
+                    <circle cx="4" cy="18" r="2" fill="currentColor" />
+                    <circle cx="9" cy="13" r="2" fill="currentColor" />
+                    <circle cx="15" cy="15" r="2" fill="currentColor" />
+                    <circle cx="20" cy="6" r="3" fill="var(--brand-accent)" />
+                </svg>
+                Invest<span>AI</span>
+            </a>
+            <div class="d-flex align-items-center gap-4">
+                <a href="dashboard.php" class="nav-link-custom">Dashboard</a>
+                <a href="resumo.php" class="nav-link-custom nav-resumo">Resumo Financeiro</a>
+                <a href="ganhos.php" class="nav-link-custom nav-ganhos">Ganhos</a>
+                <a href="despesas.php" class="nav-link-custom nav-despesas">Despesas</a>
+                <a href="noticias.php" class="nav-link-custom nav-noticias">Notícias IA</a>
+                <a href="perfil.php" class="user-badge active"><i class="bi bi-person-fill me-1"></i><?= $nome ?></a>
+                <a href="logout.php" class="nav-link-custom" title="Sair"><i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    </nav>
 
     <div class="main-container">
 
@@ -70,15 +96,15 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                     </p>
                     <div class="profile-stats">
                         <div class="profile-stat">
-                            <i class="bi bi-arrow-up-right" style="color:#4ade80;"></i>
+                            <i class="bi bi-arrow-up-right" style="color: var(--color-gain);"></i>
                             <span class="stat-value" id="stat-ganhos">0</span> ganhos
                         </div>
                         <div class="profile-stat">
-                            <i class="bi bi-arrow-down-left" style="color:#f87171;"></i>
+                            <i class="bi bi-arrow-down-left" style="color: var(--color-expense);"></i>
                             <span class="stat-value" id="stat-despesas">0</span> despesas
                         </div>
                         <div class="profile-stat">
-                            <i class="bi bi-wallet2" style="color:#818cf8;"></i>
+                            <i class="bi bi-wallet2" style="color: var(--brand-accent);"></i>
                             <span class="stat-value" id="stat-saldo">R$ 0,00</span>
                         </div>
                     </div>
@@ -104,14 +130,16 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                                 <label for="perfil-nome">NOME COMPLETO</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-person"></i>
-                                    <input type="text" id="perfil-nome" class="form-control" placeholder="Seu nome completo">
+                                    <input type="text" id="perfil-nome" class="form-control"
+                                        placeholder="Seu nome completo">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="perfil-email">E-MAIL</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-envelope"></i>
-                                    <input type="email" id="perfil-email" class="form-control" placeholder="seu@email.com">
+                                    <input type="email" id="perfil-email" class="form-control"
+                                        placeholder="seu@email.com">
                                 </div>
                             </div>
                         </div>
@@ -120,15 +148,18 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                                 <label for="perfil-cpf">CPF</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-fingerprint"></i>
-                                    <input type="text" id="perfil-cpf" class="form-control" disabled placeholder="000.000.000-00">
+                                    <input type="text" id="perfil-cpf" class="form-control" disabled
+                                        placeholder="000.000.000-00">
                                 </div>
-                                <span class="field-hint"><i class="bi bi-lock-fill"></i> O CPF não pode ser alterado.</span>
+                                <span class="field-hint"><i class="bi bi-lock-fill"></i> O CPF não pode ser
+                                    alterado.</span>
                             </div>
                             <div class="form-group">
                                 <label for="perfil-telefone">TELEFONE</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-phone"></i>
-                                    <input type="text" id="perfil-telefone" class="form-control" placeholder="(00) 00000-0000" maxlength="15">
+                                    <input type="text" id="perfil-telefone" class="form-control"
+                                        placeholder="(00) 00000-0000" maxlength="15">
                                 </div>
                             </div>
                         </div>
@@ -151,30 +182,41 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                                 <label for="perfil-renda">RENDA MENSAL (R$)</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-currency-dollar"></i>
-                                    <input type="number" id="perfil-renda" class="form-control" placeholder="0,00" step="0.01" min="0">
+                                    <input type="number" id="perfil-renda" class="form-control" placeholder="0,00"
+                                        step="0.01" min="0">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="perfil-objetivo">OBJETIVO FINANCEIRO</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-bullseye"></i>
-                                    <input type="text" id="perfil-objetivo" class="form-control" placeholder="Ex: Comprar um carro, viajar...">
+                                    <input type="text" id="perfil-objetivo" class="form-control"
+                                        placeholder="Ex: Comprar um carro, viajar...">
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group" style="margin-top: 12px;">
-                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3" style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); padding: 16px 20px; border-radius: 16px; margin-bottom: 24px;">
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3"
+                                style="background: rgba(179, 157, 219, 0.08); border: 1px solid rgba(179, 157, 219, 0.2); padding: 16px 20px; border-radius: 16px; margin-bottom: 24px;">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div style="background: rgba(99, 102, 241, 0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #818cf8;">
+                                    <div
+                                        style="background: rgba(179, 157, 219, 0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: var(--brand-accent);">
                                         <i class="bi bi-patch-question-fill"></i>
                                     </div>
                                     <div>
-                                        <h4 style="font-size: 0.95rem; font-weight: 700; margin: 0 0 2px 0; color: #e0e7ff;">Descubra o seu Perfil</h4>
-                                        <p style="font-size: 0.8rem; margin: 0; color: #a5b4fc;">Não tem certeza? Faça um quiz rápido e nós ajudamos.</p>
+                                        <h4
+                                            style="font-size: 0.95rem; font-weight: 700; margin: 0 0 2px 0; color: #e0e7ff;">
+                                            Descubra o seu Perfil</h4>
+                                        <p style="font-size: 0.8rem; margin: 0; color: #a5b4fc;">Não tem certeza? Faça
+                                            um quiz rápido e nós ajudamos.</p>
                                     </div>
                                 </div>
-                                <button type="button" onclick="showToast('Em breve! O Quiz de Perfil de Investidor será adicionado nas próximas atualizações. Fique ligado!', 'success')" style="background: linear-gradient(135deg, #6366f1, #4f46e5); border: none; color: white; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                <button type="button"
+                                    onclick="showToast('Em breve! O Quiz de Perfil de Investidor será adicionado nas próximas atualizações. Fique ligado!', 'success')"
+                                    style="background: var(--brand-accent); border: none; color: #0b0d11; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(179, 157, 219, 0.25);"
+                                    onmouseover="this.style.transform='translateY(-2px)'"
+                                    onmouseout="this.style.transform='translateY(0)'">
                                     Fazer Quiz
                                 </button>
                             </div>
@@ -217,7 +259,8 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                                 <label for="perfil-senha-atual">SENHA ATUAL</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-lock"></i>
-                                    <input type="password" id="perfil-senha-atual" class="form-control" placeholder="••••••••">
+                                    <input type="password" id="perfil-senha-atual" class="form-control"
+                                        placeholder="••••••••">
                                 </div>
                             </div>
                         </div>
@@ -226,7 +269,8 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                                 <label for="perfil-nova-senha">NOVA SENHA</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-key"></i>
-                                    <input type="password" id="perfil-nova-senha" class="form-control" placeholder="Mín. 6 caracteres">
+                                    <input type="password" id="perfil-nova-senha" class="form-control"
+                                        placeholder="Mín. 6 caracteres">
                                 </div>
                                 <div class="password-strength">
                                     <div class="strength-bar"></div>
@@ -239,11 +283,13 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                                 <label for="perfil-confirma-senha">CONFIRMAR NOVA SENHA</label>
                                 <div class="input-with-icon">
                                     <i class="bi bi-key-fill"></i>
-                                    <input type="password" id="perfil-confirma-senha" class="form-control" placeholder="Repita a nova senha">
+                                    <input type="password" id="perfil-confirma-senha" class="form-control"
+                                        placeholder="Repita a nova senha">
                                 </div>
                             </div>
                         </div>
-                        <span class="field-hint"><i class="bi bi-info-circle"></i> Deixe em branco se não deseja alterar a senha.</span>
+                        <span class="field-hint"><i class="bi bi-info-circle"></i> Deixe em branco se não deseja alterar
+                            a senha.</span>
                     </div>
                 </div>
 

@@ -29,10 +29,10 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/style/css/variables.css">
-    <link rel="stylesheet" href="assets/style/css/animations.css">
-    <link rel="stylesheet" href="assets/style/css/navbar.css">
-    <link rel="stylesheet" href="assets/style/css/internal-pages.css">
+    <link rel="stylesheet" href="assets/style/css/variables.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/animations.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/navbar.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/internal-pages.css?v=<?= time() ?>">
     <link rel="stylesheet" href="assets/style/css/dashboard.css?v=<?= time() ?>">
 
     <?php if ($is_first_login): ?>
@@ -49,12 +49,22 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar-custom">
         <div class="container d-flex align-items-center justify-content-between" style="max-width:960px;">
-            <a href="dashboard.php" class="logo"><i class="bi bi-graph-up-arrow me-1"></i>Invest<span>Ai</span></a>
+            <a href="dashboard.php" class="logo">
+                <svg class="neural-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="4" cy="18" r="2" fill="currentColor"/>
+                    <circle cx="9" cy="13" r="2" fill="currentColor"/>
+                    <circle cx="15" cy="15" r="2" fill="currentColor"/>
+                    <circle cx="20" cy="6" r="3" fill="var(--brand-accent)"/>
+                </svg>
+                Invest<span>AI</span>
+            </a>
             <div class="d-flex align-items-center gap-4">
                 <a href="dashboard.php" class="nav-link-custom">Dashboard</a>
                 <a href="resumo.php" class="nav-link-custom active nav-resumo">Resumo Financeiro</a>
                 <a href="ganhos.php" class="nav-link-custom nav-ganhos">Ganhos</a>
                 <a href="despesas.php" class="nav-link-custom nav-despesas">Despesas</a>
+                <a href="noticias.php" class="nav-link-custom nav-noticias">Notícias IA</a>
                 <a href="perfil.php" class="user-badge"><i class="bi bi-person-fill me-1"></i><?= $nome ?></a>
                 <a href="logout.php" class="nav-link-custom" title="Sair"><i class="bi bi-box-arrow-right"></i></a>
             </div>
@@ -94,16 +104,16 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
                 <!-- Nova seção de comparativos do Resumo Financeiro -->
                 <div class="comparative-summary d-flex flex-wrap gap-3 mb-4" id="comparative-summary-container">
                     <div class="comp-box" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 15px 20px; border-radius: 12px; flex: 1; min-width: 280px;">
-                        <span style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Ganhos no Período</span>
+                        <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Ganhos no Período</span>
                         <div class="d-flex align-items-center gap-3 mt-1">
-                            <span style="font-size: 1.4rem; font-weight: 700; color: #fff;" id="total-ganhos">R$ 0,00</span>
+                            <span style="font-size: 1.4rem; font-weight: 700; color: var(--text-main);" id="total-ganhos">R$ 0,00</span>
                             <div id="badge-ganhos" class="comparison-badge" style="font-size: 0.85rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: rgba(0,0,0,0.2);"></div>
                         </div>
                     </div>
                     <div class="comp-box" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 15px 20px; border-radius: 12px; flex: 1; min-width: 280px;">
-                        <span style="color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Despesas no Período</span>
+                        <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Despesas no Período</span>
                         <div class="d-flex align-items-center gap-3 mt-1">
-                            <span style="font-size: 1.4rem; font-weight: 700; color: #fff;" id="total-despesas">R$ 0,00</span>
+                            <span style="font-size: 1.4rem; font-weight: 700; color: var(--text-main);" id="total-despesas">R$ 0,00</span>
                             <div id="badge-despesas" class="comparison-badge" style="font-size: 0.85rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: rgba(0,0,0,0.2);"></div>
                         </div>
                     </div>

@@ -1,0 +1,911 @@
+/**
+ * noticias.css — Estilos da página de Notícias & IA do InvestAI
+ */
+
+/* ─── Badge de Categoria nos Cards ──────────────────────────────────────────── */
+.badge-categoria {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    border: 1px solid;
+    margin-bottom: 6px;
+}
+
+.cat-transporte  { background: rgba(251,146,60,0.12);  color: #fb923c; border-color: rgba(251,146,60,0.35);  }
+.cat-alimentacao { background: rgba(34,197,94,0.12);   color: #22c55e; border-color: rgba(34,197,94,0.35);   }
+.cat-moradia     { background: rgba(179,157,219,0.12);  color: var(--brand-accent); border-color: rgba(179,157,219,0.35);  }
+.cat-lazer       { background: rgba(236,72,153,0.12);  color: #ec4899; border-color: rgba(236,72,153,0.35);  }
+.cat-tecnologia  { background: rgba(6,182,212,0.12);   color: #06b6d4; border-color: rgba(6,182,212,0.35);   }
+.cat-saude       { background: rgba(239,68,68,0.12);   color: #ef4444; border-color: rgba(239,68,68,0.35);   }
+.cat-financas    { background: rgba(99,102,241,0.12);  color: #818cf8; border-color: rgba(99,102,241,0.35);  }
+
+/* ─── Hero IA ───────────────────────────────────────────────────────────────── */
+.hero-ia {
+    background: rgba(26, 29, 41, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 30px 32px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-ia::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.hero-ia .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #a5b4fc;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.hero-ia h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-main);
+}
+
+.hero-ia p {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.hero-ia .btn-analisar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 26px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+}
+
+.hero-ia .btn-analisar:hover {
+    opacity: 0.92;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(99, 102, 241, 0.45);
+}
+
+.hero-ia .btn-analisar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ─── Fontes / Filtros ───────────────────────────────────────────────────────── */
+.noticias-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.fonte-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.fonte-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 5px 16px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.fonte-btn.active,
+.fonte-btn:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.4);
+    color: #a5b4fc;
+}
+
+.noticias-count {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* ─── Grid de Notícias ───────────────────────────────────────────────────────── */
+.noticias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 32px;
+    margin-bottom: 36px;
+}
+
+.noticia-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 32px;
+    backdrop-filter: blur(16px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.noticia-card:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(255, 255, 255, 0.03);
+}
+
+.noticia-card .card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.fonte-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0;
+    border: none !important;
+    background: transparent !important;
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.3); /* Cor padrão, será sobrescrita pelas classes específicas abaixo */
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.fonte-g1 { color: #EF5350 !important; }
+.fonte-infomoney { color: #B39DDB !important; }
+.fonte-valor { color: #FFB74D !important; }
+
+.badge-impacto {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.badge-impacto.alto {
+    background: transparent;
+    border: 1px solid #EF5350;
+    color: #EF5350;
+}
+
+.badge-impacto.medio {
+    background: transparent;
+    border: 1px solid #FFB74D;
+    color: #FFB74D;
+}
+
+.badge-impacto.baixo {
+    background: transparent;
+    border: 1px solid #81C784;
+    color: #81C784;
+}
+
+.noticia-card .titulo {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.noticia-card .resumo {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #a0a0a0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+}
+
+.noticia-card .card-footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.noticia-card .data {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.noticia-card .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    transition: color 0.2s;
+}
+
+.noticia-card .link-btn:hover {
+    color: var(--primary-hover);
+}
+
+/* ─── Skeleton Loader ─────────────────────────────────────────────────────────── */
+.skeleton-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skeleton-line {
+    background: linear-gradient(90deg,
+        rgba(255,255,255,0.05) 25%,
+        rgba(255,255,255,0.1) 50%,
+        rgba(255,255,255,0.05) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+    height: 14px;
+}
+
+.skeleton-line.short { width: 40%; }
+.skeleton-line.medium { width: 70%; }
+.skeleton-line.full { width: 100%; }
+.skeleton-line.tall { height: 60px; }
+
+@keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ─── Painel IA ─────────────────────────────────────────────────────────────── */
+.ia-panel {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.ia-panel-header {
+    padding: 22px 26px;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ia-panel-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-main);
+}
+
+.ia-panel-header h2 i {
+    color: #818cf8;
+}
+
+.alerta-nivel {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.alerta-nivel.alto   { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
+.alerta-nivel.medio  { background: rgba(234,179,8,0.12); border: 1px solid rgba(234,179,8,0.3);  color: #fbbf24; }
+.alerta-nivel.baixo  { background: rgba(34,197,94,0.1);  border: 1px solid rgba(34,197,94,0.25); color: #4ade80; }
+
+.ia-resumo-geral {
+    padding: 18px 26px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ia-analise-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
+
+.ia-analise-item:last-child {
+    border-bottom: none;
+}
+
+.ia-analise-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 26px;
+    cursor: pointer;
+    transition: background 0.15s;
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-family: 'Outfit', sans-serif;
+    text-align: left;
+    color: var(--text-main);
+}
+
+.ia-analise-toggle:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.ia-analise-toggle .titulo-noticia {
+    flex: 1;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-main);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ia-analise-toggle .chevron {
+    font-size: 0.85rem;
+    color: #555;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+}
+
+.ia-analise-item.open .chevron {
+    transform: rotate(180deg);
+}
+
+.ia-analise-body {
+    display: none;
+    padding: 0 26px 20px;
+    animation: fadeIn 0.2s ease;
+}
+
+.ia-analise-item.open .ia-analise-body {
+    display: block;
+}
+
+.ia-detail-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.ia-detail-box {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 14px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ia-detail-box .label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ia-detail-box.investimento .label { color: var(--brand-accent); }
+.ia-detail-box.economia      .label { color: var(--brand-accent); }
+
+.ia-detail-box .text {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.ia-como-afeta {
+    font-size: 0.83rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    margin-top: 0;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 3px solid rgba(99, 102, 241, 0.4);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+}
+
+.top-acao {
+    margin: 0 26px 26px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(6,182,212,0.08));
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 14px;
+    font-size: 0.88rem;
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+.top-acao strong {
+    display: block;
+    color: #a5b4fc;
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+/* ─── Loading IA ────────────────────────────────────────────────────────────── */
+.ia-loading {
+    display: none;
+    padding: 40px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    gap: 12px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ia-loading.show {
+    display: flex;
+}
+
+.ia-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(99,102,241,0.2);
+    border-top: 3px solid #6366f1;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+
+/* ─── Sem chave API ─────────────────────────────────────────────────────────── */
+.sem-chave-card {
+    background: rgba(99,102,241,0.06);
+    border: 1px dashed rgba(99,102,241,0.3);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    margin: 20px 26px 26px;
+}
+
+.sem-chave-card i {
+    font-size: 2rem;
+    color: #818cf8;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.sem-chave-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.sem-chave-card p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+.sem-chave-card code {
+    background: rgba(99,102,241,0.15);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #a5b4fc;
+}
+
+/* ─── Tags de Categoria ─────────────────────────────────────────────────────── */
+.badge-categoria {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.cat-transporte    { background: rgba(255,255,255,0.05);  border: 1px solid rgba(255,255,255,0.1);  color: var(--text-main); }
+.cat-alimentacao   { background: rgba(255,255,255,0.05);  border: 1px solid rgba(255,255,255,0.1);  color: var(--text-main); }
+.cat-moradia       { background: rgba(255,255,255,0.05);  border: 1px solid rgba(255,255,255,0.1);  color: var(--text-main); }
+.cat-lazer         { background: rgba(255,255,255,0.05);  border: 1px solid rgba(255,255,255,0.1);  color: var(--text-main); }
+.cat-tecnologia    { background: rgba(255,255,255,0.05);  border: 1px solid rgba(255,255,255,0.1);  color: var(--text-main); }
+.cat-saude         { background: rgba(255,255,255,0.05);  border: 1px solid rgba(255,255,255,0.1);  color: var(--text-main); }
+.cat-financas      { background: rgba(179,157,219,0.15);  border: 1px solid rgba(179,157,219,0.35);  color: var(--brand-accent); }
+
+.noticia-card.destaque {
+    border-left: 4px solid var(--brand-accent);
+    box-shadow: -4px 0 10px rgba(179, 157, 219, 0.05);
+}
+
+/* Removed border effect on before pseudo class */
+
+/* ─── Badge "Afeta suas despesas" ────────────────────────────────────────────── */
+.badge-destaque-usuario {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: rgba(251,191,36,0.15);
+    border: 1px solid rgba(251,191,36,0.35);
+    color: #fbbf24;
+    width: 100%;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.badge-destaque-usuario i {
+    font-size: 0.75rem;
+}
+
+/* ─── Botão link original no card ────────────────────────────────────────────── */
+.noticia-card .btn-card-original {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #818cf8;
+    transition: color 0.2s;
+    text-decoration: none;
+    padding: 0;
+}
+
+.noticia-card .btn-card-original:hover {
+    color: #a5b4fc;
+    opacity: 1;
+}
+
+/* ─── Filtros de Categoria ───────────────────────────────────────────────────── */
+.categoria-filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.cat-filter-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.cat-filter-btn.active,
+.cat-filter-btn:hover {
+    background: rgba(99,102,241,0.15);
+    border-color: rgba(99,102,241,0.4);
+    color: #a5b4fc;
+}
+
+.cat-filter-btn.relevante {
+    background: rgba(251,191,36,0.1);
+    border-color: rgba(251,191,36,0.35);
+    color: #fbbf24;
+}
+
+.cat-filter-btn.relevante.active,
+.cat-filter-btn.relevante:hover {
+    background: rgba(251,191,36,0.2);
+    border-color: rgba(251,191,36,0.6);
+}
+
+/* Badge de contagem dentro dos filtros */
+.cat-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 1px 7px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    min-width: 20px;
+    line-height: 1.4;
+}
+
+.cat-filter-btn.active .cat-count {
+    background: rgba(99,102,241,0.25);
+}
+
+.cat-filter-btn.relevante .cat-count {
+    background: rgba(251,191,36,0.25);
+}
+
+/* Categoria sem notícias */
+.cat-filter-btn.vazia {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.cat-filter-btn.vazia:hover {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.08);
+    color: var(--text-muted);
+}
+
+
+/* ─── Info de destaque pós-análise ───────────────────────────────────────────── */
+.destaque-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.25);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    color: #fde68a;
+    margin-bottom: 16px;
+}
+
+.destaque-info-bar i {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* ─── Seção das ações práticas no painel IA ──────────────────────────────────── */
+.ia-acoes-praticas {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.ia-acao-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.ia-acao-item i {
+    color: #4ade80;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.ia-cenario-hipotetico {
+    font-size: 0.82rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    padding: 10px 14px;
+    background: rgba(99,102,241,0.06);
+    border-left: 3px solid rgba(99,102,241,0.3);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+/* ─── Responsivo ────────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Hero Unificado (layout duas colunas) ───────────────────────────────────── */
+.hero-ia-content { flex: 1; }
+.hero-ia-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.hero-stats-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 5px 13px;
+    font-size: 0.77rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.stat-chip.destaque {
+    background: rgba(251,191,36,0.10);
+    border-color: rgba(251,191,36,0.28);
+    color: #fde68a;
+}
+
+.hero-btns-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.hero-ia { display: flex; align-items: flex-start; gap: 24px; }
+.hero-ia p { margin-bottom: 0; }
+
+.btn-atualizar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.38);
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    color: #a5b4fc;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-atualizar:hover { background: rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.55); }
+.btn-atualizar:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.ultima-atualizacao {
+    font-size: 0.7rem;
+    color: #475569;
+    text-align: right;
+}
+
+/* ─── Toast de feedback ──────────────────────────────────────────────────────── */
+.news-toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: rgba(15,23,42,0.96);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 0.84rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    max-width: 340px;
+}
+
+.news-toast.show    { transform: translateY(0); opacity: 1; }
+.news-toast.success { border-color: rgba(34,197,94,0.4); }
+.news-toast.error   { border-color: rgba(239,68,68,0.4); }
+.news-toast i       { font-size: 1.1rem; flex-shrink: 0; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+    .noticias-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ia-detail-row {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-ia {
+        flex-direction: column;
+        padding: 22px 18px;
+    }
+
+    .hero-ia-actions { align-items: flex-start; width: 100%; }
+    .hero-stats-row, .hero-btns-row { justify-content: flex-start; }
+    .ultima-atualizacao { text-align: left; }
+
+    .hero-ia h2 { font-size: 1.2rem; }
+
+    .ia-panel-header,
+    .ia-analise-toggle,
+    .ia-analise-body {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .top-acao { margin: 0 18px 18px; }
+    .sem-chave-card { margin: 12px 18px 18px; }
+}

@@ -9,6 +9,7 @@ if (isset($_SESSION['usuario_id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,99 +32,113 @@ if (isset($_SESSION['usuario_id'])) {
     <link rel="stylesheet" href="assets/style/css/auth.css">
     <link rel="stylesheet" href="assets/style/css/animations.css">
 </head>
+
 <body>
 
-<div class="auth-card">
-    <!-- Logo -->
-    <div class="text-center mb-5">
-        <a href="index.php" class="logo"><i class="bi bi-graph-up-arrow me-1"></i>Invest<span>Ai</span></a>
-        <p class="text-secondary mt-2 mb-0" style="font-size:0.88rem;">Sua inteligência financeira pessoal</p>
+    <div class="auth-card">
+        <!-- Logo -->
+        <div class="text-center mb-5">
+            <a href="index.php" class="logo">
+                <svg class="neural-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" />
+                    <circle cx="4" cy="18" r="2" fill="currentColor" />
+                    <circle cx="9" cy="13" r="2" fill="currentColor" />
+                    <circle cx="15" cy="15" r="2" fill="currentColor" />
+                    <circle cx="20" cy="6" r="3" fill="var(--brand-accent)" />
+                </svg>
+                Invest<span>AI</span>
+            </a>
+            <p class="text-secondary mt-2 mb-0" style="font-size:0.88rem;">Sua inteligência financeira pessoal</p>
+        </div>
+
+        <!-- Abas -->
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login">Entrar</button>
+            <button class="auth-tab" id="tab-cadastro">Criar Conta</button>
+        </div>
+
+        <!-- Alert de feedback -->
+        <div id="auth-alert" class="auth-alert"></div>
+
+        <!-- ===== FORM LOGIN ===== -->
+        <form id="form-login">
+            <div class="mb-3">
+                <label class="form-label">E-MAIL</label>
+                <div class="input-icon">
+                    <input type="email" id="login-email" class="form-control" placeholder="seu@email.com" required>
+                    <i class="bi bi-envelope"></i>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">SENHA</label>
+                <div class="input-icon">
+                    <input type="password" id="login-senha" class="form-control" placeholder="••••••••" required>
+                    <i class="bi bi-lock"></i>
+                </div>
+            </div>
+            <button type="submit" class="btn-auth">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
+            </button>
+            <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
+                Não tem conta? <a href="#" id="link-to-cadastro" style="color:#6366f1;">Cadastre-se aqui</a>
+            </p>
+        </form>
+
+        <!-- ===== FORM CADASTRO ===== -->
+        <form id="form-cadastro" style="display:none;">
+            <div class="mb-3">
+                <label class="form-label">NOME COMPLETO</label>
+                <div class="input-icon">
+                    <input type="text" id="cadastro-nome" class="form-control" placeholder="Seu nome" required>
+                    <i class="bi bi-person"></i>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">E-MAIL</label>
+                <div class="input-icon">
+                    <input type="email" id="cadastro-email" class="form-control" placeholder="seu@email.com" required>
+                    <i class="bi bi-envelope"></i>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">CPF</label>
+                <div class="input-icon">
+                    <input type="text" id="cadastro-cpf" class="form-control" placeholder="000.000.000-00"
+                        maxlength="14" required>
+                    <i class="bi bi-card-text"></i>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">TELEFONE</label>
+                <div class="input-icon">
+                    <input type="tel" id="cadastro-telefone" class="form-control" placeholder="(11) 99999-9999"
+                        maxlength="14" required>
+                    <i class="bi bi-telephone"></i>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">SENHA</label>
+                <div class="input-icon">
+                    <input type="password" id="cadastro-senha" class="form-control" placeholder="••••••••" required>
+                    <i class="bi bi-lock"></i>
+                </div>
+            </div>
+            <button type="submit" class="btn-auth">
+                <i class="bi bi-plus-circle me-2"></i>Criar Conta
+            </button>
+            <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
+                Já tem conta? <a href="#" id="link-to-login" style="color:#6366f1;">Faça login</a>
+            </p>
+        </form>
     </div>
 
-    <!-- Abas -->
-    <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-login">Entrar</button>
-        <button class="auth-tab" id="tab-cadastro">Criar Conta</button>
-    </div>
-
-    <!-- Alert de feedback -->
-    <div id="auth-alert" class="auth-alert"></div>
-
-    <!-- ===== FORM LOGIN ===== -->
-    <form id="form-login">
-        <div class="mb-3">
-            <label class="form-label">E-MAIL</label>
-            <div class="input-icon">
-                <input type="email" id="login-email" class="form-control" placeholder="seu@email.com" required>
-                <i class="bi bi-envelope"></i>
-            </div>
-        </div>
-        <div class="mb-4">
-            <label class="form-label">SENHA</label>
-            <div class="input-icon">
-                <input type="password" id="login-senha" class="form-control" placeholder="••••••••" required>
-                <i class="bi bi-lock"></i>
-            </div>
-        </div>
-        <button type="submit" class="btn-auth">
-            <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
-        </button>
-        <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
-            Não tem conta? <a href="#" id="link-to-cadastro" style="color:#6366f1;">Cadastre-se aqui</a>
-        </p>
-    </form>
-
-    <!-- ===== FORM CADASTRO ===== -->
-    <form id="form-cadastro" style="display:none;">
-        <div class="mb-3">
-            <label class="form-label">NOME COMPLETO</label>
-            <div class="input-icon">
-                <input type="text" id="cadastro-nome" class="form-control" placeholder="Seu nome" required>
-                <i class="bi bi-person"></i>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">E-MAIL</label>
-            <div class="input-icon">
-                <input type="email" id="cadastro-email" class="form-control" placeholder="seu@email.com" required>
-                <i class="bi bi-envelope"></i>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">CPF</label>
-            <div class="input-icon">
-                <input type="text" id="cadastro-cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" required>
-                <i class="bi bi-card-text"></i>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">TELEFONE</label>
-            <div class="input-icon">
-                <input type="tel" id="cadastro-telefone" class="form-control" placeholder="(11) 99999-9999" maxlength="14" required>
-                <i class="bi bi-telephone"></i>
-            </div>
-        </div>
-        <div class="mb-4">
-            <label class="form-label">SENHA</label>
-            <div class="input-icon">
-                <input type="password" id="cadastro-senha" class="form-control" placeholder="••••••••" required>
-                <i class="bi bi-lock"></i>
-            </div>
-        </div>
-        <button type="submit" class="btn-auth">
-            <i class="bi bi-plus-circle me-2"></i>Criar Conta
-        </button>
-        <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
-            Já tem conta? <a href="#" id="link-to-login" style="color:#6366f1;">Faça login</a>
-        </p>
-    </form>
-</div>
-
-<script src="api/utils/shared.js"></script>
-<script src="assets/style/js/ui.js"></script>
-<script src="api/auth/authUI.js"></script>
-<script src="api/auth/login.js"></script>
-<script src="api/auth/cadastro.js"></script>
+    <script src="api/utils/shared.js"></script>
+    <script src="assets/style/js/ui.js"></script>
+    <script src="api/auth/authUI.js"></script>
+    <script src="api/auth/login.js"></script>
+    <script src="api/auth/cadastro.js"></script>
 
 </body>
+
 </html>

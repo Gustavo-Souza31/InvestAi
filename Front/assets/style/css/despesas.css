@@ -7,82 +7,51 @@
 
 /* Header icon */
 .page-header h1 i {
-    color: var(--danger-color);
+    color: var(--brand-accent);
 }
 
 /* Summary cards hover */
 .summary-card:hover {
-    border-color: rgba(239, 68, 68, 0.3);
+    border-color: var(--brand-accent);
 }
 
 .summary-card .value {
-    color: #f87171;
+    color: var(--color-expense);
 }
 
 /* Form icon */
 .form-card h2 i {
-    color: var(--danger-color);
+    color: var(--brand-accent);
 }
 
-/* Submit button - Despesa */
-.btn-submit {
-    background: linear-gradient(135deg, var(--danger-color), var(--danger-dark));
-}
 
-.btn-submit:hover {
-    color: #fff;
-}
 
 /* List header icon */
 .list-header h2 i {
-    color: var(--danger-color);
+    color: var(--brand-accent);
 }
 
 /* Badge colors */
 .badge-count {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
+    background: rgba(179, 157, 219, 0.15);
+    color: var(--brand-accent);
 }
 
 /* Item icon background */
 .item-icon {
-    background: rgba(239, 68, 68, 0.12);
+    background: rgba(179, 157, 219, 0.12);
 }
 
 .item-icon i {
-    color: #f87171;
+    color: var(--brand-accent);
 }
 
 /* Item value color */
 .item-value {
-    color: #f87171;
+    color: var(--color-expense);
 }
 
 /* Modal icon */
 .modal-card h2 i {
-    color: var(--danger-color);
-}
-
-.nav-link-custom.active.nav-despesas {
-    color: var(--danger-color);
-}
-
-.nav-link-custom.nav-dashboard:hover {
-    color: #a855f7;
-}
-
-.logo span {
-    color: var(--danger-color);
-}
-
-.user-badge {
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(239, 68, 68, 0.25);
-    color: #f87171;
-}
-
-.form-control:focus {
-    border-color: var(--danger-color) !important;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
-    background: rgba(239, 68, 68, 0.04) !important;
+    color: var(--brand-accent);
 }

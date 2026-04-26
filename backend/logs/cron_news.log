@@ -1,0 +1,230 @@
+[2026-04-26 19:35:43] === InvestAI News Cron — Iniciando ===
+[2026-04-26 19:35:43] Passo 1/3: Coletando RSS...
+[2026-04-26 19:35:43]   → Primeira fonte: InfoMoney
+[2026-04-26 19:35:43]   → Total após filtro econômico: 2 notícias
+[2026-04-26 19:35:43] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 19:35:43] ERRO no processamento IA: HTTP 500 — 
+[2026-04-26 19:35:43] Resposta: 
+[2026-04-26 19:39:20] === InvestAI News Cron — Iniciando ===
+[2026-04-26 19:39:20] Passo 1/3: Coletando RSS...
+[2026-04-26 19:39:20]   → Primeira fonte: InfoMoney
+[2026-04-26 19:39:20]   → Total após filtro econômico: 2 notícias
+[2026-04-26 19:39:20] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 19:39:24]   → Status IA: error
+[2026-04-26 19:39:24]   → Inseridos/Atualizados: 0
+[2026-04-26 19:39:24]   → Ignorados: 0
+[2026-04-26 19:39:24] AVISO: Processamento IA retornou status não-ok: Gemini: This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.
+[2026-04-26 19:39:24] Passo 3/3: Removendo notícias com mais de 7 dias...
+[2026-04-26 19:39:48] === InvestAI News Cron — Iniciando ===
+[2026-04-26 19:39:48] Passo 1/3: Coletando RSS...
+[2026-04-26 19:39:48]   → Primeira fonte: InfoMoney
+[2026-04-26 19:39:48]   → Total após filtro econômico: 2 notícias
+[2026-04-26 19:39:48] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 19:39:57]   → Status IA: ok
+[2026-04-26 19:39:57]   → Inseridos/Atualizados: 2
+[2026-04-26 19:39:57]   → Ignorados: 0
+[2026-04-26 19:39:57] Passo 3/3: Removendo notícias com mais de 7 dias...
+[2026-04-26 19:39:57]   → 0 notícias removidas.
+[2026-04-26 19:39:57] === Concluído em 9.16s ===
+[2026-04-26 19:44:03] Skipped — última execução há 4 min. Aguarde 15 min entre execuções.
+[2026-04-26 19:49:58] === InvestAI News Cron — Iniciando ===
+[2026-04-26 19:49:58] Passo 1/3: Coletando RSS...
+[2026-04-26 19:49:58]   → Primeira fonte: InfoMoney
+[2026-04-26 19:49:58]   → Total após filtro econômico: 2 notícias
+[2026-04-26 19:49:58] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 19:50:10]   → Status IA: ok
+[2026-04-26 19:50:10]   → Inseridos/Atualizados: 2
+[2026-04-26 19:50:10]   → Ignorados: 0
+[2026-04-26 19:50:10] Passo 3/3: Removendo notícias com mais de 7 dias...
+[2026-04-26 19:50:10]   → 0 notícias removidas.
+[2026-04-26 19:50:10] === Concluído em 12.63s ===
+[2026-04-26 19:59:12] === InvestAI News Cron — Iniciando ===
+[2026-04-26 19:59:12] Passo 1/3: Coletando RSS...
+[2026-04-26 19:59:13]   → Primeira fonte: InfoMoney
+[2026-04-26 19:59:13]   → Total após filtro econômico: 2 notícias
+[2026-04-26 19:59:13] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 19:59:24]   → Status IA: ok
+[2026-04-26 19:59:24]   → Inseridos/Atualizados: 2
+[2026-04-26 19:59:24]   → Ignorados: 0
+[2026-04-26 19:59:24] Passo 3/3: Removendo notícias com mais de 7 dias...
+[2026-04-26 19:59:24]   → 0 notícias removidas.
+[2026-04-26 19:59:24] === Concluído em 12.16s ===
+[2026-04-26 20:02:00] === InvestAI News Cron — Iniciando ===
+[2026-04-26 20:02:00] Passo 1/3: Coletando RSS...
+[2026-04-26 20:02:01]   → Primeira fonte: Investing.com
+[2026-04-26 20:02:01]   → Total após filtro econômico: 37 notícias
+[2026-04-26 20:02:01] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 20:02:18]   → Status IA: error
+[2026-04-26 20:02:18]   → Inseridos/Atualizados: 0
+[2026-04-26 20:02:18]   → Ignorados: 0
+[2026-04-26 20:02:18] AVISO: Processamento IA retornou status não-ok: JSON inválido na resposta da IA.
+[2026-04-26 20:02:18] Passo 3/3: Removendo notícias com mais de 7 dias...
+[2026-04-26 20:02:18]   → 0 notícias removidas.
+[2026-04-26 20:02:18] === Concluído em 17.86s ===
+[2026-04-26 20:03:47] === InvestAI News Cron — Iniciando ===
+[2026-04-26 20:03:47] Passo 1/3: Coletando RSS...
+[2026-04-26 20:03:49]   → Primeira fonte: Investing.com
+[2026-04-26 20:03:49]   → Total após filtro econômico: 37 notícias
+[2026-04-26 20:03:49] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 20:05:06] === InvestAI News Cron — Iniciando ===
+[2026-04-26 20:05:06] Passo 1/3: Coletando RSS...
+[2026-04-26 20:05:07]   → Primeira fonte: Investing.com
+[2026-04-26 20:05:07]   → Total após filtro econômico: 37 notícias
+[2026-04-26 20:05:07] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 20:05:37] ERRO no processamento IA: HTTP 500 — 
+[2026-04-26 20:05:37] Resposta: <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>500 Internal Server Error</title>
+</head><body>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error or
+misconfiguration and was unable to complete
+your request.</p>
+<p>Please contact the server administrato
+[2026-04-26 20:06:04] === InvestAI News Cron — Iniciando ===
+[2026-04-26 20:06:04] Passo 1/3: Coletando RSS...
+[2026-04-26 20:06:05]   → Primeira fonte: Investing.com
+[2026-04-26 20:06:05]   → Total após filtro econômico: 37 notícias
+[2026-04-26 20:06:05] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 20:06:35] ERRO no processamento IA: HTTP 500 — 
+[2026-04-26 20:06:35] Resposta: <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>500 Internal Server Error</title>
+</head><body>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error or
+misconfiguration and was unable to complete
+your request.</p>
+<p>Please contact the server administrato
+[2026-04-26 20:06:43] === InvestAI News Cron — Iniciando ===
+[2026-04-26 20:06:43] Passo 1/3: Coletando RSS...
+[2026-04-26 20:06:44]   → Primeira fonte: Investing.com
+[2026-04-26 20:06:44]   → Total após filtro econômico: 37 notícias
+[2026-04-26 20:06:44] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 20:07:04]   → Status IA: ok
+[2026-04-26 20:07:04]   → Inseridos/Atualizados: 37
+[2026-04-26 20:07:04]   → Ignorados: 0
+[2026-04-26 20:07:04] Passo 3/3: Removendo notícias com mais de 7 dias...
+[2026-04-26 20:07:04]   → 0 notícias removidas.
+[2026-04-26 20:07:04] === Concluído em 21.65s ===
+[2026-04-26 20:20:41] === InvestAI News Cron — Iniciando ===
+[2026-04-26 20:20:41] Passo 1/3: Coletando RSS...
+[2026-04-26 20:20:42]   → Primeira fonte: Investing.com
+[2026-04-26 20:20:42]   → Total após filtro econômico: 36 notícias
+[2026-04-26 20:20:42] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 20:20:45]   → Status IA: ok
+[2026-04-26 20:20:45]   → Inseridos/Atualizados: 36
+[2026-04-26 20:20:45]   → Ignorados: 0
+[2026-04-26 20:20:45] Passo 3/3: Removendo notícias com mais de 7 dias...
+[2026-04-26 20:20:45]   → 0 notícias removidas.
+[2026-04-26 20:20:45] === Concluído em 4.17s ===
+[2026-04-26 20:21:52] === InvestAI News Cron — Iniciando ===
+[2026-04-26 20:21:52] Passo 1/3: Coletando RSS...
+[2026-04-26 20:21:53]   → Primeira fonte: Investing.com
+[2026-04-26 20:21:53]   → Total após filtro econômico: 36 notícias
+[2026-04-26 20:21:53] Passo 2/3: Enviando para Gemini AI...
+[2026-04-26 20:21:56]   → Status IA: ok
+[2026-04-26 20:21:56]   → Inseridos/Atualizados: 36
+[2026-04-26 20:21:56]   → Ignorados: 0
+[2026-04-26 20:21:56] Passo 3/3: Removendo notícias com mais de 7 dias...
+[2026-04-26 20:21:56]   → 0 notícias removidas.
+[2026-04-26 20:21:56] === Concluído em 3.64s ===
+[2026-04-26 20:23:46] === InvestAI News Cron — Iniciando ===
+[2026-04-26 20:23:46] Passo 1/3: Coletando RSS...
+[2026-04-26 20:23:47]   → Total coletado: 41 notícias
+[2026-04-26 20:23:47] Passo 2/3: Processando com Gemini AI...
+[2026-04-26 20:23:47]   → Lote 1/4 (12 notícias)...
+[2026-04-26 20:23:47]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:23:47]     ✗ Falha no lote 1
+[2026-04-26 20:23:48]   → Lote 2/4 (12 notícias)...
+[2026-04-26 20:23:48]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:23:48]     ✗ Falha no lote 2
+[2026-04-26 20:23:49]   → Lote 3/4 (12 notícias)...
+[2026-04-26 20:23:49]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:23:49]     ✗ Falha no lote 3
+[2026-04-26 20:23:49]   → Lote 4/4 (5 notícias)...
+[2026-04-26 20:23:50]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:23:50]     ✗ Falha no lote 4
+[2026-04-26 20:23:50]   → Total análises da IA: 0
+[2026-04-26 20:23:50] Passo 3/3: Limpando notícias com mais de 7 dias...
+[2026-04-26 20:23:50]   → 0 notícias removidas.
+[2026-04-26 20:23:50]   → Inseridos/Atualizados: 41 | Ignorados: 0
+[2026-04-26 20:23:50] === Concluído em 4.04s ===
+[2026-04-26 20:25:07] === InvestAI News Cron — Iniciando ===
+[2026-04-26 20:25:07] Passo 1/3: Coletando RSS...
+[2026-04-26 20:25:10]   → Total coletado: 41 notícias
+[2026-04-26 20:25:10] Passo 2/3: Processando com Gemini AI...
+[2026-04-26 20:25:10]   → Lote 1/4 (12 notícias)...
+[2026-04-26 20:25:10]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:25:10]     ✗ Falha no lote 1
+[2026-04-26 20:25:11]   → Lote 2/4 (12 notícias)...
+[2026-04-26 20:25:11]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:25:11]     ✗ Falha no lote 2
+[2026-04-26 20:25:11]   → Lote 3/4 (12 notícias)...
+[2026-04-26 20:25:12]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:25:12]     ✗ Falha no lote 3
+[2026-04-26 20:25:12]   → Lote 4/4 (5 notícias)...
+[2026-04-26 20:25:12]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:25:13]     ✗ Falha no lote 4
+[2026-04-26 20:25:13]   → Total análises da IA: 0
+[2026-04-26 20:25:13] Passo 3/3: Limpando notícias com mais de 7 dias...
+[2026-04-26 20:25:13]   → 0 notícias removidas.
+[2026-04-26 20:25:13]   → Inseridos/Atualizados: 41 | Ignorados: 0
+[2026-04-26 20:25:13] === Concluído em 5.08s ===
+[2026-04-26 20:26:04] === InvestAI News Cron — Iniciando ===
+[2026-04-26 20:26:04] Passo 1/3: Coletando RSS...
+[2026-04-26 20:26:05]   → Total coletado: 41 notícias
+[2026-04-26 20:26:05] Passo 2/3: Processando com Gemini AI...
+[2026-04-26 20:26:05]   → Lote 1/4 (12 notícias)...
+[2026-04-26 20:26:06]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:26:06]     ✗ Falha no lote 1
+[2026-04-26 20:26:06]   → Lote 2/4 (12 notícias)...
+[2026-04-26 20:26:07]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:26:07]     ✗ Falha no lote 2
+[2026-04-26 20:26:07]   → Lote 3/4 (12 notícias)...
+[2026-04-26 20:26:07]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:26:07]     ✗ Falha no lote 3
+[2026-04-26 20:26:08]   → Lote 4/4 (5 notícias)...
+[2026-04-26 20:26:08]   → Gemini HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+[2026-04-26 20:26:08]     ✗ Falha no lote 4
+[2026-04-26 20:26:08]   → Total análises da IA: 0
+[2026-04-26 20:26:08] Passo 3/3: Limpando notícias com mais de 7 dias...
+[2026-04-26 20:26:08]   → 0 notícias removidas.
+[2026-04-26 20:26:08]   → Inseridos/Atualizados: 41 | Ignorados: 0
+[2026-04-26 20:26:08] === Concluído em 3.91s ===

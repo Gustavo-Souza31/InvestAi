@@ -3,18 +3,24 @@
  */
 
 :root {
-    --primary-color: #6366f1;
-    --primary-hover: #4f46e5;
-    --success-color: #22c55e;
-    --danger-color: #ef4444;
-    --danger-dark: #dc2626;
-    --cyan-color: #06b6d4;
-    --bg-dark: #0d0f14;
-    --bg-card: rgba(30, 41, 59, 0.7);
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-color: rgba(255, 255, 255, 0.09);
-    --border-light: rgba(255, 255, 255, 0.06);
+    /* Color System - Regra de Ouro */
+    --brand-accent: #B39DDB;
+    --color-gain: #66bb6a;
+    --color-expense: #ef9a9a;
+    --status-warn: #FFB74D;
+
+    /* Cores de suporte */
+    --bg-dark: #0b0d11;
+    --bg-card: #161821;
+    --text-main: #ffffff;
+    --text-muted: #a0a0a0;
+    --border-color: rgba(255, 255, 255, 0.05);
+    --border-light: rgba(255, 255, 255, 0.05);
+
+    /* Legado - mapeado para o novo sistema para evitar quebra imediata */
+    --primary-color: var(--brand-accent);
+    --success-color: var(--color-gain);
+    --danger-color: var(--color-expense);
 }
 
 * {

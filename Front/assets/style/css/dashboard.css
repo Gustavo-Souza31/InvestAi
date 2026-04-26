@@ -7,82 +7,66 @@
 
 /* Header icon */
 .page-header h1 i {
-    color: #a855f7;
+    color: var(--brand-accent);
 }
 
 /* Summary cards hover */
 .summary-card:hover {
-    border-color: rgba(168, 85, 247, 0.3);
+    border-color: var(--brand-accent);
 }
 
 .summary-card .value {
-    color: #d8b4fe;
+    color: var(--text-main);
 }
 
 /* Form icon */
 .form-card h2 i {
-    color: #a855f7;
+    color: var(--brand-accent);
 }
 
-/* Submit button - Dashboard */
-.btn-submit {
-    background: linear-gradient(135deg, #a855f7, #9333ea);
-}
 
-.btn-submit:hover {
-    color: #fff;
-}
 
 /* List header icon */
 .list-header h2 i {
-    color: #a855f7;
+    color: var(--brand-accent);
 }
 
 /* Badge colors */
 .badge-count {
-    background: rgba(168, 85, 247, 0.15);
-    color: #d8b4fe;
+    background: rgba(179, 157, 219, 0.15);
+    color: var(--brand-accent);
 }
 
 /* Item icon background */
 .item-icon {
-    background: rgba(168, 85, 247, 0.12);
+    background: rgba(179, 157, 219, 0.12);
 }
 
 .item-icon i {
-    color: #d8b4fe;
+    color: var(--brand-accent);
 }
 
 /* Item value color */
 .item-value {
-    color: #d8b4fe;
+    color: var(--text-main);
 }
 
 /* Modal icon */
 .modal-card h2 i {
-    color: #a855f7;
+    color: var(--brand-accent);
 }
 
-/* User badge for dashboard */
-.user-badge {
-    background: rgba(168, 85, 247, 0.12);
-    border: 1px solid rgba(168, 85, 247, 0.25);
-    color: #d8b4fe;
-}
 
-/* Nav link active state for dashboard */
-.nav-link-custom.active,
-.logo span {
-    color: #a855f7;
-}
 
 /* Actions buttons */
 .btn-action {
-    background: linear-gradient(135deg, #a855f7, #9333ea);
+    background: var(--brand-accent);
+    color: #0b0d11;
 }
 
 .btn-action:hover {
-    color: #fff;
+    opacity: 0.9;
+    box-shadow: 0 4px 12px rgba(179, 157, 219, 0.3);
 }
 
 /* ===== SEÇÃO DE GRÁFICOS ===== */
@@ -112,7 +96,7 @@
 }
 
 .charts-section-header h2 i {
-    color: #a855f7;
+    color: var(--brand-accent);
     font-size: 1.4rem;
 }
 
@@ -187,7 +171,7 @@
 }
 
 .chart-container h3 i {
-    color: #a855f7;
+    color: var(--brand-accent);
     font-size: 1.1rem;
     background: rgba(168, 85, 247, 0.1);
     padding: 6px;
@@ -250,13 +234,13 @@
 }
 
 .chart-legend-item .legend-dot.ganhos {
-    background: #22c55e;
-    box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+    background: var(--color-gain);
+    box-shadow: 0 0 10px rgba(102, 187, 106, 0.3);
 }
 
 .chart-legend-item .legend-dot.despesas {
-    background: #ef4444;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    background: var(--color-expense);
+    box-shadow: 0 0 10px rgba(239, 154, 154, 0.3);
 }
 
 .chart-legend-item .legend-label {
@@ -306,13 +290,13 @@
 }
 
 .chart-saldo.positivo {
-    color: #4ade80;
-    text-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+    color: var(--color-gain);
+    text-shadow: 0 0 15px rgba(102, 187, 106, 0.2);
 }
 
 .chart-saldo.negativo {
-    color: #f87171;
-    text-shadow: 0 0 15px rgba(248, 113, 113, 0.2);
+    color: var(--color-expense);
+    text-shadow: 0 0 15px rgba(239, 154, 154, 0.2);
 }
 
 /* Loading dos gráficos */
@@ -329,7 +313,7 @@
 
 .charts-loading .loading-spinner {
     border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top: 3px solid #a855f7;
+    border-top: 3px solid var(--brand-accent);
     border-radius: 50%;
     width: 36px;
     height: 36px;
