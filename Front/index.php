@@ -24,15 +24,24 @@ if ($result && $result->num_rows > 0) {
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/style/css/style.css">
+    <link rel="stylesheet" href="assets/style/css/style.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/variables.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/navbar.css?v=<?= time() ?>">
 </head>
 <body>
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-nav">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="#">
-                <i class="bi bi-graph-up-arrow text-primary me-2"></i>Invest<span class="text-primary">Ai</span>
+            <a class="navbar-brand fw-bold fs-3 d-flex align-items-center gap-2" href="#">
+                <svg class="neural-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 28px; height: 28px;">
+                    <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="4" cy="18" r="2" fill="currentColor"/>
+                    <circle cx="9" cy="13" r="2" fill="currentColor"/>
+                    <circle cx="15" cy="15" r="2" fill="currentColor"/>
+                    <circle cx="20" cy="6" r="3" fill="#B39DDB"/>
+                </svg>
+                <div class="logo" style="font-size: 1.8rem; margin-bottom: 0;">Invest<span>AI</span></div>
             </a>
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>

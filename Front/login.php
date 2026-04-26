@@ -27,10 +27,10 @@ if (isset($_SESSION['usuario_id'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/style/css/variables.css">
-    <link rel="stylesheet" href="assets/style/css/navbar.css">
-    <link rel="stylesheet" href="assets/style/css/auth.css">
-    <link rel="stylesheet" href="assets/style/css/animations.css">
+    <link rel="stylesheet" href="assets/style/css/variables.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/navbar.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/auth.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/animations.css?v=<?= time() ?>">
 </head>
 
 <body>
