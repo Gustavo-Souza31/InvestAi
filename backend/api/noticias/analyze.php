@@ -147,9 +147,52 @@ function mapear_categorias_usuario(array $descricoes, array $mapa): array {
 
 $categorias_usuario = mapear_categorias_usuario($descricoes_despesas, $mapa_categorias);
 
-// ─── Montar Prompt ──────────────────────────────────────────────────────────
+// ─── Lógica de Cache ────────────────────────────────────────────────────────
+require_once dirname(dirname(dirname(__FILE__))) . '/includes/ai_handler.php';
+
+$analises_finais = [];
+$noticias_para_processar = [];
+
+// Gerar uma chave de categorias (ordenada para consistência)
+sort($categorias_usuario);
+$cat_key = implode(',', $categorias_usuario);
+$perfil_c = $perfil['perfil_comportamento'] ?? 'moderado';
+
+foreach ($noticias as $n) {
+    $url_hash = md5($n['url'] ?? $n['titulo']);
+    
+    // Tenta buscar no cache (últimas 24h)
+    $stmt_cache = $conexao->prepare("SELECT analise_json FROM cache_ia_noticias WHERE noticia_url_hash = ? AND perfil_usuario = ? AND criado_em > DATE_SUB(NOW(), INTERVAL 24 HOUR) LIMIT 1");
+    $stmt_cache->bind_param("ss", $url_hash, $perfil_c);
+    $stmt_cache->execute();
+    $res_cache = $stmt_cache->get_result();
+    
+    if ($row_cache = $res_cache->fetch_assoc()) {
+        $analise_cached = json_decode($row_cache['analise_json'], true);
+        $analises_finais[] = $analise_cached;
+    } else {
+        $noticias_para_processar[] = $n;
+    }
+}
+
+// Se todas as notícias já estavam no cache, retornamos imediatamente
+if (empty($noticias_para_processar)) {
+    ob_clean();
+    echo json_encode([
+        "status"            => "ok",
+        "source"            => "cache",
+        "analises"          => $analises_finais,
+        "resumo_geral"      => "Todas as análises foram recuperadas do cache inteligente para o seu perfil.",
+        "nivel_alerta"      => "baixo",
+        "top_acao_da_semana"=> "Suas recomendações estão atualizadas com base no mercado.",
+        "categorias_usuario"=> $categorias_usuario
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// ─── Chamar IA (Apenas para o que não está no cache) ───────────────────────
 $noticias_texto = "";
-foreach (array_slice($noticias, 0, 10) as $i => $n) {
+foreach (array_slice($noticias_para_processar, 0, 10) as $i => $n) {
     $idx    = $i + 1;
     $fonte  = $n['fonte']  ?? '';
     $titulo = $n['titulo'] ?? '';
@@ -157,12 +200,8 @@ foreach (array_slice($noticias, 0, 10) as $i => $n) {
     $noticias_texto .= "\n{$idx}. [{$fonte}] {$titulo}\n   Resumo: {$resumo}\n";
 }
 
-$categorias_usuario_str = !empty($categorias_usuario)
-    ? implode(", ", $categorias_usuario)
-    : "não identificadas";
-
+$categorias_usuario_str = !empty($categorias_usuario) ? implode(", ", $categorias_usuario) : "não identificadas";
 $objetivo  = $perfil['objetivo_financeiro']  ?? 'Não informado';
-$perfil_c  = $perfil['perfil_comportamento'] ?? 'moderado';
 $renda     = number_format(floatval($perfil['renda_mensal'] ?? 0), 2, ',', '.');
 $saldo_fmt = number_format($saldo_atual, 2, ',', '.');
 $ganhos_f  = number_format($total_ganhos, 2, ',', '.');
@@ -175,127 +214,96 @@ PERFIL DO USUÁRIO:
 - Saldo atual: R$ {$saldo_fmt}
 - Renda mensal: R$ {$renda}
 - Ganhos registrados no mês: R$ {$ganhos_f}
-- Despesas registradas no mês: R$ {$desp_f}
+- Despesas registrados no mês: R$ {$desp_f}
 - Objetivo financeiro: {$objetivo}
 - Perfil de comportamento: {$perfil_c}
 - Categorias de gasto do usuário: {$categorias_usuario_str}
 
-NOTÍCIAS DO DIA:
+NOTÍCIAS NOVAS PARA ANALISAR:
 {$noticias_texto}
 
-CATEGORIAS FIXAS PERMITIDAS (use EXATAMENTE um destes valores em "categoria"):
+CATEGORIAS FIXAS PERMITIDAS:
 ["Transporte", "Alimentação", "Moradia", "Lazer", "Tecnologia", "Saúde", "Finanças Gerais"]
 
 TAREFA:
-Analise cada notícia e responda APENAS com JSON puro (sem markdown, sem ```, sem comentários), seguindo exatamente esta estrutura:
+Analise cada notícia e responda APENAS com JSON puro, seguindo exatamente esta estrutura:
 
 {
-  "resumo_geral": "2-3 frases contextualizando o cenário econômico atual e o impacto no perfil do usuário",
+  "resumo_geral": "Breve contexto do cenário atual",
   "nivel_alerta": "baixo|medio|alto",
   "analises": [
     {
-      "titulo_noticia": "título exato da notícia",
-      "categoria": "UMA das 7 categorias fixas acima — obrigatório",
+      "titulo_noticia": "título exato",
+      "categoria": "Uma das 7 fixas",
       "impacto": "alto|medio|baixo",
-      "cenario_hipotetico": "Descreva em 1-2 frases um cenário hipotético de como esta notícia pode afetar as finanças do usuário nos próximos 3-6 meses",
-      "como_afeta": "1 frase direta explicando como afeta o orçamento/investimentos deste usuário",
-      "acoes_praticas": [
-        "Ação prática 1 que o usuário pode tomar agora",
-        "Ação prática 2",
-        "Ação prática 3"
-      ],
-      "sugestao_investimento": "1 ação concreta de investimento",
-      "dica_economia": "1 dica prática para economizar ou proteger o orçamento"
+      "cenario_hipotetico": "1-2 frases sobre futuro",
+      "como_afeta": "1 frase direta no bolso",
+      "acoes_praticas": ["Ação 1", "Ação 2", "Ação 3"],
+      "sugestao_investimento": "Sugestão",
+      "dica_economia": "Dica"
     }
   ],
-  "top_acao_da_semana": "A única coisa mais importante que o usuário deve fazer esta semana com base nas notícias"
+  "top_acao_da_semana": "Ação principal"
 }
-
-REGRAS OBRIGATÓRIAS:
-1. O campo "categoria" DEVE ser exatamente um dos 7 valores fixos listados. Não invente categorias.
-2. O campo "acoes_praticas" DEVE ter EXATAMENTE 3 itens.
-3. Foque nas notícias mais relevantes para o perfil financeiro do usuário.
-4. Responda em português do Brasil.
-5. Seja direto, pragmático e personalizado.
 PROMPT;
 
-// ─── Chamar Gemini API ──────────────────────────────────────────────────────
-$api_url  = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" . urlencode($gemini_key);
-$req_body = json_encode([
-    "contents" => [["parts" => [["text" => $prompt]]]],
-    "generationConfig" => [
-        "temperature"     => 0.65,
-        "maxOutputTokens" => 2500,
-    ]
-], JSON_UNESCAPED_UNICODE);
-
-$ch = curl_init($api_url);
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST           => true,
-    CURLOPT_POSTFIELDS     => $req_body,
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-    CURLOPT_TIMEOUT        => 35,
-    CURLOPT_SSL_VERIFYPEER => false,
+$ai_res = call_ai_service($prompt, [
+    'temperature' => 0.65,
+    'max_tokens'  => 2500,
+    'ollama_model'=> 'llama3'
 ]);
 
-$response  = curl_exec($ch);
-$curl_err  = curl_error($ch);
-$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
-
-if ($curl_err || !$response) {
+if (!$ai_res['success']) {
     ob_clean();
-    echo json_encode([
-        "status"   => "error",
-        "mensagem" => "Erro de conexão com a Gemini API: " . ($curl_err ?: "sem resposta")
-    ]);
+    echo json_encode(["status" => "error", "mensagem" => "IA Offline: " . $ai_res['message']]);
     exit;
 }
 
-$gemini_data = json_decode($response, true);
-
-if ($http_code !== 200 || json_last_error() !== JSON_ERROR_NONE) {
-    $err_msg = $gemini_data['error']['message'] ?? "Erro HTTP {$http_code}";
-    ob_clean();
-    echo json_encode([
-        "status"   => "error",
-        "mensagem" => "Gemini API retornou erro: " . $err_msg
-    ]);
-    exit;
-}
-
-// ─── Extrair e limpar JSON da resposta ──────────────────────────────────────
-$raw = $gemini_data['candidates'][0]['content']['parts'][0]['text'] ?? '';
-$raw = trim($raw);
-if (preg_match('/```(?:json)?\s*([\s\S]+?)```/', $raw, $m)) {
-    $raw = trim($m[1]);
-}
-
+$raw = clean_ai_json($ai_res['data']);
 $resultado = json_decode($raw, true);
 
-if (json_last_error() !== JSON_ERROR_NONE) {
+if (json_last_error() !== JSON_ERROR_NONE || empty($resultado['analises'])) {
     ob_clean();
-    echo json_encode([
-        "status"   => "error",
-        "mensagem" => "Erro ao parsear resposta da IA.",
-        "raw"      => mb_substr($raw, 0, 500)
-    ]);
+    echo json_encode(["status" => "error", "mensagem" => "Erro no processamento do JSON da IA.", "raw" => $raw]);
     exit;
 }
 
-// ─── Cruzamento: marcar notícias relevantes para o usuário ──────────────────
-if (!empty($resultado['analises'])) {
-    foreach ($resultado['analises'] as &$analise) {
-        $cat = $analise['categoria'] ?? '';
-        $analise['relevante_para_usuario'] = in_array($cat, $categorias_usuario);
+// ─── SALVAR NO CACHE E MESCLAR ──────────────────────────────────────────────
+foreach ($resultado['analises'] as $nova_analise) {
+    // Encontrar a URL original para o hash
+    $titulo_original = $nova_analise['titulo_noticia'];
+    $url_original = "";
+    foreach($noticias_para_processar as $np) {
+        if ($np['titulo'] === $titulo_original) {
+            $url_original = $np['url'];
+            break;
+        }
     }
-    unset($analise);
+    
+    $url_hash = md5($url_original ?: $titulo_original);
+    $analise_json = json_encode($nova_analise, JSON_UNESCAPED_UNICODE);
+    
+    // Salva no banco para uso futuro
+    $stmt_save = $conexao->prepare("INSERT INTO cache_ia_noticias (noticia_url_hash, perfil_usuario, categorias_usuario, analise_json) VALUES (?, ?, ?, ?)");
+    $stmt_save->bind_param("ssss", $url_hash, $perfil_c, $cat_key, $analise_json);
+    $stmt_save->execute();
+    
+    $analises_finais[] = $nova_analise;
 }
 
-// ─── Retornar resultado ──────────────────────────────────────────────────────
-$resultado['status']            = 'ok';
-$resultado['categorias_usuario'] = $categorias_usuario;
+// Cruzamento final de relevância
+foreach ($analises_finais as &$af) {
+    $af['relevante_para_usuario'] = in_array($af['categoria'], $categorias_usuario);
+}
 
 ob_clean();
-echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
+echo json_encode([
+    "status"            => "ok",
+    "source"            => $ai_res['source'],
+    "resumo_geral"      => $resultado['resumo_geral'] ?? "Análise financeira atualizada.",
+    "nivel_alerta"      => $resultado['nivel_alerta'] ?? "baixo",
+    "analises"          => $analises_finais,
+    "top_acao_da_semana"=> $resultado['top_acao_da_semana'] ?? "",
+    "categorias_usuario"=> $categorias_usuario
+], JSON_UNESCAPED_UNICODE);
+

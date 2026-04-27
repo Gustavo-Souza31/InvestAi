@@ -34,7 +34,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
 
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar-custom">
-        <div class="container d-flex align-items-center justify-content-between" style="max-width:960px;">
+        <div class="container d-flex align-items-center justify-content-between" style="max-width:1200px;">
             <a href="dashboard.php" class="logo">
                 <svg class="neural-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2"

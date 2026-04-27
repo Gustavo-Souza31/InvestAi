@@ -29,7 +29,7 @@ body::after {
 
 /* Container principal */
 .main-container {
-    max-width: 960px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 30px 20px 60px;
     position: relative;

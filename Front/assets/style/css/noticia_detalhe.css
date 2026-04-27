@@ -4,9 +4,10 @@
 
 /* ─── Container ───────────────────────────────────────────────────────────── */
 .detalhe-container {
-    max-width: 820px !important;
-    padding-top: 20px;
-    padding-bottom: 60px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    animation: fadeIn 0.8s ease;
 }
 
 /* ─── Breadcrumb ──────────────────────────────────────────────────────────── */
@@ -196,22 +197,51 @@
 }
 
 /* ─── Badge de impacto ────────────────────────────────────────────────────── */
-.impacto-badge {
+/* Cards de Indicadores Econômicos */
+.indicadores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.badge-tendencia {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 16px;
+    padding: 5px 14px;
     border-radius: 20px;
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
 }
 
-.impacto-alto  { background: transparent; border: 1px solid var(--text-main); color: var(--text-main); }
-.impacto-medio { background: transparent; border: 1px solid var(--status-warn); color: var(--status-warn); }
-.impacto-baixo { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); }
+.badge-tendencia i {
+    font-size: 0.9rem;
+}
+
+.indicador-tendencia-icon {
+    font-size: 1.1rem;
+}
+
+.indicador-conselho {
+    font-size: 0.85rem;
+    color: #94a3b8; /* var(--text-muted) */
+    line-height: 1.5;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 12px;
+}
+
+.indicador-conselho.destaque {
+    color: #b39ddb; /* Lilás pastel (var(--brand-primary) suave) */
+}
+
+.impacto-alto  { background: transparent; border: none; color: var(--text-main); padding-left: 0; }
+.impacto-medio { background: transparent; border: none; color: var(--status-warn); padding-left: 0; }
+.impacto-baixo { background: transparent; border: none; color: var(--text-muted); padding-left: 0; }
 
 /* ─── Grid de cards de explicação ────────────────────────────────────────── */
 .explicacao-grid {

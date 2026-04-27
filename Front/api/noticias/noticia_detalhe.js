@@ -52,75 +52,103 @@ function preencherHeader(n) {
 
 /* ─── Renderiza a explicação da IA ─────────────────────────────────────────── */
 function renderExplicacao(data) {
-    const acoesHTML = (data.o_que_fazer || []).map(a =>
-        `<li><i class="bi bi-check2-circle"></i><span>${a}</span></li>`
+    // Função auxiliar para extrair texto de objetos da IA
+    const extrairTexto = (item) => {
+        if (typeof item === 'string') return item;
+        if (typeof item === 'object' && item !== null) {
+            // Tenta pegar o valor de qualquer chave (Indicador, Ação, Termo, etc)
+            const valores = Object.values(item);
+            return valores.length > 0 ? valores.join(': ') : JSON.stringify(item);
+        }
+        return String(item);
+    };
+
+    // Preparar lista de ações (Plano de Ação)
+    const acoesHTML = (data.plano_de_acao || []).map(a =>
+        `<li><i class="bi bi-check2-circle"></i><span>${extrairTexto(a)}</span></li>`
     ).join('');
 
-    const palavrasHTML = (data.palavras_chave || []).map(p => `
+    // Preparar glossário
+    const glossarioHTML = (data.glossario_tecnico || []).map(g => `
         <div class="glossario-item">
-            <div class="glossario-termo">${p.termo}</div>
-            <div class="glossario-def">${p.definicao}</div>
+            <div class="glossario-termo">${extrairTexto(g.termo || g)}</div>
+            <div class="glossario-def">${extrairTexto(g.definicao || g)}</div>
         </div>`
     ).join('');
 
+    // Preparar indicadores afetados (Badges Minimalistas)
+    const indicadoresHTML = (data.indicadores_afetados || []).map(i => {
+        const texto = extrairTexto(i);
+        const isAlta = texto.toLowerCase().includes('alta') || texto.toLowerCase().includes('subir');
+        const color = isAlta ? 'var(--color-expense)' : 'var(--color-gain)';
+        const icon = isAlta ? 'bi-arrow-up-right' : 'bi-arrow-down-right';
+        
+        return `<span class="badge-tendencia" style="border-color: rgba(255,255,255,0.1); color: ${color}; background: rgba(255,255,255,0.03);">
+            <i class="bi ${icon} me-1"></i>${texto.replace(':', ' + ')}
+        </span>`;
+    }).join('');
+
     iaConteudoEl.innerHTML = `
 
-        <!-- Tweet / Manchete simplificada -->
+        <!-- Manchete Premium -->
         <div class="explicacao-tweet">
             <i class="bi bi-lightning-charge-fill"></i>
-            <span>${data.resumo_tweet || data.manchete || ''}</span>
+            <span>${data.manchete || ''}</span>
         </div>
 
-        <!-- Nível de impacto -->
-        <div class="impacto-badge ${impactoClass(data.nivel_impacto)}">
-            ${impactoLabel(data.nivel_impacto)}
+        <!-- Nível de impacto e Indicadores -->
+        <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
+            <div class="impacto-badge ${impactoClass(data.nivel_impacto?.toLowerCase())}">
+                ${impactoLabel(data.nivel_impacto?.toLowerCase())}
+            </div>
+            ${indicadoresHTML}
         </div>
 
         <!-- Grid principal -->
         <div class="explicacao-grid">
 
-            <!-- O que aconteceu -->
+            <!-- Resumo Executivo -->
             <div class="explicacao-card card-aconteceu">
                 <div class="explicacao-card-label">
-                    <i class="bi bi-newspaper"></i> O que aconteceu
+                    <i class="bi bi-journal-text"></i> Resumo Executivo
                 </div>
-                <p>${data.o_que_aconteceu || ''}</p>
+                <p>${data.resumo_executivo || ''}</p>
             </div>
 
-            <!-- Por que importa -->
+            <!-- Análise de Cenário -->
             <div class="explicacao-card card-importa">
                 <div class="explicacao-card-label">
-                    <i class="bi bi-exclamation-circle"></i> Por que importa
+                    <i class="bi bi-eye"></i> Análise de Cenário
                 </div>
-                <p>${data.por_que_importa || ''}</p>
+                <p>${data.analise_de_cenario || ''}</p>
             </div>
 
-            <!-- Impacto no bolso -->
+            <!-- Impacto no Bolso e Metas -->
             <div class="explicacao-card card-bolso">
                 <div class="explicacao-card-label">
-                    <i class="bi bi-wallet2"></i> Impacto no seu bolso
+                    <i class="bi bi-bullseye"></i> Impacto no Bolso e Metas
                 </div>
-                <p>${data.impacto_no_bolso || ''}</p>
+                <p>${data.impacto_bolso_e_metas || ''}</p>
             </div>
 
-            <!-- O que fazer -->
+            <!-- Plano de Ação Tático -->
             ${acoesHTML ? `
             <div class="explicacao-card card-acoes">
                 <div class="explicacao-card-label">
-                    <i class="bi bi-check2-all"></i> O que você pode fazer
+                    <i class="bi bi-shield-check"></i> Plano de Ação Tático
                 </div>
                 <ul class="acoes-list">${acoesHTML}</ul>
             </div>` : ''}
 
         </div>
 
-        <!-- Glossário -->
-        ${palavrasHTML ? `
+        <!-- Glossário Técnico -->
+        ${glossarioHTML ? `
         <div class="glossario-section">
             <div class="glossario-titulo">
-                <i class="bi bi-book"></i> Entenda os termos
+                <i class="bi bi-book"></i> Glossário Técnico
             </div>
-            <div class="glossario-grid">${palavrasHTML}</div>
+            <div class="glossario-grid">${glossarioHTML}</div>
         </div>` : ''}
 
         <!-- Botão notícia original (rodapé) -->

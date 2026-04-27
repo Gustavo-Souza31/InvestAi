@@ -6,173 +6,220 @@
 
 
 ob_start();
-error_reporting(0);
+error_reporting(0); // Silenciar avisos para não quebrar o JSON
 ini_set('display_errors', 0);
+ini_set('memory_limit', '512M');
 
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-if (!isset($_SESSION['usuario_id'])) {
-    http_response_code(401);
-    ob_clean();
-    echo json_encode(["status" => "error", "mensagem" => "Não autorizado."]);
-    exit;
-}
+try {
+    if (!isset($_SESSION['usuario_id'])) {
+        throw new Exception("Não autorizado.", 401);
+    }
 
-$body    = json_decode(file_get_contents('php://input'), true);
-$noticia = $body['noticia'] ?? null;
+    $body = json_decode(file_get_contents('php://input'), true);
+    $noticia = $body['noticia'] ?? null;
 
-if (!$noticia || empty($noticia['titulo'])) {
-    http_response_code(400);
-    ob_clean();
-    echo json_encode(["status" => "error", "mensagem" => "Dados da notícia inválidos."]);
-    exit;
-}
+    if (!$noticia || empty($noticia['titulo'])) {
+        http_response_code(400);
+        ob_clean();
+        echo json_encode(["status" => "error", "mensagem" => "Dados da notícia inválidos."]);
+        exit;
+    }
 
-// ─── Chave Gemini ──────────────────────────────────────────────────────────
-function get_gemini_key(): ?string {
-    $key = getenv('GEMINI_API_KEY');
-    if ($key) return trim($key);
-    $env_path = dirname(dirname(dirname(dirname(__FILE__)))) . '/.env';
-    if (file_exists($env_path)) {
-        foreach (file($env_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            $line = trim($line);
-            if (strpos($line, 'GEMINI_API_KEY=') === 0) {
-                return trim(substr($line, strlen('GEMINI_API_KEY=')), " \"'");
+    // ─── Chave Gemini ──────────────────────────────────────────────────────────
+    function get_gemini_key(): ?string
+    {
+        $key = getenv('GEMINI_API_KEY');
+        if ($key)
+            return trim($key);
+        $env_path = dirname(dirname(dirname(dirname(__FILE__)))) . '/.env';
+        if (file_exists($env_path)) {
+            foreach (file($env_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+                $line = trim($line);
+                if (strpos($line, 'GEMINI_API_KEY=') === 0) {
+                    return trim(substr($line, strlen('GEMINI_API_KEY=')), " \"'");
+                }
             }
         }
+        return null;
     }
-    return null;
-}
 
-$gemini_key = get_gemini_key();
-if (!$gemini_key) {
-    ob_clean();
-    echo json_encode(["status" => "sem_chave", "mensagem" => "Chave Gemini API não configurada."]);
-    exit;
-}
+    $gemini_key = get_gemini_key();
+    if (!$gemini_key) {
+        ob_clean();
+        echo json_encode(["status" => "sem_chave", "mensagem" => "Chave Gemini API não configurada."]);
+        exit;
+    }
 
-// ─── Perfil do usuário (para personalizar a explicação) ──────────────────
-$root       = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+    // ─── Perfil do usuário (para personalizar a explicação) ──────────────────
+    $root = dirname(dirname(dirname(dirname(__FILE__))));
+    require_once $root . '/DataBase/conexao.php';
 
-$usuario_id = $_SESSION['usuario_id'];
-$inicio_mes = date('Y-m-01');
-$hoje       = date('Y-m-d');
+    $usuario_id = $_SESSION['usuario_id'];
+    $inicio_mes = date('Y-m-01');
+    $hoje = date('Y-m-d');
 
-$stmt = $conexao->prepare("SELECT saldo_inicial, renda_mensal, objetivo_financeiro FROM perfil_financeiro WHERE usuario_id = ?");
-$stmt->bind_param("i", $usuario_id);
-$stmt->execute();
-$perfil = $stmt->get_result()->fetch_assoc();
+    $stmt = $conexao->prepare("SELECT saldo_inicial, renda_mensal, objetivo_financeiro FROM perfil_financeiro WHERE usuario_id = ?");
+    $stmt->bind_param("i", $usuario_id);
+    $stmt->execute();
+    $perfil = $stmt->get_result()->fetch_assoc();
 
-$stmt = $conexao->prepare("SELECT COALESCE(SUM(valor),0) as total FROM ganhos WHERE usuario_id=? AND data_ganho BETWEEN ? AND ?");
-$stmt->bind_param("iss", $usuario_id, $inicio_mes, $hoje);
-$stmt->execute();
-$ganhos = floatval($stmt->get_result()->fetch_assoc()['total']);
+    $stmt = $conexao->prepare("SELECT COALESCE(SUM(valor),0) as total FROM ganhos WHERE usuario_id=? AND data_ganho BETWEEN ? AND ?");
+    $stmt->bind_param("iss", $usuario_id, $inicio_mes, $hoje);
+    $stmt->execute();
+    $ganhos = floatval($stmt->get_result()->fetch_assoc()['total']);
 
-$stmt = $conexao->prepare("SELECT COALESCE(SUM(valor),0) as total FROM despesas WHERE usuario_id=? AND data_despesa BETWEEN ? AND ?");
-$stmt->bind_param("iss", $usuario_id, $inicio_mes, $hoje);
-$stmt->execute();
-$despesas = floatval($stmt->get_result()->fetch_assoc()['total']);
+    $stmt = $conexao->prepare("SELECT COALESCE(SUM(valor),0) as total FROM despesas WHERE usuario_id=? AND data_despesa BETWEEN ? AND ?");
+    $stmt->bind_param("iss", $usuario_id, $inicio_mes, $hoje);
+    $stmt->execute();
+    $despesas = floatval($stmt->get_result()->fetch_assoc()['total']);
 
-$saldo_atual = floatval($perfil['saldo_inicial'] ?? 0) + $ganhos - $despesas;
-$renda       = floatval($perfil['renda_mensal'] ?? 0);
-$objetivo    = $perfil['objetivo_financeiro'] ?? 'Não informado';
+    $saldo_atual = floatval($perfil['saldo_inicial'] ?? 0) + $ganhos - $despesas;
+    $renda = floatval($perfil['renda_mensal'] ?? 0);
+    $objetivo = $perfil['objetivo_financeiro'] ?? 'Não informado';
 
-// ─── Montar Prompt ─────────────────────────────────────────────────────────
-$titulo  = $noticia['titulo']  ?? '';
-$resumo  = $noticia['resumo']  ?? '';
-$fonte   = $noticia['fonte']   ?? '';
-$data    = $noticia['data']    ?? '';
-$saldo_f = number_format($saldo_atual, 2, ',', '.');
-$renda_f = number_format($renda, 2, ',', '.');
+    // ─── Buscar contexto de gastos do usuário ─────────────────────────────────
+    $contexto_gastos = "Sem gastos registrados";
+    try {
+        $stmt_gastos = $conexao->prepare("SELECT categoria, SUM(valor) as total FROM despesas WHERE usuario_id = ? GROUP BY categoria ORDER BY total DESC LIMIT 3");
+        if ($stmt_gastos) {
+            $stmt_gastos->bind_param("i", $usuario_id);
+            $stmt_gastos->execute();
+            $res_gastos = $stmt_gastos->get_result();
+            $categorias_top = [];
+            while ($rg = $res_gastos->fetch_assoc())
+                $categorias_top[] = $rg['categoria'];
+            if (!empty($categorias_top)) {
+                $contexto_gastos = implode(", ", $categorias_top);
+            }
+        }
+    } catch (Exception $e) {
+        // Silencioso: usa o padrão
+    }
 
-$prompt = <<<PROMPT
-Você é o Arquiteto Financeiro do InvestAI, especialista em traduzir notícias econômicas complexas para linguagem simples e prática.
+    // ─── Montar Prompt Avançado ────────────────────────────────────────────────
+    $titulo = $noticia['titulo'] ?? '';
+    $resumo = $noticia['resumo'] ?? '';
+    $fonte = $noticia['fonte'] ?? '';
+    $data = $noticia['data'] ?? '';
+    $saldo_f = number_format($saldo_atual, 2, ',', '.');
+    $renda_f = number_format($renda, 2, ',', '.');
 
-PERFIL DO USUÁRIO:
-- Saldo atual: R$ {$saldo_f}
-- Renda mensal: R$ {$renda_f}
-- Objetivo financeiro: {$objetivo}
+    $prompt = <<<PROMPT
+Você é o Analista Econômico Chefe do InvestAI. 
+Entregue um relatório de inteligência financeira PROFUNDO e ACIONÁVEL.
 
-NOTÍCIA:
+PERFIL FINANCEIRO DO USUÁRIO:
+- Saldo atual disponível: R$ {$saldo_f}
+- Renda mensal declarada: R$ {$renda_f}
+- Comportamento de gastos (Categorias mais usadas): {$contexto_gastos}
+- Objetivo financeiro principal: {$objetivo}
+
+DADOS DA NOTÍCIA ORIGINAL:
 - Título: {$titulo}
 - Fonte: {$fonte}
-- Data: {$data}
-- Resumo: {$resumo}
+- Resumo Bruto: {$resumo}
 
-TAREFA:
-Explique esta notícia de forma DIDÁTICA e PERSONALIZADA para este usuário. Responda APENAS com JSON puro (sem markdown, sem ```), seguindo exatamente esta estrutura:
+DIRETRIZES DE ESCRITA (OBRIGATÓRIO):
+1. Profundidade Institucional: Escreva como um relatório premium. Desenvolva as ideias. Não use respostas curtas.
+2. Efeito Cascata: Explique não apenas o que aconteceu, mas os efeitos de segunda ordem (ex: se o petróleo sobe, o frete sobe, a inflação sobe, a Selic não cai).
+3. Personalização Extrema: Você DEVE cruzar o fato com a renda, saldo, gastos e objetivo do usuário.
+4. Responda APENAS com um objeto JSON puro e válido. Sem blocos de código (```json), sem introduções.
 
+ESTRUTURA JSON:
 {
-  "manchete": "Reescreva o título de forma ainda mais clara e acessível (máx 100 chars)",
-  "o_que_aconteceu": "Explique em 2-3 frases simples O QUE aconteceu, como se fosse para alguém que não entende de economia",
-  "por_que_importa": "Explique em 2-3 frases POR QUE isso é importante para o brasileiro comum",
-  "impacto_no_bolso": "1-2 frases diretas sobre como isso pode afetar o bolso especificamente deste usuário com base no perfil dele",
-  "o_que_fazer": [
-    "Ação concreta 1 que o usuário pode tomar agora",
-    "Ação concreta 2 (se houver)",
-    "Ação concreta 3 (se houver)"
-  ],
-  "palavras_chave": [
-    {"termo": "Termo técnico da notícia", "definicao": "Definição simples em 1 frase"},
-    {"termo": "Outro termo", "definicao": "Definição simples"}
-  ],
-  "nivel_impacto": "alto|medio|baixo",
-  "resumo_tweet": "Resuma a notícia e o impacto em 1 frase curta (como um tweet)"
+  "manchete": "Título focado no impacto (máx 90 carac)",
+  "resumo_executivo": "Contexto e fato central (2-3 frases).",
+  "analise_de_cenario": "Desdobramentos macro e reação do mercado (2-3 frases).",
+  "impacto_bolso_e_metas": "Como afeta os gastos e o objetivo '{$objetivo}' do usuário (2-3 frases).",
+  "indicadores_afetados": ["Indicador + Tendência (Alta/Baixa/Estável)"],
+  "plano_de_acao": ["Ação imediata", "Ação de médio prazo"],
+  "glossario_tecnico": [{"termo": "Termo", "definicao": "Explicação simples"}],
+  "nivel_impacto": "Alto|Medio|Baixo"
 }
-
-Seja acessível, direto e útil. Use linguagem de fácil compreensão. Máximo 3 palavras-chave. Máximo 3 ações. Responda em português do Brasil.
 PROMPT;
 
-// ─── Chamar Gemini API ─────────────────────────────────────────────────────
-$api_url  = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" . urlencode($gemini_key);
-$req_body = json_encode([
-    "contents" => [["parts" => [["text" => $prompt]]]],
-    "generationConfig" => ["temperature" => 0.65, "maxOutputTokens" => 1500]
-], JSON_UNESCAPED_UNICODE);
+    // ─── Sistema de Cache ───────────────────────────────────────────────────────
+    require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/DataBase/conexao.php';
+    
+    // Gerar uma chave única para esta notícia (Assinatura)
+    $noticia_id_cache = md5($noticia['titulo'] . ($noticia['fonte'] ?? ''));
+    
+    // Verificar se já existe análise salva para este usuário
+    $stmt_cache = $conexao->prepare("SELECT resposta_ia FROM noticias_ai WHERE usuario_id = ? AND noticia_hash = ?");
+    $stmt_cache->bind_param("is", $_SESSION['usuario_id'], $noticia_id_cache);
+    $stmt_cache->execute();
+    $res_cache = $stmt_cache->get_result();
+    
+    if ($res_cache->num_rows > 0) {
+        $cache_data = $res_cache->fetch_assoc();
+        $resultado = json_decode($cache_data['resposta_ia'], true);
+        $resultado['status'] = 'ok';
+        $resultado['ai_source'] = 'cache'; 
+        
+        ob_clean();
+        echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 
-$ch = curl_init($api_url);
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST           => true,
-    CURLOPT_POSTFIELDS     => $req_body,
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-    CURLOPT_TIMEOUT        => 25,
-    CURLOPT_SSL_VERIFYPEER => false,
-]);
-$response  = curl_exec($ch);
-$curl_err  = curl_error($ch);
-$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
+    // ─── Se não houver cache, chamar IA ──────────────────────────────────────────
+    require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/backend/includes/ai_handler.php';
 
-if ($curl_err || !$response) {
+    $ai_res = call_ai_service($prompt, [
+        'temperature' => 0.4, // Menor temperatura para JSON mais estável
+        'max_tokens' => 1200,
+        'ollama_model' => 'llama3'
+
+    ]);
+
+    if (!$ai_res['success']) {
+        ob_clean();
+        echo json_encode([
+            "status" => "error",
+            "mensagem" => "Falha no processamento de IA: " . $ai_res['message']
+        ]);
+        exit;
+    }
+
+    $raw = clean_ai_json($ai_res['data']);
+
+    // Tentar decodificar
+    $resultado = json_decode($raw, true);
+
+    // Se falhar, tentar um reparo simples (fechar chaves se estiver truncado)
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        $reparado = trim($raw);
+        if (substr($reparado, -1) !== '}') $reparado .= '}';
+        $resultado = json_decode($reparado, true);
+    }
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        $erro_json = json_last_error_msg();
+        // Logar o erro técnico para depuração
+        file_put_contents(dirname(dirname(dirname(__FILE__))) . '/ai_debug.log', "JSON Error: $erro_json | Final: " . substr($raw, -30) . "\n", FILE_APPEND);
+        
+        throw new Exception("IA instável (Erro: $erro_json). Tente novamente em instantes.");
+    }
+
+    $resultado['status'] = 'ok';
+    $resultado['ai_source'] = $ai_res['source'];
+
+    // Salvar no Cache para visitas futuras
+    $json_final = json_encode($resultado, JSON_UNESCAPED_UNICODE);
+    $stmt_save = $conexao->prepare("INSERT INTO noticias_ai (usuario_id, noticia_hash, resposta_ia) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE resposta_ia = ?");
+    $stmt_save->bind_param("isss", $_SESSION['usuario_id'], $noticia_id_cache, $json_final, $json_final);
+    $stmt_save->execute();
+
     ob_clean();
-    echo json_encode(["status" => "error", "mensagem" => "Erro de conexão com a Gemini API: " . $curl_err]);
-    exit;
-}
+    echo $json_final;
 
-$gemini_data = json_decode($response, true);
-if ($http_code !== 200) {
-    $err_msg = $gemini_data['error']['message'] ?? "Erro HTTP {$http_code}";
+} catch (Exception $e) {
     ob_clean();
-    echo json_encode(["status" => "error", "mensagem" => "Gemini API: " . $err_msg]);
-    exit;
+    http_response_code($e->getCode() ?: 500);
+    echo json_encode([
+        "status" => "error",
+        "mensagem" => $e->getMessage()
+    ]);
 }
-
-$raw = $gemini_data['candidates'][0]['content']['parts'][0]['text'] ?? '';
-$raw = trim($raw);
-if (preg_match('/```(?:json)?\s*([\s\S]+?)```/', $raw, $m)) {
-    $raw = trim($m[1]);
-}
-
-$resultado = json_decode($raw, true);
-if (json_last_error() !== JSON_ERROR_NONE) {
-    ob_clean();
-    echo json_encode(["status" => "error", "mensagem" => "Erro ao parsear resposta da IA.", "raw" => mb_substr($raw, 0, 300)]);
-    exit;
-}
-
-$resultado['status'] = 'ok';
-ob_clean();
-echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
