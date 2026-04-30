@@ -196,3 +196,12 @@ INSERT INTO sugestoes_investimento (
     'alto',
     'pendente'
 );
+
+-- =========================
+-- CATEGORIAS PADRÃO
+-- =========================
+INSERT INTO categorias (nome, tipo) VALUES
+('Salário', 'ganho'), ('Freelance', 'ganho'), ('Investimentos', 'ganho'),
+('Habitação', 'despesa'), ('Alimentação', 'despesa'), ('Transporte', 'despesa'), 
+('Saúde', 'despesa'), ('Educação', 'despesa'), ('Entretenimento', 'despesa'), 
+('Vestuário e Acessórios', 'despesa'), ('Utilidades Domésticas', 'despesa');

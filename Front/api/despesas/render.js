@@ -36,11 +36,8 @@ function gerarHTMLItemDespesa(despesa) {
                 <div class="desc">${escapeHtml(despesa.descricao)}</div>
 
 
-                <!-- ✅ EXEMPLO DE NOVA LINHA - Para adicionar um novo campo: -->
-                <!-- <div class="categoria">${escapeHtml(despesa.categoria)}</div> -->
-
-
-                
+                <!-- Exibe a categoria -->
+                ${despesa.categoria_nome ? `<div class="categoria mt-1" style="font-size: 0.85rem; color: #a9b2c3;"><i class="bi bi-tag-fill me-1 text-primary"></i>${escapeHtml(despesa.categoria_nome)}</div>` : ''}
                 <div class="meta">
                     <span><i class="bi bi-calendar3 me-1"></i>${formatDate(despesa.data_despesa)}</span>
                     ${fixoBadge}
@@ -48,7 +45,7 @@ function gerarHTMLItemDespesa(despesa) {
             </div>
             <div class="item-value">- ${formatMoney(despesa.valor)}</div>
             <div class="item-actions">
-                <button class="btn-edit" title="Editar" onclick="openEdit(${despesa.id}, '${escapeHtml(despesa.descricao)}', ${despesa.valor}, '${despesa.data_despesa}', ${despesa.fixo})">
+                <button class="btn-edit" title="Editar" onclick="openEdit(${despesa.id}, '${escapeHtml(despesa.descricao)}', ${despesa.valor}, '${despesa.data_despesa}', ${despesa.fixo}, ${despesa.categoria_id || 'null'})">
                     <i class="bi bi-pencil"></i>
                 </button>
                 <button class="btn-delete" title="Excluir" onclick="openDelete(${despesa.id})">
@@ -111,5 +108,6 @@ async function carregarDespesas() {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('despesa-data').value = new Date().toISOString().split('T')[0];
+    carregarCategorias('despesa', ['despesa-categoria', 'edit-categoria']);
     carregarDespesas();
 });

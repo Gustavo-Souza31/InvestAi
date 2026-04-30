@@ -17,12 +17,15 @@ function escapeHtml(texto) {
 }
 
 // Abre modal de edição e preenche os campos com valores atuais
-function openEdit(id, descricao, valor, data, fixo) {
-    document.getElementById('edit-id').value        = id;
+function openEdit(id, descricao, valor, data, fixo, categoriaId = null) {
+    document.getElementById('edit-id').value = id;
     document.getElementById('edit-descricao').value = descricao;
-    document.getElementById('edit-valor').value     = valor;
-    document.getElementById('edit-data').value      = data;
-    document.getElementById('edit-fixo').checked    = parseInt(fixo) === 1;
+    document.getElementById('edit-valor').value = valor;
+    document.getElementById('edit-data').value = data;
+    document.getElementById('edit-fixo').checked = parseInt(fixo) === 1;
+    if (document.getElementById('edit-categoria')) {
+        document.getElementById('edit-categoria').value = categoriaId || '';
+    }
     document.getElementById('modal-edit').classList.add('show');
 }
 

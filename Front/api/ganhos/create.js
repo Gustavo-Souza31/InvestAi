@@ -5,9 +5,10 @@ async function criarGanho() {
     const valor = document.getElementById('ganho-valor').value;
     const data = document.getElementById('ganho-data').value;
     const fixo = document.getElementById('ganho-fixo').checked;
+    const categoriaId = document.getElementById('ganho-categoria').value;
 
     // Valida campos vazios
-    if (!descricao || !valor || !data) {
+    if (!descricao || !valor || !data || !categoriaId) {
         showAlert('Preencha todos os campos antes de enviar.', 'error');
         return;
     }
@@ -18,6 +19,7 @@ async function criarGanho() {
     formData.append('valor', parseFloat(valor));
     formData.append('data_ganho', data);
     formData.append('fixo', fixo ? 1 : 0);
+    formData.append('categoria_id', categoriaId);
 
     try {
         // Envia para backend
@@ -39,6 +41,7 @@ async function criarGanho() {
         document.getElementById('ganho-valor').value = '';
         document.getElementById('ganho-data').value = new Date().toISOString().split('T')[0];
         document.getElementById('ganho-fixo').checked = false;
+        document.getElementById('ganho-categoria').value = '';
 
         // Recarrega ganhos na página
         if (typeof carregarGanhos === 'function') {

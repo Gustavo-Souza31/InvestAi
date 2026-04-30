@@ -19,7 +19,8 @@ $data = [
     'descricao' => $_POST['descricao'] ?? '',
     'valor' => $_POST['valor'] ?? 0,
     'data_despesa' => $_POST['data_despesa'] ?? '',
-    'fixo' => $_POST['fixo'] ?? 0
+    'fixo' => $_POST['fixo'] ?? 0,
+    'categoria_id' => $_POST['categoria_id'] ?? ''
 ];
 
 
@@ -48,15 +49,16 @@ $descricao = $validation['data']['descricao'];
 $valor = $validation['data']['valor'];
 $data_despesa = $validation['data']['data_despesa'];
 $fixo = $validation['data']['fixo'];
+$categoria_id = $validation['data']['categoria_id'];
 
 
 // Atualizar despesa no banco de dados
 $stmt = $conexao->prepare(
     'UPDATE despesas 
-     SET descricao = ?, valor = ?, data_despesa = ?, fixo = ? 
+     SET descricao = ?, valor = ?, data_despesa = ?, fixo = ?, categoria_id = ?
      WHERE id = ?'
 );
-$stmt->bind_param('sdsii', $descricao, $valor, $data_despesa, $fixo, $id);
+$stmt->bind_param('sdsiii', $descricao, $valor, $data_despesa, $fixo, $categoria_id, $id);
 
 // Executar e verificar atualizacao
 if ($stmt->execute() && $stmt->affected_rows > 0) {

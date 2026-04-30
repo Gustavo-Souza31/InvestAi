@@ -16,7 +16,8 @@ $data = [
     'descricao' => $_POST['descricao'] ?? '',
     'valor' => $_POST['valor'] ?? 0,
     'data_ganho' => $_POST['data_ganho'] ?? date('Y-m-d'),
-    'fixo' => $_POST['fixo'] ?? 0
+    'fixo' => $_POST['fixo'] ?? 0,
+    'categoria_id' => $_POST['categoria_id'] ?? ''
 ];
 
 
@@ -34,14 +35,15 @@ $descricao = $validation['data']['descricao'];
 $valor = $validation['data']['valor'];
 $data_ganho = $validation['data']['data_ganho'];
 $fixo = $validation['data']['fixo'];
+$categoria_id = $validation['data']['categoria_id'];
 
 
 // Inserir ganho no banco de dados
 $stmt = $conexao->prepare(
-    "INSERT INTO ganhos (usuario_id, descricao, valor, data_ganho, fixo) 
-     VALUES (?, ?, ?, ?, ?)"
+    "INSERT INTO ganhos (usuario_id, descricao, valor, data_ganho, fixo, categoria_id) 
+     VALUES (?, ?, ?, ?, ?, ?)"
 );
-$stmt->bind_param("isdsi", $usuario_id, $descricao, $valor, $data_ganho, $fixo);
+$stmt->bind_param("isdsii", $usuario_id, $descricao, $valor, $data_ganho, $fixo, $categoria_id);
 
 // Executar e verificar inserção
 if ($stmt->execute()) {

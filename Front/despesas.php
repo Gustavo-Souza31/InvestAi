@@ -34,11 +34,12 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
         <div class="container d-flex align-items-center justify-content-between" style="max-width:1200px;">
             <a href="dashboard.php" class="logo">
                 <svg class="neural-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="4" cy="18" r="2" fill="currentColor"/>
-                    <circle cx="9" cy="13" r="2" fill="currentColor"/>
-                    <circle cx="15" cy="15" r="2" fill="currentColor"/>
-                    <circle cx="20" cy="6" r="3" fill="var(--brand-accent)"/>
+                    <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" />
+                    <circle cx="4" cy="18" r="2" fill="currentColor" />
+                    <circle cx="9" cy="13" r="2" fill="currentColor" />
+                    <circle cx="15" cy="15" r="2" fill="currentColor" />
+                    <circle cx="20" cy="6" r="3" fill="var(--brand-accent)" />
                 </svg>
                 Invest<span>AI</span>
             </a>
@@ -54,6 +55,9 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
         </div>
     </nav>
 
+    <!-- ALERT MOVED OUTSIDE FOR Z-INDEX FIX -->
+    <div id="despesa-alert" class="alert-message"></div>
+
     <div class="main-container">
 
         <!-- ===== HEADER ===== -->
@@ -63,7 +67,6 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
         </div>
 
         <!-- ===== ALERT ===== -->
-        <div id="despesa-alert" class="alert-message"></div>
 
         <!-- ===== CARDS DE RESUMO ===== -->
         <div class="summary-cards">
@@ -91,12 +94,24 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                         <input type="text" id="despesa-descricao" class="form-control"
                             placeholder="Ex: Aluguel, Mercado, Luz..." required>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
+                        <label class="form-label">CATEGORIA</label>
+                        <div class="d-flex gap-2">
+                            <select id="despesa-categoria" class="form-select" required>
+                                <option value="">Carregando...</option>
+                            </select>
+                            <button type="button" class="btn btn-outline-secondary" onclick="openCategoriasModal()"
+                                title="Gerenciar Categorias">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
                         <label class="form-label">VALOR (R$)</label>
                         <input type="number" id="despesa-valor" class="form-control" placeholder="0,00" step="0.01"
                             min="0.01" required>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <label class="form-label">DATA</label>
                         <input type="date" id="despesa-data" class="form-control" required>
                     </div>
@@ -137,6 +152,18 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                 <div class="mb-3">
                     <label class="form-label">DESCRIÇÃO</label>
                     <input type="text" id="edit-descricao" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">CATEGORIA</label>
+                    <div class="d-flex gap-2">
+                        <select id="edit-categoria" class="form-select" required>
+                            <option value="">Carregando...</option>
+                        </select>
+                        <button type="button" class="btn btn-outline-secondary" onclick="openCategoriasModal()"
+                            title="Gerenciar Categorias">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="row g-3 mb-3">
                     <div class="col-6">
@@ -182,14 +209,15 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <script>
         const USUARIO_ID = <?= $usuario_id ?>;
     </script>
-    <script src="api/utils/shared.js"></script>
-    <script src="api/utils/nav.js"></script>
-    <script src="assets/style/js/ui.js"></script>
-    <script src="api/despesas/read.js"></script>
-    <script src="api/despesas/render.js"></script>
-    <script src="api/despesas/create.js"></script>
-    <script src="api/despesas/update.js"></script>
-    <script src="api/despesas/delete.js"></script>
+    <script src="api/utils/shared.js?v=<?= time() ?>"></script>
+    <script src="api/utils/nav.js?v=<?= time() ?>"></script>
+    <script src="api/categorias/categorias.js?v=<?= time() ?>"></script>
+    <script src="assets/style/js/ui.js?v=<?= time() ?>"></script>
+    <script src="api/despesas/read.js?v=<?= time() ?>"></script>
+    <script src="api/despesas/render.js?v=<?= time() ?>"></script>
+    <script src="api/despesas/create.js?v=<?= time() ?>"></script>
+    <script src="api/despesas/update.js?v=<?= time() ?>"></script>
+    <script src="api/despesas/delete.js?v=<?= time() ?>"></script>
 
 </body>
 

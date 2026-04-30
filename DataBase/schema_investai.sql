@@ -46,9 +46,13 @@ CREATE TABLE IF NOT EXISTS ganhos (
     fixo BOOLEAN NOT NULL DEFAULT FALSE,
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    categoria_id INT NULL,
     CONSTRAINT fk_ganho_usuario
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT fk_ganho_categoria
+        FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+        ON DELETE SET NULL
 );
 
 -- =========================
@@ -63,9 +67,13 @@ CREATE TABLE IF NOT EXISTS despesas (
     fixo BOOLEAN NOT NULL DEFAULT FALSE,
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    categoria_id INT NULL,
     CONSTRAINT fk_despesa_usuario
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT fk_despesa_categoria
+        FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+        ON DELETE SET NULL
 );
 
 -- =========================
@@ -197,4 +205,16 @@ CREATE TABLE IF NOT EXISTS sugestoes_investimento (
     CONSTRAINT fk_sugestao_investimento_noticia
         FOREIGN KEY (noticia_id) REFERENCES noticias_financeiras(id)
         ON DELETE SET NULL
+);
+
+-- =========================
+-- 12. CATEGORIAS (GANHOS E DESPESAS)
+-- =========================
+CREATE TABLE IF NOT EXISTS categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NULL,
+    nome VARCHAR(100) NOT NULL,
+    tipo ENUM('ganho', 'despesa') NOT NULL,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_categoria_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );

@@ -6,9 +6,10 @@ async function atualizarGanho() {
     const valor = document.getElementById('edit-valor').value;
     const data = document.getElementById('edit-data').value;
     const fixo = document.getElementById('edit-fixo').checked;
+    const categoriaId = document.getElementById('edit-categoria').value;
 
     // Valida campos vazios
-    if (!descricao || !valor || !data) {
+    if (!descricao || !valor || !data || !categoriaId) {
         showAlert('Preencha todos os campos.', 'error');
         return;
     }
@@ -20,6 +21,7 @@ async function atualizarGanho() {
     formData.append('valor', parseFloat(valor));
     formData.append('data_ganho', data);
     formData.append('fixo', fixo ? 1 : 0);
+    formData.append('categoria_id', categoriaId);
 
     try {
         // Envia para backend
@@ -52,7 +54,7 @@ async function atualizarGanho() {
 }
 
 // Listener do formulário de edição
-document.getElementById('form-edit')?.addEventListener('submit', function(e) {
+document.getElementById('form-edit')?.addEventListener('submit', function (e) {
     e.preventDefault();
     atualizarGanho();
 });

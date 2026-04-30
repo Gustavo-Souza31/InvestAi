@@ -17,7 +17,8 @@ $data = [
     'descricao' => $_POST['descricao'] ?? '',
     'valor' => $_POST['valor'] ?? 0,
     'data_despesa' => $_POST['data_despesa'] ?? date('Y-m-d'),
-    'fixo' => $_POST['fixo'] ?? 0
+    'fixo' => $_POST['fixo'] ?? 0,
+    'categoria_id' => $_POST['categoria_id'] ?? ''
 ];
 
 
@@ -36,15 +37,16 @@ $descricao = $validation['data']['descricao'];
 $valor = $validation['data']['valor'];
 $data_despesa = $validation['data']['data_despesa'];
 $fixo = $validation['data']['fixo'];
+$categoria_id = $validation['data']['categoria_id'];
 
 
 // Inserir despesa no banco de dados
 $stmt = $conexao->prepare(
-    "INSERT INTO despesas (usuario_id, descricao, valor, data_despesa, fixo) 
-     VALUES (?, ?, ?, ?, ?)"
+    "INSERT INTO despesas (usuario_id, descricao, valor, data_despesa, fixo, categoria_id) 
+     VALUES (?, ?, ?, ?, ?, ?)"
 );
 
-$stmt->bind_param("isdsi", $usuario_id, $descricao, $valor, $data_despesa, $fixo);
+$stmt->bind_param("isdsii", $usuario_id, $descricao, $valor, $data_despesa, $fixo, $categoria_id);
 
 
 // Executar e verificar inserção

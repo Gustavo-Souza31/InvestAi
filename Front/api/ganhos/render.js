@@ -37,10 +37,8 @@ function gerarHTMLItemGanho(ganho) {
 
 
 
-                <!-- ✅ EXEMPLO DE NOVA LINHA - Para adicionar um novo campo: -->
-                <!-- <div class="categoria">${escapeHtml(ganho.categoria)}</div> -->
-
-                
+                <!-- Exibe a categoria -->
+                ${ganho.categoria_nome ? `<div class="categoria mt-1" style="font-size: 0.85rem; color: #a9b2c3;"><i class="bi bi-tag-fill me-1 text-primary"></i>${escapeHtml(ganho.categoria_nome)}</div>` : ''}
 
                 <div class="meta">
                     <span><i class="bi bi-calendar3 me-1"></i>${formatDate(ganho.data_ganho)}</span>
@@ -49,7 +47,7 @@ function gerarHTMLItemGanho(ganho) {
             </div>
             <div class="item-value">+ ${formatMoney(ganho.valor)}</div>
             <div class="item-actions">
-                <button class="btn-edit" title="Editar" onclick="openEdit(${ganho.id}, '${escapeHtml(ganho.descricao)}', ${ganho.valor}, '${ganho.data_ganho}', ${ganho.fixo})">
+                <button class="btn-edit" title="Editar" onclick="openEdit(${ganho.id}, '${escapeHtml(ganho.descricao)}', ${ganho.valor}, '${ganho.data_ganho}', ${ganho.fixo}, ${ganho.categoria_id || 'null'})">
                     <i class="bi bi-pencil"></i>
                 </button>
                 <button class="btn-delete" title="Excluir" onclick="openDelete(${ganho.id})">
@@ -112,5 +110,6 @@ async function carregarGanhos() {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ganho-data').value = new Date().toISOString().split('T')[0];
+    carregarCategorias('ganho', ['ganho-categoria', 'edit-categoria']);
     carregarGanhos();
 });
