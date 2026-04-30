@@ -115,6 +115,41 @@ class AuthValidator {
             ]
         ];
     }
+
+    /**
+     * Valida dados de recuperação de senha
+     */
+    public static function validateRecuperacao($data) {
+        $errors = [];
+
+        $email = trim($data['email'] ?? '');
+        $nova_senha = $data['nova_senha'] ?? '';
+
+        if (empty($email)) {
+            $errors[] = 'E-mail é obrigatório.';
+        }
+
+        if (empty($nova_senha)) {
+            $errors[] = 'A nova senha é obrigatória.';
+        }
+
+        if (!empty($email) && !ValidatorHelper::validateEmail($email)) {
+            $errors[] = 'E-mail inválido.';
+        }
+
+        if (!empty($nova_senha) && strlen($nova_senha) < 6) {
+            $errors[] = 'A nova senha deve ter no mínimo 6 caracteres.';
+        }
+
+        return [
+            'valid' => empty($errors),
+            'errors' => $errors,
+            'data' => [
+                'email' => $email,
+                'nova_senha' => $nova_senha
+            ]
+        ];
+    }
 }
 ?>
 
