@@ -120,6 +120,82 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
 
         </div>
 
+        <!-- ===== SEÇÃO PLANEJAMENTO DE ORÇAMENTO ===== -->
+        <div class="orcamento-section" id="orcamento-section">
+            <div class="orcamento-header">
+                <div>
+                    <h2><i class="bi bi-pie-chart-fill"></i>Planejamento de Orçamento</h2>
+                    <p class="orcamento-subtitle">Acompanhe quanto você gastou em cada categoria este mês.</p>
+                </div>
+                <button class="btn-orcamento" id="btn-abrir-orcamento" onclick="abrirModalOrcamento()">
+                    <i class="bi bi-plus-lg me-1"></i>Definir Limite
+                </button>
+            </div>
+
+            <!-- Cards de progresso por categoria -->
+            <div class="orcamento-grid" id="orcamento-grid">
+                <div class="orcamento-empty" id="orcamento-empty">
+                    <i class="bi bi-bar-chart-steps"></i>
+                    <p>Nenhum limite definido ainda.</p>
+                    <span>Clique em <strong>Definir Limite</strong> para começar!</span>
+                </div>
+            </div>
+        </div>
+
+        </div><!-- /#content -->
+
+    </div><!-- /.main-container -->
+
+    <!-- ===== MODAL ORÇAMENTO ===== -->
+    <div class="orcamento-overlay" id="orcamento-overlay">
+        <div class="orcamento-modal">
+            <div class="orcamento-modal-header">
+                <div class="orcamento-modal-title">
+                    <i class="bi bi-pie-chart-fill"></i>
+                    <span>Definir Limite de Orçamento</span>
+                </div>
+                <button class="orcamento-close" onclick="fecharModalOrcamento()" title="Fechar">&times;</button>
+            </div>
+
+            <div class="orcamento-modal-body">
+                <div class="orcamento-form-group">
+                    <label for="orc-categoria">CATEGORIA DE DESPESA</label>
+                    <div class="orcamento-select-wrap">
+                        <i class="bi bi-tag"></i>
+                        <select id="orc-categoria">
+                            <option value="">Selecione uma categoria...</option>
+                            <option value="Alimentação">🍽️ Alimentação</option>
+                            <option value="Transporte">🚗 Transporte</option>
+                            <option value="Habitação">🏠 Habitação</option>
+                            <option value="Saúde">💊 Saúde</option>
+                            <option value="Educação">📚 Educação</option>
+                            <option value="Entretenimento">🎬 Entretenimento</option>
+                            <option value="Vestuário e Acessórios">👕 Vestuário e Acessórios</option>
+                            <option value="Utilidades Domésticas">💡 Utilidades Domésticas</option>
+                            <option value="Outros Gastos">📦 Outros Gastos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="orcamento-form-group">
+                    <label for="orc-limite">LIMITE MENSAL (R$)</label>
+                    <div class="orcamento-input-wrap">
+                        <i class="bi bi-currency-dollar"></i>
+                        <input type="number" id="orc-limite" placeholder="Ex: 500,00" min="0.01" step="0.01">
+                    </div>
+                    <span class="orcamento-hint">Valores zerados, negativos ou em texto não são aceitos.</span>
+                </div>
+
+                <div id="orc-alert" class="orc-alert" style="display:none;"></div>
+            </div>
+
+            <div class="orcamento-modal-footer">
+                <button class="orc-btn-cancelar" onclick="fecharModalOrcamento()">Cancelar</button>
+                <button class="orc-btn-salvar" id="orc-btn-salvar" onclick="salvarOrcamento()">
+                    <i class="bi bi-check2-all me-1"></i>Salvar Limite
+                </button>
+            </div>
+        </div>
     </div>
 
     <script src="api/utils/shared.js?v=<?= time() ?>"></script>
@@ -130,6 +206,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
         window.DEFAULT_PERIODO = 'all';
     </script>
     <script src="api/dashboard/render.js?v=<?= time() ?>"></script>
+    <script src="api/orcamento/orcamento.js?v=<?= time() ?>"></script>
 
     <?php if ($is_first_login): ?>
         <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>

@@ -35,7 +35,20 @@ CREATE TABLE IF NOT EXISTS perfil_financeiro (
 );
 
 -- =========================
--- 3. GANHOS
+-- 3. CATEGORIAS (GANHOS E DESPESAS)
+-- DEVE ser criada ANTES de ganhos e despesas (FK referenciada por ambas)
+-- =========================
+CREATE TABLE IF NOT EXISTS categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NULL,
+    nome VARCHAR(100) NOT NULL,
+    tipo ENUM('ganho', 'despesa') NOT NULL,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_categoria_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- =========================
+-- 4. GANHOS
 -- =========================
 CREATE TABLE IF NOT EXISTS ganhos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -56,7 +69,7 @@ CREATE TABLE IF NOT EXISTS ganhos (
 );
 
 -- =========================
--- 4. DESPESAS
+-- 5. DESPESAS
 -- =========================
 CREATE TABLE IF NOT EXISTS despesas (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -77,7 +90,7 @@ CREATE TABLE IF NOT EXISTS despesas (
 );
 
 -- =========================
--- 5. INVESTIMENTOS
+-- 6. INVESTIMENTOS
 -- =========================
 CREATE TABLE IF NOT EXISTS investimentos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -97,7 +110,7 @@ CREATE TABLE IF NOT EXISTS investimentos (
 );
 
 -- =========================
--- 6. PATRIMÔNIOS
+-- 7. PATRIMÔNIOS
 -- =========================
 CREATE TABLE IF NOT EXISTS patrimonios (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -114,7 +127,7 @@ CREATE TABLE IF NOT EXISTS patrimonios (
 );
 
 -- =========================
--- 7. METAS FINANCEIRAS
+-- 8. METAS FINANCEIRAS
 -- =========================
 CREATE TABLE IF NOT EXISTS metas_financeiras (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -133,7 +146,7 @@ CREATE TABLE IF NOT EXISTS metas_financeiras (
 );
 
 -- =========================
--- 8. RESUMOS MENSAIS
+-- 9. RESUMOS MENSAIS
 -- =========================
 CREATE TABLE IF NOT EXISTS resumos_mensais (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -154,7 +167,8 @@ CREATE TABLE IF NOT EXISTS resumos_mensais (
 );
 
 -- =========================
--- 9. NOTÍCIAS FINANCEIRAS
+-- 10. NOTÍCIAS FINANCEIRAS
+-- (Inclui colunas de análise IA adicionadas pelo ai_news_processor.php)
 -- =========================
 CREATE TABLE IF NOT EXISTS noticias_financeiras (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -163,12 +177,21 @@ CREATE TABLE IF NOT EXISTS noticias_financeiras (
     url VARCHAR(500) NOT NULL UNIQUE,
     resumo TEXT,
     categoria VARCHAR(100),
+    nivel_impacto ENUM('baixo', 'medio', 'alto') DEFAULT 'baixo',
+    cenario_hipotetico TEXT NULL,
+    acoes_praticas TEXT NULL,
+    sugestao_investimento TEXT NULL,
+    dica_economia TEXT NULL,
+    cor_fonte VARCHAR(20) DEFAULT '#6366f1',
+    icone_fonte VARCHAR(50) DEFAULT 'bi-newspaper',
+    processado_ia TINYINT(1) NOT NULL DEFAULT 0,
     data_publicacao DATETIME,
-    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- =========================
--- 10. SUGESTÕES DE ECONOMIA
+-- 11. SUGESTÕES DE ECONOMIA
 -- =========================
 CREATE TABLE IF NOT EXISTS sugestoes_economia (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -186,7 +209,7 @@ CREATE TABLE IF NOT EXISTS sugestoes_economia (
 );
 
 -- =========================
--- 11. SUGESTÕES DE INVESTIMENTO
+-- 12. SUGESTÕES DE INVESTIMENTO
 -- =========================
 CREATE TABLE IF NOT EXISTS sugestoes_investimento (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -208,13 +231,32 @@ CREATE TABLE IF NOT EXISTS sugestoes_investimento (
 );
 
 -- =========================
--- 12. CATEGORIAS (GANHOS E DESPESAS)
+-- 13. CACHE IA NOTÍCIAS
+-- (Usada pelo analyze.php para evitar chamar a IA repetidamente)
 -- =========================
-CREATE TABLE IF NOT EXISTS categorias (
+CREATE TABLE IF NOT EXISTS cache_ia_noticias (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NULL,
-    nome VARCHAR(100) NOT NULL,
-    tipo ENUM('ganho', 'despesa') NOT NULL,
+    noticia_url_hash CHAR(32) NOT NULL,
+    perfil_usuario VARCHAR(50) NOT NULL DEFAULT 'moderado',
+    categorias_usuario TEXT NULL,
+    analise_json LONGTEXT NOT NULL,
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_categoria_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    INDEX idx_hash_perfil (noticia_url_hash, perfil_usuario)
 );
+
+-- =========================
+-- 14. ORÇAMENTO CATEGORIAS
+-- (Limites de gastos mensais por categoria)
+-- =========================
+CREATE TABLE IF NOT EXISTS orcamento_categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    categoria_nome VARCHAR(100) NOT NULL,
+    limite_mensal DECIMAL(12,2) NOT NULL,
+    mes TINYINT NOT NULL DEFAULT (MONTH(CURDATE())),
+    ano YEAR NOT NULL DEFAULT (YEAR(CURDATE())),
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_orcamento_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    CONSTRAINT uq_orcamento UNIQUE (usuario_id, categoria_nome, mes, ano)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

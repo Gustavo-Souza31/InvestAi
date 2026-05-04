@@ -212,12 +212,11 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                                             um quiz rápido e nós ajudamos.</p>
                                     </div>
                                 </div>
-                                <button type="button"
-                                    onclick="showToast('Em breve! O Quiz de Perfil de Investidor será adicionado nas próximas atualizações. Fique ligado!', 'success')"
+                                <button type="button" id="btn-fazer-quiz" onclick="abrirQuiz()"
                                     style="background: var(--brand-accent); border: none; color: #0b0d11; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(179, 157, 219, 0.25);"
                                     onmouseover="this.style.transform='translateY(-2px)'"
                                     onmouseout="this.style.transform='translateY(0)'">
-                                    Fazer Quiz
+                                    <i class="bi bi-patch-question me-1"></i>Fazer Quiz
                                 </button>
                             </div>
 
@@ -307,6 +306,48 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
 
         </div>
 
+    </div>
+
+    <!-- ===== MODAL QUIZ PERFIL DE INVESTIDOR ===== -->
+    <div class="quiz-overlay" id="quiz-overlay">
+        <div class="quiz-modal" id="quiz-modal">
+
+            <!-- Cabeçalho do quiz -->
+            <div class="quiz-header">
+                <div class="quiz-header-top">
+                    <div class="quiz-title-group">
+                        <i class="bi bi-patch-question-fill"></i>
+                        <span>Quiz de Perfil de Investidor</span>
+                    </div>
+                    <button class="quiz-close" onclick="fecharQuiz()" title="Fechar">&times;</button>
+                </div>
+                <div class="quiz-progress-wrap">
+                    <div class="quiz-progress-bar" id="quiz-progress-bar"></div>
+                </div>
+                <div class="quiz-progress-label" id="quiz-progress-label">Pergunta 1 de 8</div>
+            </div>
+
+            <!-- Corpo: pergunta ativa -->
+            <div class="quiz-body" id="quiz-body">
+                <!-- Injetado via JS -->
+            </div>
+
+            <!-- Tela de resultado -->
+            <div class="quiz-resultado" id="quiz-resultado" style="display:none;">
+                <div class="resultado-icon" id="resultado-icon"></div>
+                <h3 id="resultado-titulo"></h3>
+                <p id="resultado-desc"></p>
+                <div class="resultado-actions">
+                    <button class="quiz-btn-secundario" onclick="reiniciarQuiz()">
+                        <i class="bi bi-arrow-repeat me-1"></i>Refazer Quiz
+                    </button>
+                    <button class="quiz-btn-primario" onclick="aplicarResultadoEFechar()">
+                        <i class="bi bi-check2-all me-1"></i>Aplicar Perfil
+                    </button>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <!-- ===== SCRIPTS ===== -->
