@@ -47,3 +47,4 @@ if ($stmt->execute()) {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Erro ao salvar no banco.']);
 }
+?>

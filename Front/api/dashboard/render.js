@@ -40,6 +40,14 @@ async function inicializar(periodo = '3m', isUpdate = false) {
             if (!isUpdate) {
                 loadingEl.style.display = 'none';
                 contentEl.style.display = 'block';
+
+                // Carregar sugestões de economia (mês/ano atual)
+                const hoje = new Date();
+                const mesAtual = hoje.getMonth() + 1;
+                const anoAtual = hoje.getFullYear();
+                if (window.sugestoesAPI) {
+                    window.sugestoesAPI.inicializar(mesAtual, anoAtual);
+                }
             }
         } else {
             // Se erro, mostra mensagem

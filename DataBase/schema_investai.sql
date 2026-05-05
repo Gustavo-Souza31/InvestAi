@@ -199,13 +199,17 @@ CREATE TABLE IF NOT EXISTS sugestoes_economia (
     titulo VARCHAR(150) NOT NULL,
     descricao TEXT NOT NULL,
     fonte TEXT NOT NULL,
+    categoria_nome VARCHAR(100) DEFAULT NULL,
+    mes TINYINT DEFAULT NULL,
+    ano YEAR DEFAULT NULL,
     prioridade ENUM('baixa', 'media', 'alta') NOT NULL,
     status ENUM('pendente', 'aceita', 'recusada') DEFAULT 'pendente',
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     respondida_em DATETIME NULL,
     CONSTRAINT fk_sugestao_economia_usuario
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    UNIQUE INDEX uq_sugestao_user_cat_mes (usuario_id, categoria_nome, mes, ano)
 );
 
 -- =========================

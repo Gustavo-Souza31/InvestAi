@@ -5,9 +5,13 @@
 
 const ORC_API_READ = '../backend/api/orcamento/read.php';
 const ORC_API_SAVE = '../backend/api/orcamento/save.php';
+const CAT_API_DESPESA = '../backend/api/categorias/read.php?tipo=despesa';
 
 // Emojis por categoria para visual no card
 const ORC_ICONS = {
+    'Salário':                '💰',
+    'Freelance':              '🎯',
+    'Investimentos':          '📈',
     'Alimentação':            '🍽️',
     'Transporte':             '🚗',
     'Habitação':              '🏠',
@@ -18,6 +22,40 @@ const ORC_ICONS = {
     'Utilidades Domésticas':  '💡',
     'Outros Gastos':          '📦',
 };
+
+// ─── Carregar categorias de despesa e popular o select ──────────────────────
+async function carregarCategoriasNoModal() {
+    try {
+        const res = await fetch(CAT_API_DESPESA);
+        const data = await res.json();
+        
+        if (data.status === 'success' && data.categorias) {
+            const select = document.getElementById('orc-categoria');
+            
+            // Preservar o valor anterior se houver (para edição)
+            const valorAnterior = select.value;
+            
+            // Limpar options existentes (mantém o placeholder)
+            select.innerHTML = '<option value="">Selecione uma categoria...</option>';
+            
+            // Adicionar categorias
+            data.categorias.forEach(cat => {
+                const icon = ORC_ICONS[cat.nome] || '📁';
+                const option = document.createElement('option');
+                option.value = cat.nome;
+                option.textContent = `${icon} ${cat.nome}`;
+                select.appendChild(option);
+            });
+            
+            // Restaurar valor anterior se existia
+            if (valorAnterior) {
+                select.value = valorAnterior;
+            }
+        }
+    } catch (e) {
+        console.error('Erro ao carregar categorias:', e);
+    }
+}
 
 // ─── Carregar e renderizar orçamentos ────────────────────────────────────────
 async function carregarOrcamentos() {
@@ -84,6 +122,7 @@ function abrirModalOrcamento() {
     document.getElementById('orc-categoria').value = '';
     document.getElementById('orc-limite').value    = '';
     ocultarAlertOrc();
+    carregarCategoriasNoModal();
     document.getElementById('orcamento-overlay').classList.add('active');
     document.getElementById('orc-categoria').focus();
 }
@@ -92,6 +131,7 @@ function abrirModalOrcamentoEdicao(categoria, limite) {
     document.getElementById('orc-categoria').value = categoria;
     document.getElementById('orc-limite').value    = limite;
     ocultarAlertOrc();
+    carregarCategoriasNoModal();
     document.getElementById('orcamento-overlay').classList.add('active');
     document.getElementById('orc-limite').focus();
 }

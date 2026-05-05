@@ -34,6 +34,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     <link rel="stylesheet" href="assets/style/css/navbar.css?v=<?= time() ?>">
     <link rel="stylesheet" href="assets/style/css/internal-pages.css?v=<?= time() ?>">
     <link rel="stylesheet" href="assets/style/css/dashboard.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="assets/style/css/sugestoes.css?v=<?= time() ?>">>
 
     <?php if ($is_first_login): ?>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css" />
@@ -142,6 +143,9 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
             </div>
         </div>
 
+        <!-- ===== SEÇÃO SUGESTÕES DE ECONOMIA ===== -->
+        <div id="sugestoes-container"></div>
+
         </div><!-- /#content -->
 
     </div><!-- /.main-container -->
@@ -164,15 +168,6 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
                         <i class="bi bi-tag"></i>
                         <select id="orc-categoria">
                             <option value="">Selecione uma categoria...</option>
-                            <option value="Alimentação">🍽️ Alimentação</option>
-                            <option value="Transporte">🚗 Transporte</option>
-                            <option value="Habitação">🏠 Habitação</option>
-                            <option value="Saúde">💊 Saúde</option>
-                            <option value="Educação">📚 Educação</option>
-                            <option value="Entretenimento">🎬 Entretenimento</option>
-                            <option value="Vestuário e Acessórios">👕 Vestuário e Acessórios</option>
-                            <option value="Utilidades Domésticas">💡 Utilidades Domésticas</option>
-                            <option value="Outros Gastos">📦 Outros Gastos</option>
                         </select>
                     </div>
                 </div>
@@ -207,6 +202,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     </script>
     <script src="api/dashboard/render.js?v=<?= time() ?>"></script>
     <script src="api/orcamento/orcamento.js?v=<?= time() ?>"></script>
+    <script src="api/sugestoes/sugestoes.js?v=<?= time() ?>"></script>
 
     <?php if ($is_first_login): ?>
         <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>

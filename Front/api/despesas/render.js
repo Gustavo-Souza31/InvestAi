@@ -1,5 +1,18 @@
 // ===== PROCESSAMENTO =====
 
+// Emojis por categoria (sincronizado com orcamento.js)
+const CATEGORY_ICONS = {
+    'Alimentação':            '🍽️',
+    'Transporte':             '🚗',
+    'Habitação':              '🏠',
+    'Saúde':                  '💊',
+    'Educação':               '📚',
+    'Entretenimento':         '🎬',
+    'Vestuário e Acessórios': '👕',
+    'Utilidades Domésticas':  '💡',
+    'Outros Gastos':          '📦',
+};
+
 function processarDespesas(despesas) {
     const agora = new Date();
     let totalMes = 0;
@@ -28,6 +41,12 @@ function gerarHTMLItemDespesa(despesa) {
     const fixoBadge = parseInt(despesa.fixo) === 1
         ? '<span class="item-meta-badge">FIXO</span>'
         : '';
+    
+    // Adicionar emoji da categoria
+    const categoryIcon = CATEGORY_ICONS[despesa.categoria_nome] || '📁';
+    const categoryDisplay = despesa.categoria_nome 
+        ? `<div class="categoria mt-1" style="font-size: 0.85rem; color: #a9b2c3;"><span style="margin-right: 4px;">${categoryIcon}</span>${escapeHtml(despesa.categoria_nome)}</div>`
+        : '';
 
     return `
         <div class="list-item">
@@ -35,9 +54,8 @@ function gerarHTMLItemDespesa(despesa) {
             <div class="item-info">
                 <div class="desc">${escapeHtml(despesa.descricao)}</div>
 
-
-                <!-- Exibe a categoria -->
-                ${despesa.categoria_nome ? `<div class="categoria mt-1" style="font-size: 0.85rem; color: #a9b2c3;"><i class="bi bi-tag-fill me-1 text-primary"></i>${escapeHtml(despesa.categoria_nome)}</div>` : ''}
+                <!-- Exibe a categoria com emoji -->
+                ${categoryDisplay}
                 <div class="meta">
                     <span><i class="bi bi-calendar3 me-1"></i>${formatDate(despesa.data_despesa)}</span>
                     ${fixoBadge}
