@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 // backend/api/despesas/create.php — Cria nova despesa com validação
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 require_once $root . '/backend/validators/DespesasValidator.php';
 
@@ -37,8 +37,9 @@ $descricao = $validation['data']['descricao'];
 $valor = $validation['data']['valor'];
 $data_despesa = $validation['data']['data_despesa'];
 $fixo = $validation['data']['fixo'];
-$categoria_id = $validation['data']['categoria_id'];
+$categoria_input = $validation['data']['categoria_id'];
 
+$categoria_id = !empty($categoria_input) ? intval($categoria_input) : null;
 
 // Inserir despesa no banco de dados
 $stmt = $conexao->prepare(

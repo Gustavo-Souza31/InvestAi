@@ -226,7 +226,7 @@ btnAtualizar.addEventListener('click', async () => {
     showToast('Iniciando busca de novas notícias...', 'info');
 
     try {
-        const resp = await fetch('../backend/run_cron.php', { credentials: 'include' });
+        const resp = await fetch('../backend/ia/noticias/logic/run_cron.php', { credentials: 'include' });
         const data = await resp.json();
 
         if (data.status === 'iniciado') {

@@ -193,6 +193,23 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
         </div>
     </div>
 
+    <!-- ===== MODAL CONFIRMAR DELETE ORÇAMENTO ===== -->
+    <div class="orcamento-overlay" id="orc-modal-delete">
+        <div class="confirm-card">
+            <div class="icon-danger"><i class="bi bi-trash3"></i></div>
+            <h3>Excluir orçamento?</h3>
+            <p>Esta ação não pode ser desfeita. O limite será removido permanentemente.</p>
+            <input type="hidden" id="orc-delete-id">
+            <input type="hidden" id="orc-delete-nome">
+            <div class="d-flex gap-3 justify-content-center">
+                <button class="btn-cancel" onclick="fecharModalDeleteOrcamento()">Cancelar</button>
+                <button class="btn-danger" id="orc-btn-confirm-delete">
+                    <i class="bi bi-trash3 me-1"></i>Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="api/utils/shared.js?v=<?= time() ?>"></script>
     <script src="api/utils/nav.js?v=<?= time() ?>"></script>
     <script src="assets/style/js/ui.js?v=<?= time() ?>"></script>
@@ -201,7 +218,11 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
         window.DEFAULT_PERIODO = 'all';
     </script>
     <script src="api/dashboard/render.js?v=<?= time() ?>"></script>
-    <script src="api/orcamento/orcamento.js?v=<?= time() ?>"></script>
+    <script src="api/orcamento/read.js?v=<?= time() ?>"></script>
+    <script src="api/orcamento/render.js?v=<?= time() ?>"></script>
+    <script src="api/orcamento/create.js?v=<?= time() ?>"></script>
+    <script src="api/orcamento/update.js?v=<?= time() ?>"></script>
+    <script src="api/orcamento/delete.js?v=<?= time() ?>"></script>
     <script src="api/sugestoes/sugestoes.js?v=<?= time() ?>"></script>
 
     <?php if ($is_first_login): ?>

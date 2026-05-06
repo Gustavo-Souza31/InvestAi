@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 // backend/api/ganhos/update.php — Atualiza ganho existente com validação
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 require_once $root . '/backend/validators/GanhosValidator.php';
 require_once $root . '/backend/validators/IdValidator.php';
@@ -49,8 +49,9 @@ $descricao = $validation['data']['descricao'];
 $valor = $validation['data']['valor'];
 $data_ganho = $validation['data']['data_ganho'];
 $fixo = $validation['data']['fixo'];
-$categoria_id = $validation['data']['categoria_id'];
+$categoria_input = $validation['data']['categoria_id'];
 
+$categoria_id = !empty($categoria_input) ? intval($categoria_input) : null;
 
 // Atualizar ganho no banco de dados
 $stmt = $conexao->prepare(
@@ -61,7 +62,7 @@ $stmt = $conexao->prepare(
 $stmt->bind_param('sdsiii', $descricao, $valor, $data_ganho, $fixo, $categoria_id, $id);
 
 // Executar e verificar atualizacao
-if ($stmt->execute() && $stmt->affected_rows > 0) {
+if ($stmt->execute()) {
     echo json_encode([
         'status' => 'success',
         'message' => 'Ganho atualizado!'
@@ -69,7 +70,7 @@ if ($stmt->execute() && $stmt->affected_rows > 0) {
 } else {
     echo json_encode([
         'status' => 'error',
-        'message' => 'Ganho não encontrado.'
+        'message' => 'Erro ao atualizar ganho.'
     ]);
 }
 ?>

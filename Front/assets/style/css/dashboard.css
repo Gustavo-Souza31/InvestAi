@@ -536,6 +536,34 @@
     color: var(--brand-accent);
 }
 
+.orc-card-buttons {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.orc-delete-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #666;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.orc-delete-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
 /* Barra de progresso */
 .orc-progress-wrap {
     height: 6px;

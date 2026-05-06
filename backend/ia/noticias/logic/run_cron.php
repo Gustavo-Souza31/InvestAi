@@ -1,6 +1,6 @@
 <?php
 /**
- * backend/run_cron.php
+ * backend/ia/noticias/logic/run_cron.php
  * Gatilho web que executa o cron via CLI (sem limite de tempo do Apache).
  * Chamado pelo botão "Atualizar" da interface.
  */
@@ -10,7 +10,6 @@ ob_start();
 @ini_set('display_errors', 0);
 header('Content-Type: application/json; charset=utf-8');
 
-// Autenticação de sessão
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
     ob_end_clean();
@@ -19,12 +18,12 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$lockFile = __DIR__ . '/logs/cron_news.lock';
-$logFile  = __DIR__ . '/logs/cron_news.log';
-$phpBin   = '/Applications/MAMP/bin/php/php8.4.1/bin/php';
-$cronFile = __DIR__ . '/cron_news.php';
+$backendRoot = dirname(dirname(dirname(__DIR__)));   // backend/
+$lockFile    = $backendRoot . '/logs/cron_news.lock';
+$logFile     = $backendRoot . '/logs/cron_news.log';
+$phpBin      = '/Applications/MAMP/bin/php/php8.4.1/bin/php';
+$cronFile    = __DIR__ . '/cron_news.php';
 
-// Verificar cooldown
 if (file_exists($lockFile)) {
     $lastRun = (int)file_get_contents($lockFile);
     if (time() - $lastRun < 120) {
@@ -38,7 +37,6 @@ if (file_exists($lockFile)) {
     }
 }
 
-// Executar cron em background via CLI (sem timeout do Apache)
 $cmd    = escapeshellarg($phpBin) . ' ' . escapeshellarg($cronFile) . ' >> ' . escapeshellarg($logFile) . ' 2>&1 &';
 $output = [];
 exec($cmd, $output);

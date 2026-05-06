@@ -1,7 +1,7 @@
 <?php
 /**
- * backend/services/EconomySuggestionGenerator.php
- * 
+ * backend/ia/sugestoes_economia/EconomySuggestionGenerator.php
+ *
  * Serviço para gerar sugestões de economia via Google Gemini API
  * Detecta categorias em alerta (80%+ do limite) ou comportamento absurdo
  * Gera sugestões apenas 1x por categoria/mês e salva no banco
@@ -44,7 +44,7 @@ class EconomySuggestionGenerator {
 
     /**
      * Analisa despesas do mês e gera sugestões de economia
-     * 
+     *
      * @param int $usuario_id ID do usuário
      * @param int $mes Mês (1-12)
      * @param int $ano Ano (YYYY)
@@ -63,7 +63,7 @@ class EconomySuggestionGenerator {
         // 2. Para cada categoria em alerta, verificar se já tem sugestão no banco
         foreach ($categorias_alerta as $alerta) {
             $categoria_nome = $alerta['categoria'];
-            
+
             // Verificar se já existe sugestão para este mês/categoria
             $ja_existe = $this->verificarSugestaoExistente(
                 $usuario_id,
@@ -88,6 +88,11 @@ class EconomySuggestionGenerator {
                 $alerta['tipo']
             );
 
+            // Se Gemini falhou, usar sugestão estática para não sumir o alerta
+            if (!$sugestao) {
+                $sugestao = $this->gerarSugestaoFallback($categoria_nome, $alerta['tipo']);
+            }
+
             if ($sugestao) {
                 // Salvar no banco e obter ID
                 $id_sugestao = $this->salvarSugestaoNoBanco(
@@ -100,7 +105,8 @@ class EconomySuggestionGenerator {
                 );
 
                 if ($id_sugestao) {
-                    $sugestao['id'] = $id_sugestao;
+                    $sugestao['id']   = $id_sugestao;
+                    $sugestao['tipo'] = $alerta['tipo'];
                     $sugestoes_geradas[] = $sugestao;
                 }
             }
@@ -111,7 +117,7 @@ class EconomySuggestionGenerator {
 
     /**
      * Detecta categorias que estão em alerta (80%+ do limite ou comportamento absurdo)
-     * 
+     *
      * @return array [{ categoria, gasto, limite, percentual, tipo: 'orcamento'|'comportamento' }]
      */
     private function detectarAlertasCategorias(int $usuario_id, int $mes, int $ano): array {
@@ -119,12 +125,12 @@ class EconomySuggestionGenerator {
 
         // Buscar todas as categorias com despesas neste mês
         $query = "
-            SELECT 
+            SELECT
                 c.nome as categoria,
                 SUM(d.valor) as total_gasto
             FROM despesas d
             JOIN categorias c ON d.categoria_id = c.id
-            WHERE d.usuario_id = ? 
+            WHERE d.usuario_id = ?
               AND MONTH(d.data_despesa) = ?
               AND YEAR(d.data_despesa) = ?
             GROUP BY c.id, c.nome
@@ -140,29 +146,27 @@ class EconomySuggestionGenerator {
             $categoria = $row['categoria'];
             $gasto = (float) $row['total_gasto'];
 
-            // 1. Buscar limite definido pelo usuário (se existir)
-            $limite = $this->buscarLimiteDefinido($usuario_id, $categoria, $mes, $ano);
+            // 1. Buscar limite definido pelo usuário
+            $limite_definido = $this->buscarLimiteDefinido($usuario_id, $categoria, $mes, $ano);
+            $tem_limite_usuario = ($limite_definido !== null);
 
             // 2. Se não tem limite, usar valor padrão
-            if (!$limite) {
-                $limite = $this->getDefaultLimit($categoria);
-            }
+            $limite = $limite_definido ?? $this->getDefaultLimit($categoria);
 
             // 3. Calcular percentual
             $percentual = ($gasto / $limite) * 100;
 
             // 4. Verificar alertas
             if ($percentual >= 80) {
-                // Limite ultrapassado ou quase (orcamento)
                 $alertas[] = [
                     'categoria' => $categoria,
                     'gasto' => $gasto,
                     'limite' => $limite,
                     'percentual' => $percentual,
-                    'tipo' => 'orcamento',
+                    // 'orcamento' só quando o usuário definiu um limite real
+                    'tipo' => $tem_limite_usuario ? 'orcamento' : 'comportamento',
                 ];
             } elseif ($this->ehCategoriaFrivola($categoria) && $gasto > $limite) {
-                // Categoria frívola com gasto acima do default (comportamento absurdo)
                 $alertas[] = [
                     'categoria' => $categoria,
                     'gasto' => $gasto,
@@ -181,18 +185,41 @@ class EconomySuggestionGenerator {
      * Buscar limite definido para uma categoria em um mês/ano
      */
     private function buscarLimiteDefinido(int $usuario_id, string $categoria, int $mes, int $ano): ?float {
+        // Buscar primeiro o ID da categoria
+        $query_cat = "
+            SELECT id
+            FROM categorias
+            WHERE nome = ?
+              AND tipo = 'despesa'
+            LIMIT 1
+        ";
+
+        $stmt_cat = $this->conexao->prepare($query_cat);
+        $stmt_cat->bind_param('s', $categoria);
+        $stmt_cat->execute();
+        $result_cat = $stmt_cat->get_result();
+
+        if (!$row_cat = $result_cat->fetch_assoc()) {
+            $stmt_cat->close();
+            return null;
+        }
+
+        $categoria_id = $row_cat['id'];
+        $stmt_cat->close();
+
+        // Agora buscar o limite usando categoria_id
         $query = "
             SELECT limite_mensal
             FROM orcamento_categorias
             WHERE usuario_id = ?
-              AND categoria_nome = ?
+              AND categoria_id = ?
               AND mes = ?
               AND ano = ?
             LIMIT 1
         ";
 
         $stmt = $this->conexao->prepare($query);
-        $stmt->bind_param('isii', $usuario_id, $categoria, $mes, $ano);
+        $stmt->bind_param('iiii', $usuario_id, $categoria_id, $mes, $ano);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -241,18 +268,12 @@ class EconomySuggestionGenerator {
      */
     private function verificarSugestaoExistente(int $usuario_id, string $categoria, int $mes, int $ano): ?array {
         $query = "
-            SELECT 
-                id,
-                titulo,
-                descricao,
-                fonte,
-                prioridade
+            SELECT id, titulo, descricao, fonte
             FROM sugestoes_economia
             WHERE usuario_id = ?
               AND categoria_nome = ?
               AND mes = ?
               AND ano = ?
-              AND status = 'pendente'
             LIMIT 1
         ";
 
@@ -264,16 +285,23 @@ class EconomySuggestionGenerator {
         if ($row = $result->fetch_assoc()) {
             $stmt->close();
 
-            // Parsear JSON da coluna 'fonte' (contém as ações em JSON)
-            $acoes = json_decode($row['fonte'], true) ?? [];
+            $fonteData = json_decode($row['fonte'], true) ?? [];
+            // Suporte aos dois formatos: novo {acoes, tipo} e antigo [acao1, acao2]
+            if (isset($fonteData['acoes'])) {
+                $acoes = $fonteData['acoes'];
+                $tipo  = $fonteData['tipo'] ?? 'comportamento';
+            } else {
+                $acoes = $fonteData;
+                $tipo  = 'comportamento';
+            }
 
             return [
-                'id' => (int)$row['id'],
+                'id'        => (int)$row['id'],
                 'categoria' => $categoria,
-                'titulo' => $row['titulo'],
-                'mensagem' => $row['descricao'],
-                'acoes' => $acoes,
-                'prioridade' => $row['prioridade'],
+                'titulo'    => $row['titulo'],
+                'mensagem'  => $row['descricao'],
+                'acoes'     => $acoes,
+                'tipo'      => $tipo,
             ];
         }
 
@@ -322,7 +350,7 @@ class EconomySuggestionGenerator {
             : "comportamento de gasto anormal (categoria fútil)";
 
         return <<<PROMPT
-Você é um consultor financeiro do InvestAI. 
+Você é um consultor financeiro do InvestAI.
 
 Um usuário $descricao_alerta em **{$categoria}**.
 
@@ -356,7 +384,7 @@ PROMPT;
             return null;
         }
 
-        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=' 
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='
             . urlencode($this->gemini_key);
 
         $body = json_encode([
@@ -405,6 +433,34 @@ PROMPT;
     }
 
     /**
+     * Gera sugestão estática quando a IA não está disponível
+     */
+    private function gerarSugestaoFallback(string $categoria, string $tipo): array {
+        $acoes_por_categoria = [
+            'Alimentação'            => ['Planeje refeições semanais com antecedência', 'Evite delivery e prefira cozinhar em casa', 'Faça uma lista antes de ir ao mercado'],
+            'Transporte'             => ['Avalie caronas compartilhadas ou transporte público', 'Abasteça no posto mais barato da região', 'Combine trajetos para reduzir viagens'],
+            'Entretenimento'         => ['Prefira opções de lazer gratuitas ou de baixo custo', 'Revise assinaturas que você usa pouco', 'Estabeleça um limite semanal de gastos'],
+            'Vestuário e Acessórios' => ['Espere promoções antes de comprar', 'Avalie o que já tem no guarda-roupa antes de comprar', 'Prefira peças versáteis e duráveis'],
+            'Saúde'                  => ['Compare preços em diferentes farmácias', 'Verifique genéricos disponíveis para medicamentos', 'Considere planos de saúde preventivos'],
+            'Educação'               => ['Busque cursos gratuitos online para complementar', 'Verifique descontos para pagamento à vista', 'Compartilhe materiais com colegas'],
+            'Habitação'              => ['Revise contratos de serviços (internet, TV)', 'Reduza consumo de água e energia', 'Negocie reajustes com antecedência'],
+        ];
+
+        $acoes = $acoes_por_categoria[$categoria]
+            ?? ['Revise seus gastos nesta categoria', 'Defina um limite mensal', 'Registre todas as despesas'];
+
+        $titulo = $tipo === 'orcamento'
+            ? "Orçamento de $categoria ultrapassado"
+            : "Gasto elevado em $categoria";
+
+        return [
+            'titulo'   => $titulo,
+            'mensagem' => "Seus gastos em $categoria estão acima do esperado. Confira as dicas abaixo para economizar.",
+            'acoes'    => $acoes,
+        ];
+    }
+
+    /**
      * Salvar sugestão no banco de dados
      */
     private function salvarSugestaoNoBanco(
@@ -417,19 +473,19 @@ PROMPT;
     ): ?int {
         $titulo = $sugestao['titulo'];
         $descricao = $sugestao['mensagem'];
-        $acoes_json = json_encode($sugestao['acoes'], JSON_UNESCAPED_UNICODE);
-        $fonte = $acoes_json;
-        $prioridade = ($alerta_dados['percentual'] > 150) ? 'alta' : (($alerta_dados['percentual'] > 100) ? 'media' : 'baixa');
+        $fonte = json_encode([
+            'acoes' => $sugestao['acoes'],
+            'tipo'  => $alerta_dados['tipo'],
+        ], JSON_UNESCAPED_UNICODE);
 
         $query = "
-            INSERT INTO sugestoes_economia 
-            (usuario_id, titulo, descricao, fonte, categoria_nome, mes, ano, prioridade, status, criado_em)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pendente', NOW())
+            INSERT INTO sugestoes_economia
+            (usuario_id, titulo, descricao, fonte, categoria_nome, mes, ano, criado_em)
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
             ON DUPLICATE KEY UPDATE
             titulo = VALUES(titulo),
             descricao = VALUES(descricao),
-            fonte = VALUES(fonte),
-            prioridade = VALUES(prioridade)
+            fonte = VALUES(fonte)
         ";
 
         $stmt = $this->conexao->prepare($query);
@@ -440,19 +496,18 @@ PROMPT;
         }
 
         $stmt->bind_param(
-            'issssiis',
+            'issssii',
             $usuario_id,
             $titulo,
             $descricao,
             $fonte,
             $categoria,
             $mes,
-            $ano,
-            $prioridade
+            $ano
         );
 
         $result = $stmt->execute();
-        
+
         if (!$result) {
             error_log("Execute error: " . $stmt->error);
             $stmt->close();
@@ -485,7 +540,7 @@ PROMPT;
     /**
      * Atualizar sugestões quando o orçamento é alterado
      * Apenas deleta a sugestão para forçar regeneração com valores novos
-     * 
+     *
      * @param int $usuario_id ID do usuário
      * @param string $categoria Categoria
      * @param int $mes Mês
@@ -500,7 +555,6 @@ PROMPT;
               AND categoria_nome = ?
               AND mes = ?
               AND ano = ?
-              AND status = 'pendente'
         ";
 
         $stmt = $this->conexao->prepare($query_delete);

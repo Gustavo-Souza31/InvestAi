@@ -1,5 +1,5 @@
 <?php
-require_once '../DataBase/conexao.php';
+require_once '../backend/database/conexao.php';
 
 // Buscar o nome do usuário para teste de conexão
 $usuario_nome = 'Visitante';

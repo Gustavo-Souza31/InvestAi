@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 // backend/api/ganhos/read.php — Retorna lista de ganhos do usuário autenticado
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 
 

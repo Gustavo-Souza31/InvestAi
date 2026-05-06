@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 // backend/api/ganhos/delete.php — Deleta ganho após validação
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 require_once $root . '/backend/validators/IdValidator.php';
 

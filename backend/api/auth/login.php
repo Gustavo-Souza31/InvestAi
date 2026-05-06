@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 // backend/api/auth/login.php — Autentica usuário via email e senha
 session_start();
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/validators/AuthValidator.php';
 
 

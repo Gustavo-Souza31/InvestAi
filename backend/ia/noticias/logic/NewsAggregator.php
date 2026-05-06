@@ -1,6 +1,6 @@
 <?php
 /**
- * backend/services/NewsAggregator.php
+ * backend/ia/noticias/NewsAggregator.php
  * Serviço de agregação RSS — coleta de múltiplos feeds temáticos de economia.
  */
 

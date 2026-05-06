@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * backend/api/noticias/ai_news_processor.php
  * Recebe notícias brutas do RSS, processa via Gemini AI
@@ -22,7 +22,7 @@ $tokenOk    = (($_SERVER['HTTP_X_CRON_TOKEN'] ?? '') === $cronToken);
 if (!$fromLocal && !$tokenOk) {
     http_response_code(403);
     
-    ob_end_clean(); echo json_encode(['status' => 'error', 'mensagem' => 'Acesso negado.']);
+    ob_end_clean(); echo json_encode(['status' => 'error', 'message' => 'Acesso negado.']);
     exit;
 }
 
@@ -33,13 +33,13 @@ $noticias = $body['noticias'] ?? [];
 if (empty($noticias)) {
     http_response_code(400);
     
-    ob_end_clean(); echo json_encode(['status' => 'error', 'mensagem' => 'Nenhuma notícia recebida.']);
+    ob_end_clean(); echo json_encode(['status' => 'error', 'message' => 'Nenhuma notícia recebida.']);
     exit;
 }
 
 // ─── Conexão com banco ───────────────────────────────────────────────────────
 $root = dirname(dirname(dirname(dirname(__FILE__)))); // backend/api/noticias/ -> raiz do projeto
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 
 // ─── Chave Gemini ────────────────────────────────────────────────────────────
 function getGeminiKey(string $root): ?string
@@ -62,7 +62,7 @@ function getGeminiKey(string $root): ?string
 $geminiKey = getGeminiKey($root);
 if (!$geminiKey) {
     
-    ob_end_clean(); echo json_encode(['status' => 'sem_chave', 'mensagem' => 'GEMINI_API_KEY não configurada.']);
+    ob_end_clean(); echo json_encode(['status' => 'sem_chave', 'message' => 'GEMINI_API_KEY não configurada.']);
     exit;
 }
 

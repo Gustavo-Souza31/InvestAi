@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * relatorio.php — API de relatório financeiro agrupado por período
  * 
@@ -12,7 +12,7 @@ session_start();
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 
 // Verificar autenticação
 if (!isset($_SESSION['usuario_id'])) {

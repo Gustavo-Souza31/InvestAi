@@ -1,21 +1,5 @@
 // ===== PROCESSAMENTO =====
 
-// Emojis por categoria (sincronizado com orcamento.js)
-const CATEGORY_ICONS = {
-    'Salário':                '💰',
-    'Freelance':              '🎯',
-    'Investimentos':          '📈',
-    'Alimentação':            '🍽️',
-    'Transporte':             '🚗',
-    'Habitação':              '🏠',
-    'Saúde':                  '💊',
-    'Educação':               '📚',
-    'Entretenimento':         '🎬',
-    'Vestuário e Acessórios': '👕',
-    'Utilidades Domésticas':  '💡',
-    'Outros Gastos':          '📦',
-};
-
 function processarGanhos(ganhos) {
     const agora = new Date();
     let totalMes = 0;

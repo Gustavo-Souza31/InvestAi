@@ -43,7 +43,6 @@ async function criarGanho() {
         document.getElementById('ganho-fixo').checked = false;
         document.getElementById('ganho-categoria').value = '';
 
-        // Recarrega ganhos na página
         if (typeof carregarGanhos === 'function') {
             carregarGanhos();
         }

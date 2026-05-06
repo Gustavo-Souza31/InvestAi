@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 // backend/api/auth/cadastro.php — Cria nova conta com validação de campos e duplicatas
 session_start();
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/validators/AuthValidator.php';
 
 
@@ -29,7 +29,7 @@ $data = [
 ];
 
 
-// Validar
+// Validar dados contra regras de negócio
 $validation = AuthValidator::validateCadastro($data);
 if (!$validation['valid']) {
     echo json_encode([
@@ -104,6 +104,28 @@ if (!$stmt->execute()) {
 }
 
 $usuario_id = $conexao->insert_id;
+
+
+// Inserir categorias padrão para o novo usuário
+$categorias_padrao = [
+    ['Salário',                 'ganho'],
+    ['Freelance',               'ganho'],
+    ['Investimentos',           'ganho'],
+    ['Alimentação',             'despesa'],
+    ['Transporte',              'despesa'],
+    ['Habitação',               'despesa'],
+    ['Saúde',                   'despesa'],
+    ['Educação',                'despesa'],
+    ['Entretenimento',          'despesa'],
+    ['Vestuário e Acessórios',  'despesa'],
+    ['Utilidades Domésticas',   'despesa'],
+    ['Outros Gastos',           'despesa'],
+];
+$stmt_cat = $conexao->prepare("INSERT INTO categorias (usuario_id, nome, tipo) VALUES (?, ?, ?)");
+foreach ($categorias_padrao as [$nome_cat, $tipo_cat]) {
+    $stmt_cat->bind_param('iss', $usuario_id, $nome_cat, $tipo_cat);
+    $stmt_cat->execute();
+}
 
 
 // Iniciar sessão

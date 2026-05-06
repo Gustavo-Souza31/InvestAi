@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * backend/api/noticias/explain.php
  * Recebe uma notícia e retorna uma explicação didática via Gemini AI.
@@ -55,7 +55,7 @@ try {
 
     // ─── Perfil do usuário (para personalizar a explicação) ──────────────────
     $root = dirname(dirname(dirname(dirname(__FILE__))));
-    require_once $root . '/DataBase/conexao.php';
+    require_once $root . '/backend/database/conexao.php';
 
     $usuario_id = $_SESSION['usuario_id'];
     $inicio_mes = date('Y-m-01');
@@ -142,7 +142,7 @@ ESTRUTURA JSON:
 PROMPT;
 
     // ─── Sistema de Cache ───────────────────────────────────────────────────────
-    require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/DataBase/conexao.php';
+    require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/backend/database/conexao.php';
     
     // Gerar uma chave única para esta notícia (Assinatura)
     $noticia_id_cache = md5($noticia['titulo'] . ($noticia['fonte'] ?? ''));
@@ -165,7 +165,7 @@ PROMPT;
     }
 
     // ─── Se não houver cache, chamar IA ──────────────────────────────────────────
-    require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/backend/includes/ai_handler.php';
+    require_once dirname(dirname(dirname(__FILE__))) . '/ia/noticias/ai/ai_handler.php';
 
     $ai_res = call_ai_service($prompt, [
         'temperature' => 0.4, // Menor temperatura para JSON mais estável
@@ -178,7 +178,7 @@ PROMPT;
         ob_clean();
         echo json_encode([
             "status" => "error",
-            "mensagem" => "Falha no processamento de IA: " . $ai_res['message']
+            "message" => "Falha no processamento de IA: " . $ai_res['message']
         ]);
         exit;
     }
@@ -198,7 +198,7 @@ PROMPT;
     if (json_last_error() !== JSON_ERROR_NONE) {
         $erro_json = json_last_error_msg();
         // Logar o erro técnico para depuração
-        file_put_contents(dirname(dirname(dirname(__FILE__))) . '/ai_debug.log', "JSON Error: $erro_json | Final: " . substr($raw, -30) . "\n", FILE_APPEND);
+        file_put_contents(dirname(dirname(dirname(__FILE__))) . '/logs/ai_debug.log', "JSON Error: $erro_json | Final: " . substr($raw, -30) . "\n", FILE_APPEND);
         
         throw new Exception("IA instável (Erro: $erro_json). Tente novamente em instantes.");
     }
@@ -220,6 +220,6 @@ PROMPT;
     http_response_code($e->getCode() ?: 500);
     echo json_encode([
         "status" => "error",
-        "mensagem" => $e->getMessage()
+        "message" => $e->getMessage()
     ]);
 }

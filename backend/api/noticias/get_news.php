@@ -1,13 +1,9 @@
-<?php
+﻿<?php
 /**
  * backend/api/noticias/get_news.php
  * Endpoint autenticado: lê notícias do banco e calcula impacto_pessoal
  * cruzando categorias com as despesas do usuário logado.
  */
-
-ob_start();
-error_reporting(0);
-ini_set('display_errors', 0);
 
 session_start();
 header('Content-Type: application/json; charset=utf-8');
@@ -15,13 +11,12 @@ header('Content-Type: application/json; charset=utf-8');
 // ─── Autenticação ─────────────────────────────────────────────────────────────
 if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401);
-    ob_clean();
-    echo json_encode(['status' => 'error', 'mensagem' => 'Não autorizado.']);
+    echo json_encode(['status' => 'error', 'message' => 'Não autorizado.']);
     exit;
 }
 
 $root = dirname(dirname(dirname(__FILE__)));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 
 $usuarioId = $_SESSION['usuario_id'];
 $limite    = max(1, min(100, (int)($_GET['limite'] ?? 50)));

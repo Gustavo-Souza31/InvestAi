@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 // backend/api/perfil/update.php — Atualiza dados do perfil do usuário
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 
 $usuario_id = requireAuth();

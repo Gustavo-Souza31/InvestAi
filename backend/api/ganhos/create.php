@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 // backend/api/ganhos/create.php — Cria novo ganho com validação
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 require_once $root . '/backend/validators/GanhosValidator.php';
 
@@ -35,7 +35,9 @@ $descricao = $validation['data']['descricao'];
 $valor = $validation['data']['valor'];
 $data_ganho = $validation['data']['data_ganho'];
 $fixo = $validation['data']['fixo'];
-$categoria_id = $validation['data']['categoria_id'];
+$categoria_input = $validation['data']['categoria_id'];
+
+$categoria_id = !empty($categoria_input) ? intval($categoria_input) : null;
 
 
 // Inserir ganho no banco de dados

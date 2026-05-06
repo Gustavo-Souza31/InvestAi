@@ -104,10 +104,10 @@ function renderizarSugestoes(sugestoes) {
  */
 function renderizarSugestaoCard(sugestao) {
     const card = document.createElement('div');
-    const tipo = sugestao.tipo || 'orcamento';
+    const tipo = sugestao.tipo || 'comportamento';
     const isBadgeTipo = tipo === 'orcamento' ? 'orcamento' : 'comportamento';
-    const labelTipo = tipo === 'orcamento' ? 'Orçamento' : 'Comportamento';
-    const icon = tipo === 'orcamento' ? '⚠️' : '🚨';
+    const labelTipo = tipo === 'orcamento' ? 'Orçamento' : 'Gasto Elevado';
+    const icon = tipo === 'orcamento' ? '⚠️' : '📈';
 
     card.className = `sugestao-card tipo-${tipo}`;
     card.style.display = 'flex';

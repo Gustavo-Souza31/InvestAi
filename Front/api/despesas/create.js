@@ -43,7 +43,6 @@ async function criarDespesa() {
         document.getElementById('despesa-fixo').checked = false;
         document.getElementById('despesa-categoria').value = '';
 
-        // Recarrega despesas na página
         if (typeof carregarDespesas === 'function') {
             carregarDespesas();
         }

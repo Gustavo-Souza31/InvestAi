@@ -1,18 +1,5 @@
 // ===== PROCESSAMENTO =====
 
-// Emojis por categoria (sincronizado com orcamento.js)
-const CATEGORY_ICONS = {
-    'Alimentação':            '🍽️',
-    'Transporte':             '🚗',
-    'Habitação':              '🏠',
-    'Saúde':                  '💊',
-    'Educação':               '📚',
-    'Entretenimento':         '🎬',
-    'Vestuário e Acessórios': '👕',
-    'Utilidades Domésticas':  '💡',
-    'Outros Gastos':          '📦',
-};
-
 function processarDespesas(despesas) {
     const agora = new Date();
     let totalMes = 0;

@@ -1,12 +1,12 @@
 <?php
 /**
- * backend/cron_news.php
+ * backend/ia/noticias/logic/cron_news.php
  * Cron job de atualização de notícias financeiras.
  * Agora chama o processador diretamente (sem HTTP) para evitar timeout do Apache.
  *
  * Como executar:
- *   → Terminal (recomendado): php /Applications/MAMP/htdocs/InvestAi/backend/cron_news.php
- *   → Agendamento:  0 * * * * /Applications/MAMP/bin/php/php8.4.1/bin/php /path/to/cron_news.php
+ *   → Terminal (recomendado): php /path/to/inventai/backend/ia/noticias/logic/cron_news.php
+ *   → Agendamento:  0 * * * * /path/to/php /path/to/inventai/backend/ia/noticias/logic/cron_news.php
  */
 
 define('CRON_MODE', true);
@@ -14,11 +14,14 @@ set_time_limit(0);
 @ini_set('max_execution_time', 0);
 @error_reporting(0);
 
-$root = dirname(__FILE__);
-require_once $root . '/services/NewsAggregator.php';
+$cronDir     = dirname(__FILE__);                               // backend/ia/noticias/logic
+$backendRoot = dirname(dirname(dirname($cronDir)));             // backend
+$projectRoot = dirname($backendRoot);                          // project root
+
+require_once $cronDir . '/NewsAggregator.php';
 
 // ─── Carregar .env ────────────────────────────────────────────────────────────
-$envFile = dirname($root) . '/.env';
+$envFile = $projectRoot . '/.env';
 if (file_exists($envFile)) {
     foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
         if (str_starts_with(trim($line), '#') || !str_contains($line, '=')) continue;
@@ -29,7 +32,7 @@ if (file_exists($envFile)) {
 }
 
 // ─── Log ─────────────────────────────────────────────────────────────────────
-$logDir  = $root . '/logs';
+$logDir  = $backendRoot . '/logs';
 if (!is_dir($logDir)) mkdir($logDir, 0755, true);
 $logFile = $logDir . '/cron_news.log';
 
@@ -83,7 +86,7 @@ if (empty($geminiKey)) {
 }
 
 // Conexão com banco
-require_once dirname($root) . '/DataBase/conexao.php';
+require_once $backendRoot . '/database/conexao.php';
 
 $categoriasValidas = ['Transporte','Alimentação','Moradia','Lazer','Tecnologia','Saúde','Finanças Gerais'];
 $apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=' . urlencode($geminiKey);
