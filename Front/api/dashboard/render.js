@@ -21,6 +21,14 @@ async function inicializar(periodo = '3m', isUpdate = false) {
 
         // Se sucesso, renderiza dados
         if (resultado.status === 'success') {
+            const ehVazio = resultado.financeiro.saldo_inicial === 0 && 
+                            resultado.financeiro.total_ganhos === 0 && 
+                            resultado.financeiro.total_despesas === 0;
+
+            if (ehVazio) {
+                mostrarEstadoVazio(loadingEl, contentEl);
+                return;
+            }
 
             // Helper para atualizar texto apenas se elemento existir
             const updateEl = (id, text) => {
@@ -28,7 +36,7 @@ async function inicializar(periodo = '3m', isUpdate = false) {
                 if (el) el.textContent = text;
             };
 
-            // Atualiza valores finaceiros
+            // Atualiza valores financeiros
             updateEl('saldo-inicial', formatMoney(resultado.financeiro.saldo_inicial));
             updateEl('saldo-atual', formatMoney(resultado.financeiro.saldo_atual));
             updateEl('renda-mensal', formatMoney(resultado.financeiro.renda_mensal));
@@ -60,12 +68,72 @@ async function inicializar(periodo = '3m', isUpdate = false) {
     }
 }
 
+function mostrarEstadoVazio(loadingEl, contentEl) {
+    contentEl.style.display = 'none';
+    loadingEl.style.display = 'flex';
+    loadingEl.innerHTML = `
+        <div style="text-align: center; padding: 60px 20px; max-width: 500px; margin: 0 auto;">
+            <div style="
+                width: 88px; height: 88px; border-radius: 50%;
+                background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15));
+                border: 1px solid rgba(99,102,241,0.3);
+                display: flex; align-items: center; justify-content: center;
+                margin: 0 auto 28px; font-size: 2.2rem;
+            ">💰</div>
+            <h3 style="color: #fff; font-size: 1.45rem; font-weight: 700; margin-bottom: 12px;">
+                Bem-vindo ao InvestAI!
+            </h3>
+            <p style="color: #888; font-size: 0.95rem; line-height: 1.7; margin-bottom: 36px;">
+                Você ainda não tem dados financeiros cadastrados.<br>
+                Comece adicionando seus ganhos e despesas para ver<br>seu resumo e análises aqui.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <a href="ganhos.php" style="
+                    display: inline-flex; align-items: center; gap: 8px;
+                    background: linear-gradient(135deg, #22c55e, #16a34a);
+                    color: #fff; text-decoration: none;
+                    padding: 12px 22px; border-radius: 10px;
+                    font-weight: 600; font-size: 0.9rem; transition: opacity .2s;
+                " onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'">
+                    <i class="bi bi-plus-circle"></i> Adicionar Ganho
+                </a>
+                <a href="despesas.php" style="
+                    display: inline-flex; align-items: center; gap: 8px;
+                    background: linear-gradient(135deg, #ef4444, #dc2626);
+                    color: #fff; text-decoration: none;
+                    padding: 12px 22px; border-radius: 10px;
+                    font-weight: 600; font-size: 0.9rem; transition: opacity .2s;
+                " onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'">
+                    <i class="bi bi-dash-circle"></i> Adicionar Despesa
+                </a>
+                <a href="perfil.php" style="
+                    display: inline-flex; align-items: center; gap: 8px;
+                    background: rgba(255,255,255,0.07);
+                    border: 1px solid rgba(255,255,255,0.12);
+                    color: #bbb; text-decoration: none;
+                    padding: 12px 22px; border-radius: 10px;
+                    font-weight: 600; font-size: 0.9rem; transition: opacity .2s;
+                " onmouseover="this.style.opacity='.75'" onmouseout="this.style.opacity='1'">
+                    <i class="bi bi-person-gear"></i> Completar Perfil
+                </a>
+            </div>
+        </div>
+    `;
+}
+
 function mostrarErro(isUpdate, loadingEl, contentEl) {
     const msg = "Não foi possível carregar os dados financeiros do período selecionado. Por favor, tente novamente.";
     if (!isUpdate) {
         contentEl.style.display = 'none';
         loadingEl.style.display = 'flex';
-        loadingEl.innerHTML = `<p class="text-danger">${msg}</p>`;
+        loadingEl.innerHTML = `
+            <div class="text-center p-5">
+                <i class="bi bi-exclamation-triangle" style="font-size: 3rem; color: #dc3545;"></i>
+                <h3 class="mt-3">Ops! Algo deu errado</h3>
+                <p class="text-muted">${msg}</p>
+                <button onclick="location.reload()" class="btn btn-outline-primary mt-2">Tentar novamente</button>
+            </div>
+        `;
     } else {
         alert(msg);
         // Restaura valores para R$ 0,00 caso não carregue
