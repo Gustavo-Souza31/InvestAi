@@ -40,6 +40,7 @@ if (empty($noticias)) {
 // ─── Conexão com banco ───────────────────────────────────────────────────────
 $root = dirname(dirname(dirname(dirname(__FILE__)))); // backend/api/noticias/ -> raiz do projeto
 require_once $root . '/backend/database/conexao.php';
+require_once $root . '/backend/includes/Logger.php';
 
 // ─── Chave Gemini ────────────────────────────────────────────────────────────
 function getGeminiKey(string $root): ?string
@@ -233,6 +234,8 @@ foreach ($noticias as $n) {
         $ignorados++;
     }
 }
+
+Logger::log('INFO', 'AI_NEWS_PROCESSED', ['inseridos' => $inseridos, 'ignorados' => $ignorados, 'total_ia' => count($todasAnalises)], 'sucesso');
 
 ob_end_clean();
 echo json_encode([

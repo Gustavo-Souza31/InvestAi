@@ -5,11 +5,13 @@ header('Content-Type: application/json');
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
+require_once $root . '/backend/includes/Logger.php';
 require_once $root . '/backend/ia/sugestoes_economia/EconomySuggestionGenerator.php';
 
 
 // Autenticação
-$usuario_id = requireAuth();
+$usuario_id    = requireAuth();
+$usuario_email = $_SESSION['usuario_email'] ?? null;
 
 
 // Verificar método HTTP
@@ -53,15 +55,18 @@ try {
     $generator = new EconomySuggestionGenerator($conexao, $gemini_key);
     $sugestoes = $generator->analisarEGerarSugestoes($usuario_id, $mes, $ano);
 
+    Logger::log('INFO', 'AI_SUGGESTION_GENERATED', ['mes' => $mes, 'ano' => $ano, 'total' => count($sugestoes)], 'sucesso', $usuario_id, $usuario_email);
+
     echo json_encode([
-        'status'   => 'success',
+        'status'    => 'success',
         'sugestoes' => $sugestoes,
-        'total'    => count($sugestoes),
-        'mes'      => $mes,
-        'ano'      => $ano,
+        'total'     => count($sugestoes),
+        'mes'       => $mes,
+        'ano'       => $ano,
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (Exception $e) {
+    Logger::log('ERROR', 'AI_SUGGESTION_FAILED', ['erro' => $e->getMessage(), 'mes' => $mes, 'ano' => $ano], 'falha', $usuario_id, $usuario_email);
     error_log("Erro em economia.php: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Erro ao gerar sugestões: ' . $e->getMessage()]);

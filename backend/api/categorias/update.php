@@ -5,11 +5,13 @@ header('Content-Type: application/json');
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
+require_once $root . '/backend/includes/Logger.php';
 require_once $root . '/backend/validators/CategoriasValidator.php';
 
 
 // Autenticação
-$usuario_id = requireAuth();
+$usuario_id    = requireAuth();
+$usuario_email = $_SESSION['usuario_email'] ?? null;
 
 
 // Receber dados do body JSON
@@ -44,8 +46,10 @@ $stmt->bind_param("sii", $nome, $id, $usuario_id);
 
 // Executar e verificar atualização
 if ($stmt->execute()) {
+    Logger::log('INFO', 'CATEGORIA_UPDATED', ['id' => $id, 'nome' => $nome], 'sucesso', $usuario_id, $usuario_email);
     echo json_encode(['status' => 'success', 'message' => 'Categoria atualizada com sucesso.']);
 } else {
+    Logger::log('ERROR', 'CATEGORIA_UPDATED', ['id' => $id], 'falha', $usuario_id, $usuario_email);
     echo json_encode(['status' => 'error', 'message' => 'Erro ao atualizar categoria.']);
 }
 ?>

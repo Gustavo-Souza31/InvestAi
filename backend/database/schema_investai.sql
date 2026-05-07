@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     cpf CHAR(11) NOT NULL UNIQUE,
     telefone VARCHAR(20) NOT NULL UNIQUE,
     senha_hash VARCHAR(255) NOT NULL,
+    ativo TINYINT(1) NOT NULL DEFAULT 1,
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -175,4 +176,23 @@ CREATE TABLE IF NOT EXISTS orcamento_categorias (
     CONSTRAINT fk_orcamento_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     CONSTRAINT fk_orcamento_categoria FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE CASCADE,
     CONSTRAINT uq_orcamento UNIQUE (usuario_id, categoria_id, mes, ano)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================
+-- 11. LOGS DE AUDITORIA
+-- =========================
+CREATE TABLE IF NOT EXISTS logs (
+    id            INT AUTO_INCREMENT PRIMARY KEY,
+    timestamp     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    nivel         ENUM('INFO','WARN','ERROR','DEBUG') NOT NULL,
+    usuario_id    INT          NULL,
+    usuario_email VARCHAR(150) NULL,
+    ip            VARCHAR(45)  NOT NULL DEFAULT '0.0.0.0',
+    acao          VARCHAR(100) NOT NULL,
+    detalhes      JSON         NULL,
+    status        ENUM('sucesso','falha') NOT NULL,
+    INDEX idx_nivel     (nivel),
+    INDEX idx_acao      (acao),
+    INDEX idx_usuario   (usuario_id),
+    INDEX idx_timestamp (timestamp)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

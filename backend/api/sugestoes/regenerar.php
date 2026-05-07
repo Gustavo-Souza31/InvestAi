@@ -5,11 +5,13 @@ header('Content-Type: application/json');
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
+require_once $root . '/backend/includes/Logger.php';
 require_once $root . '/backend/ia/sugestoes_economia/EconomySuggestionGenerator.php';
 
 
 // Autenticação
-$usuario_id = requireAuth();
+$usuario_id    = requireAuth();
+$usuario_email = $_SESSION['usuario_email'] ?? null;
 
 
 // Verificar método HTTP
@@ -21,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 
 // Receber dados do body JSON
-$body       = json_decode(file_get_contents('php://input'), true);
+$body        = json_decode(file_get_contents('php://input'), true);
 $sugestao_id = intval($body['sugestao_id'] ?? 0);
 
 
@@ -73,20 +75,23 @@ $gemini_key = getenv('GEMINI_API_KEY') ?: ($_ENV['GEMINI_API_KEY'] ?? '');
 
 // Regenerar sugestão com IA
 try {
-    $generator     = new EconomySuggestionGenerator($conexao, $gemini_key);
+    $generator       = new EconomySuggestionGenerator($conexao, $gemini_key);
     $novas_sugestoes = $generator->analisarEGerarSugestoes(
         $usuario_id,
         (int) $sugestao['mes'],
         (int) $sugestao['ano']
     );
 
+    Logger::log('INFO', 'AI_SUGGESTION_REGENERATED', ['sugestao_id' => $sugestao_id, 'categoria' => $sugestao['categoria_nome']], 'sucesso', $usuario_id, $usuario_email);
+
     echo json_encode([
-        'status'   => 'success',
-        'message'  => 'Sugestão regenerada.',
+        'status'    => 'success',
+        'message'   => 'Sugestão regenerada.',
         'sugestoes' => $novas_sugestoes,
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (Exception $e) {
+    Logger::log('ERROR', 'AI_SUGGESTION_FAILED', ['erro' => $e->getMessage(), 'sugestao_id' => $sugestao_id], 'falha', $usuario_id, $usuario_email);
     error_log("Erro em regenerar.php: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);

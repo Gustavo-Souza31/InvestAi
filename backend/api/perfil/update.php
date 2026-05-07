@@ -1,12 +1,14 @@
-﻿<?php
+<?php
 // backend/api/perfil/update.php — Atualiza dados do perfil do usuário
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
+require_once $root . '/backend/includes/Logger.php';
 
-$usuario_id = requireAuth();
+$usuario_id    = requireAuth();
+$usuario_email = $_SESSION['usuario_email'] ?? null;
 
 
 // Validar método HTTP
@@ -18,14 +20,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 
 // Receber dados do formulário
-$nome = trim($_POST['nome'] ?? '');
-$email = trim($_POST['email'] ?? '');
-$telefone = trim($_POST['telefone'] ?? '');
-$renda_mensal = floatval($_POST['renda_mensal'] ?? 0);
-$objetivo_financeiro = trim($_POST['objetivo_financeiro'] ?? '');
+$nome                 = trim($_POST['nome']                 ?? '');
+$email                = trim($_POST['email']                ?? '');
+$telefone             = trim($_POST['telefone']             ?? '');
+$renda_mensal         = floatval($_POST['renda_mensal']     ?? 0);
+$objetivo_financeiro  = trim($_POST['objetivo_financeiro']  ?? '');
 $perfil_comportamento = trim($_POST['perfil_comportamento'] ?? 'moderado');
-$senha_atual = $_POST['senha_atual'] ?? '';
-$nova_senha = $_POST['nova_senha'] ?? '';
+$senha_atual          = $_POST['senha_atual'] ?? '';
+$nova_senha           = $_POST['nova_senha']  ?? '';
+
 
 // Validar dados pessoais
 $errors = [];
@@ -33,21 +36,16 @@ $errors = [];
 if (empty($nome) || strlen($nome) < 3) {
     $errors[] = 'Nome deve ter pelo menos 3 caracteres.';
 }
-
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = 'E-mail inválido.';
 }
-
 if (empty($telefone)) {
     $errors[] = 'Telefone é obrigatório.';
 }
-
 if (!in_array($perfil_comportamento, ['conservador', 'moderado', 'gastador'])) {
     $perfil_comportamento = 'moderado';
 }
 
-
-// Validar se há erros
 if (!empty($errors)) {
     echo json_encode(['status' => 'error', 'message' => $errors[0]]);
     exit;
@@ -82,7 +80,6 @@ if (!empty($nova_senha)) {
         exit;
     }
 
-    // Verificar senha atual
     $stmt = $conexao->prepare("SELECT senha_hash FROM usuarios WHERE id = ?");
     $stmt->bind_param('i', $usuario_id);
     $stmt->execute();
@@ -97,12 +94,12 @@ if (!empty($nova_senha)) {
     $stmt = $conexao->prepare("UPDATE usuarios SET nome = ?, email = ?, telefone = ?, senha_hash = ? WHERE id = ?");
     $stmt->bind_param('ssssi', $nome, $email, $telefone_limpo, $senha_hash, $usuario_id);
 } else {
-    // Atualizar sem mudar senha
     $stmt = $conexao->prepare("UPDATE usuarios SET nome = ?, email = ?, telefone = ? WHERE id = ?");
     $stmt->bind_param('sssi', $nome, $email, $telefone_limpo, $usuario_id);
 }
 
 if (!$stmt->execute()) {
+    Logger::log('ERROR', 'PROFILE_UPDATED', ['motivo' => 'Erro ao atualizar dados pessoais'], 'falha', $usuario_id, $usuario_email);
     echo json_encode(['status' => 'error', 'message' => 'Erro ao atualizar dados pessoais.']);
     exit;
 }
@@ -126,19 +123,19 @@ if ($stmtCheck->get_result()->num_rows > 0) {
 }
 
 if (!$stmtPerfil->execute()) {
+    Logger::log('ERROR', 'PROFILE_UPDATED', ['motivo' => 'Erro ao atualizar perfil financeiro'], 'falha', $usuario_id, $usuario_email);
     echo json_encode(['status' => 'error', 'message' => 'Erro ao atualizar perfil financeiro.']);
     exit;
 }
 
 
 // Atualizar session
-$_SESSION['usuario_nome'] = $nome;
+$_SESSION['usuario_nome']  = $nome;
+$_SESSION['usuario_email'] = $email;
+
+Logger::log('INFO', 'PROFILE_UPDATED', ['campos' => 'nome,email,telefone,perfil'], 'sucesso', $usuario_id, $usuario_email);
 
 
 // Retornar sucesso
-echo json_encode([
-    'status' => 'success',
-    'message' => 'Perfil atualizado com sucesso!',
-    'nome' => $nome
-]);
+echo json_encode(['status' => 'success', 'message' => 'Perfil atualizado com sucesso!', 'nome' => $nome]);
 ?>

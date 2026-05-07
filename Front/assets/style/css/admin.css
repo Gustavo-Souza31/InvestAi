@@ -1,0 +1,352 @@
+/**
+ * admin.css — Estilos do painel administrativo
+ * Segue o design system do projeto: fundo escuro, accent #B39DDB, cards glassmorphism
+ */
+
+/* ── Header do painel ─────────────────────────────────────────────────────── */
+.admin-header {
+    margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.admin-header h1 i {
+    color: var(--brand-accent);
+}
+
+.admin-header p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────────────────────── */
+.admin-tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    padding: 0.6rem 1.1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.admin-tab-btn:hover {
+    color: var(--text-main);
+}
+
+.admin-tab-btn.active {
+    color: var(--brand-accent);
+    border-bottom-color: var(--brand-accent);
+}
+
+.admin-tab-content { display: none; }
+.admin-tab-content.active { display: block; }
+
+/* ── Barra de filtros ─────────────────────────────────────────────────────── */
+.filter-bar {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-end;
+    backdrop-filter: blur(10px);
+}
+
+/* Labels dentro da filter-bar sobrescrevem o estilo de internal-pages */
+.filter-bar .form-label {
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+    display: block;
+}
+
+/* ── Wrapper da tabela — scroll horizontal para não cortar colunas ─────────── */
+.admin-table-wrapper {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow-x: auto;               /* evita STATUS cortado */
+    backdrop-filter: blur(10px);
+}
+
+/* ── Tabela base ──────────────────────────────────────────────────────────── */
+.admin-table {
+    width: 100%;
+    min-width: 820px;               /* força scroll antes de comprimir colunas */
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.admin-table th {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.admin-table td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    vertical-align: middle;
+    color: var(--text-main);
+}
+
+.admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table tr:hover td {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+/* ── Badges de nível de log ───────────────────────────────────────────────── */
+.badge-nivel {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.badge-INFO  { background: rgba(102, 187, 106, 0.15); color: #66bb6a; }
+.badge-WARN  { background: rgba(255, 183, 77, 0.15);  color: #FFB74D; }
+.badge-ERROR { background: rgba(239, 154, 154, 0.15); color: #ef9a9a; }
+.badge-DEBUG { background: rgba(179, 157, 219, 0.15); color: var(--brand-accent); }
+
+/* ── Badges de status ─────────────────────────────────────────────────────── */
+.badge-sucesso { background: rgba(102, 187, 106, 0.15); color: #66bb6a; }
+.badge-falha   { background: rgba(239, 154, 154, 0.15); color: #ef9a9a; }
+
+/* ── Detalhes clicáveis na tabela de logs ─────────────────────────────────── */
+.log-detalhes {
+    font-family: 'Courier New', monospace;
+    font-size: 0.76rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    padding: 0.3rem 0.55rem;
+    max-width: 260px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-muted);
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.log-detalhes:hover {
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+}
+
+/* ── Badges de status de usuário ──────────────────────────────────────────── */
+.user-status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.74rem;
+    font-weight: 700;
+}
+
+.user-status-badge.ativo   { background: rgba(102, 187, 106, 0.15); color: #66bb6a; }
+.user-status-badge.inativo { background: rgba(239, 154, 154, 0.15); color: #ef9a9a; }
+
+/* ── Paginação ────────────────────────────────────────────────────────────── */
+.admin-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.admin-pagination .page-btns {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.admin-pagination button {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.admin-pagination button:hover:not(:disabled) {
+    background: rgba(179, 157, 219, 0.1);
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+}
+
+.admin-pagination button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* ── Estados vazios e loading ─────────────────────────────────────────────── */
+.admin-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+}
+
+.admin-empty i {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 0.75rem;
+    opacity: 0.3;
+}
+
+.admin-loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+/* ── Modal de detalhes do log ─────────────────────────────────────────────── */
+#modal-log-detalhes .modal-content {
+    background: #161821;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    color: var(--text-main);
+}
+
+#modal-log-detalhes .modal-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+}
+
+#modal-log-detalhes .modal-title {
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-main);
+}
+
+#modal-log-detalhes .modal-title i {
+    color: var(--brand-accent);
+}
+
+#modal-log-detalhes .btn-close {
+    filter: invert(1) brightness(0.6);
+}
+
+#modal-log-detalhes .modal-body {
+    padding: 1.25rem;
+}
+
+#modal-log-detalhes .modal-body pre {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    color: #a0a0a0;
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: 0.82rem;
+    max-height: 380px;
+    overflow-y: auto;
+    margin: 0;
+}
+
+/* ── Botões de ação na tabela de usuários ─────────────────────────────────── */
+.admin-table .btn-outline-danger {
+    border-color: rgba(239, 154, 154, 0.3);
+    color: #ef9a9a;
+    background: transparent;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    border-radius: 8px;
+    padding: 0.2rem 0.65rem;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.admin-table .btn-outline-danger:hover {
+    background: rgba(239, 154, 154, 0.1);
+    border-color: rgba(239, 154, 154, 0.6);
+    color: #ef9a9a;
+}
+
+.admin-table .btn-outline-success {
+    border-color: rgba(102, 187, 106, 0.3);
+    color: #66bb6a;
+    background: transparent;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    border-radius: 8px;
+    padding: 0.2rem 0.65rem;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.admin-table .btn-outline-success:hover {
+    background: rgba(102, 187, 106, 0.1);
+    border-color: rgba(102, 187, 106, 0.6);
+    color: #66bb6a;
+}
+
+.admin-table .btn-outline-secondary {
+    border-color: var(--border-color);
+    color: var(--text-muted);
+    background: transparent;
+    font-size: 0.78rem;
+    border-radius: 8px;
+    padding: 0.2rem 0.55rem;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.admin-table .btn-outline-secondary:hover {
+    background: rgba(179, 157, 219, 0.1);
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+}

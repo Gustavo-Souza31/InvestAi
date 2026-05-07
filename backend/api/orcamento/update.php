@@ -5,11 +5,13 @@ header('Content-Type: application/json; charset=utf-8');
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
+require_once $root . '/backend/includes/Logger.php';
 require_once $root . '/backend/validators/OrcamentoValidator.php';
 
 
 // Autenticação
-$usuario_id = requireAuth();
+$usuario_id    = requireAuth();
+$usuario_email = $_SESSION['usuario_email'] ?? null;
 
 
 // Receber dados do body JSON
@@ -54,8 +56,10 @@ $stmt->bind_param('iidii', $usuario_id, $categoria_id, $limite, $mes, $ano);
 
 // Executar e verificar atualização
 if ($stmt->execute()) {
+    Logger::log('INFO', 'ORCAMENTO_UPDATED', ['categoria_id' => $categoria_id, 'limite' => $limite, 'mes' => $mes, 'ano' => $ano], 'sucesso', $usuario_id, $usuario_email);
     echo json_encode(['status' => 'success', 'message' => 'Limite atualizado com sucesso!']);
 } else {
+    Logger::log('ERROR', 'ORCAMENTO_UPDATED', ['categoria_id' => $categoria_id], 'falha', $usuario_id, $usuario_email);
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Erro ao atualizar no banco.']);
 }

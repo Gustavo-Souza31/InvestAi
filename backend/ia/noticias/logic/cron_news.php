@@ -19,6 +19,7 @@ $backendRoot = dirname(dirname(dirname($cronDir)));             // backend
 $projectRoot = dirname($backendRoot);                          // project root
 
 require_once $cronDir . '/NewsAggregator.php';
+require_once $backendRoot . '/includes/Logger.php';
 
 // ─── Carregar .env ────────────────────────────────────────────────────────────
 $envFile = $projectRoot . '/.env';
@@ -290,6 +291,16 @@ cronLog("  → {$deletados} notícias removidas.");
 $duracao = round(microtime(true) - $inicio, 2);
 cronLog("  → Inseridos/Atualizados: {$inseridos} | Ignorados: {$ignorados}");
 cronLog("=== Concluído em {$duracao}s ===");
+
+$status_cron = ($loteErros === 0) ? 'sucesso' : 'falha';
+Logger::log('INFO', 'CRON_NEWS_RUN', [
+    'coletadas' => count($noticias),
+    'inseridos' => $inseridos,
+    'ignorados' => $ignorados,
+    'deletados' => $deletados,
+    'lote_erros' => $loteErros,
+    'duracao_s'  => $duracao,
+], $status_cron);
 
 if (php_sapi_name() !== 'cli') {
     header('Content-Type: application/json; charset=utf-8');
