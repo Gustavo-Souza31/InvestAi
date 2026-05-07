@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 // backend/api/ganhos/read.php — Retorna lista de ganhos do usuário autenticado
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 
 
@@ -13,9 +13,11 @@ $usuario_id = requireAuth();
 
 // Consultar ganhos do usuário
 $stmt = $conexao->prepare(
-    "SELECT * FROM ganhos 
-     WHERE usuario_id = ? 
-     ORDER BY data_ganho DESC"
+    "SELECT g.*, c.nome as categoria_nome 
+     FROM ganhos g 
+     LEFT JOIN categorias c ON g.categoria_id = c.id 
+     WHERE g.usuario_id = ? 
+     ORDER BY g.data_ganho DESC"
 );
 $stmt->bind_param("i", $usuario_id);
 $stmt->execute();

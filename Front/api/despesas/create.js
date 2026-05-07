@@ -5,9 +5,10 @@ async function criarDespesa() {
     const valor = document.getElementById('despesa-valor').value;
     const data = document.getElementById('despesa-data').value;
     const fixo = document.getElementById('despesa-fixo').checked;
+    const categoriaId = document.getElementById('despesa-categoria').value;
 
     // Valida campos vazios
-    if (!descricao || !valor || !data) {
+    if (!descricao || !valor || !data || !categoriaId) {
         showAlert('Preencha todos os campos antes de enviar.', 'error');
         return;
     }
@@ -18,6 +19,7 @@ async function criarDespesa() {
     formData.append('valor', parseFloat(valor));
     formData.append('data_despesa', data);
     formData.append('fixo', fixo ? 1 : 0);
+    formData.append('categoria_id', categoriaId);
 
     try {
         // Envia para backend
@@ -39,8 +41,8 @@ async function criarDespesa() {
         document.getElementById('despesa-valor').value = '';
         document.getElementById('despesa-data').value = new Date().toISOString().split('T')[0];
         document.getElementById('despesa-fixo').checked = false;
+        document.getElementById('despesa-categoria').value = '';
 
-        // Recarrega despesas na página
         if (typeof carregarDespesas === 'function') {
             carregarDespesas();
         }

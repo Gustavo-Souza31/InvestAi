@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 // backend/api/dashboard/dados.php — Retorna dados financeiros consolidados do usuário
 session_start();
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 
 
 // Autenticação

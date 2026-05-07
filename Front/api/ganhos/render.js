@@ -28,6 +28,12 @@ function gerarHTMLItemGanho(ganho) {
     const fixoBadge = parseInt(ganho.fixo) === 1
         ? '<span class="item-meta-badge">FIXO</span>'
         : '';
+    
+    // Adicionar emoji da categoria
+    const categoryIcon = CATEGORY_ICONS[ganho.categoria_nome] || '📁';
+    const categoryDisplay = ganho.categoria_nome 
+        ? `<div class="categoria mt-1" style="font-size: 0.85rem; color: #a9b2c3;"><span style="margin-right: 4px;">${categoryIcon}</span>${escapeHtml(ganho.categoria_nome)}</div>`
+        : '';
 
     return `
         <div class="list-item">
@@ -35,12 +41,8 @@ function gerarHTMLItemGanho(ganho) {
             <div class="item-info">
                 <div class="desc">${escapeHtml(ganho.descricao)}</div>
 
-
-
-                <!-- ✅ EXEMPLO DE NOVA LINHA - Para adicionar um novo campo: -->
-                <!-- <div class="categoria">${escapeHtml(ganho.categoria)}</div> -->
-
-                
+                <!-- Exibe a categoria com emoji -->
+                ${categoryDisplay}
 
                 <div class="meta">
                     <span><i class="bi bi-calendar3 me-1"></i>${formatDate(ganho.data_ganho)}</span>
@@ -49,7 +51,7 @@ function gerarHTMLItemGanho(ganho) {
             </div>
             <div class="item-value">+ ${formatMoney(ganho.valor)}</div>
             <div class="item-actions">
-                <button class="btn-edit" title="Editar" onclick="openEdit(${ganho.id}, '${escapeHtml(ganho.descricao)}', ${ganho.valor}, '${ganho.data_ganho}', ${ganho.fixo})">
+                <button class="btn-edit" title="Editar" onclick="openEdit(${ganho.id}, '${escapeHtml(ganho.descricao)}', ${ganho.valor}, '${ganho.data_ganho}', ${ganho.fixo}, ${ganho.categoria_id || 'null'})">
                     <i class="bi bi-pencil"></i>
                 </button>
                 <button class="btn-delete" title="Excluir" onclick="openDelete(${ganho.id})">
@@ -112,5 +114,6 @@ async function carregarGanhos() {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ganho-data').value = new Date().toISOString().split('T')[0];
+    carregarCategorias('ganho', ['ganho-categoria', 'edit-categoria']);
     carregarGanhos();
 });

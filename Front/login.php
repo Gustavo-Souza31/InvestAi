@@ -71,11 +71,16 @@ if (isset($_SESSION['usuario_id'])) {
                 </div>
             </div>
             <div class="mb-4">
-                <label class="form-label">SENHA</label>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label mb-0">SENHA</label>
+
+                </div>
                 <div class="input-icon">
                     <input type="password" id="login-senha" class="form-control" placeholder="••••••••" required>
                     <i class="bi bi-lock"></i>
                 </div>
+                <a href="#" id="link-recuperar" style="font-size:0.85rem; color:#6366f1; text-decoration:none;">Esqueci
+                    minha senha</a>
             </div>
             <button type="submit" class="btn-auth">
                 <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
@@ -131,6 +136,31 @@ if (isset($_SESSION['usuario_id'])) {
                 Já tem conta? <a href="#" id="link-to-login" style="color:#6366f1;">Faça login</a>
             </p>
         </form>
+
+        <!-- ===== FORM RECUPERAR SENHA ===== -->
+        <form id="form-recuperar" style="display:none;">
+            <div class="mb-3">
+                <label class="form-label">E-MAIL CADASTRADO</label>
+                <div class="input-icon">
+                    <input type="email" id="recuperar-email" class="form-control" placeholder="seu@email.com" required>
+                    <i class="bi bi-envelope"></i>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">NOVA SENHA</label>
+                <div class="input-icon">
+                    <input type="password" id="recuperar-nova-senha" class="form-control" placeholder="••••••••"
+                        required>
+                    <i class="bi bi-lock"></i>
+                </div>
+            </div>
+            <button type="submit" class="btn-auth">
+                <i class="bi bi-key me-2"></i>Alterar Senha
+            </button>
+            <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
+                Lembrou a senha? <a href="#" id="link-voltar-login" style="color:#6366f1;">Voltar ao login</a>
+            </p>
+        </form>
     </div>
 
     <script src="api/utils/shared.js"></script>
@@ -138,6 +168,7 @@ if (isset($_SESSION['usuario_id'])) {
     <script src="api/auth/authUI.js"></script>
     <script src="api/auth/login.js"></script>
     <script src="api/auth/cadastro.js"></script>
+    <script src="api/auth/recuperar.js"></script>
 
 </body>
 

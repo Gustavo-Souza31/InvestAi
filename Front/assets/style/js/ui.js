@@ -25,6 +25,12 @@ function showAlert(msg, type) {
     }
 }
 
+// Abre um modal pelo ID
+function openModal(modalId) {
+    const el = document.getElementById(modalId);
+    if (el) el.classList.add('show');
+}
+
 // Fecha um modal pelo ID
 function closeModal(modalId) {
     const el = document.getElementById(modalId);

@@ -5,19 +5,21 @@ function inicializarAbas() {
     const abaCadastro = document.getElementById('tab-cadastro');
     const formularioLogin = document.getElementById('form-login');
     const formularioCadastro = document.getElementById('form-cadastro');
+    const formularioRecuperar = document.getElementById('form-recuperar');
 
     if (!abaLogin || !abaCadastro) return;
 
     function trocarAba(aba) {
-        const ehLogin = aba === 'login';
-
         // Alterna visibilidade dos formulários
-        formularioLogin.style.display = ehLogin ? 'block' : 'none';
-        formularioCadastro.style.display = ehLogin ? 'none' : 'block';
+        formularioLogin.style.display = aba === 'login' ? 'block' : 'none';
+        formularioCadastro.style.display = aba === 'cadastro' ? 'block' : 'none';
+        if (formularioRecuperar) {
+            formularioRecuperar.style.display = aba === 'recuperar' ? 'block' : 'none';
+        }
 
         // Alterna estado ativo das abas
-        abaLogin.classList.toggle('active', ehLogin);
-        abaCadastro.classList.toggle('active', !ehLogin);
+        abaLogin.classList.toggle('active', aba === 'login');
+        abaCadastro.classList.toggle('active', aba === 'cadastro');
 
         // Limpa alerta anterior
         const alerta = document.querySelector('.auth-alert');
@@ -38,6 +40,16 @@ function inicializarAbas() {
     });
 
     document.getElementById('link-to-login')?.addEventListener('click', (evento) => {
+        evento.preventDefault();
+        trocarAba('login');
+    });
+
+    document.getElementById('link-recuperar')?.addEventListener('click', (evento) => {
+        evento.preventDefault();
+        trocarAba('recuperar');
+    });
+
+    document.getElementById('link-voltar-login')?.addEventListener('click', (evento) => {
         evento.preventDefault();
         trocarAba('login');
     });

@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 // backend/api/despesas/read.php — Retorna lista de despesas do usuário autenticado
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 
 
@@ -13,9 +13,11 @@ $usuario_id = requireAuth();
 
 // Consultar despesas do usuário
 $stmt = $conexao->prepare(
-    "SELECT * FROM despesas 
-     WHERE usuario_id = ? 
-     ORDER BY data_despesa DESC"
+    "SELECT d.*, c.nome as categoria_nome 
+     FROM despesas d 
+     LEFT JOIN categorias c ON d.categoria_id = c.id 
+     WHERE d.usuario_id = ? 
+     ORDER BY d.data_despesa DESC"
 );
 $stmt->bind_param("i", $usuario_id);
 $stmt->execute();

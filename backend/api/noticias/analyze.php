@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * backend/api/noticias/analyze.php
  * Analisa notícias via Gemini com categorização obrigatória em 7 tags,
@@ -53,7 +53,7 @@ if (!$gemini_key) {
     ob_clean();
     echo json_encode([
         "status"            => "sem_chave",
-        "mensagem"          => "Chave Gemini API não configurada.",
+        "message"          => "Chave Gemini API não configurada.",
         "resumo_geral"      => "Configure a chave da API Gemini para ativar a análise de IA personalizada.",
         "nivel_alerta"      => "baixo",
         "analises"          => [],
@@ -65,7 +65,7 @@ if (!$gemini_key) {
 
 // ─── Perfil financeiro e despesas do banco ──────────────────────────────────
 $root    = dirname(dirname(dirname(dirname(__FILE__))));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 
 $usuario_id = $_SESSION['usuario_id'];
 $hoje       = date('Y-m-d');
@@ -148,14 +148,11 @@ function mapear_categorias_usuario(array $descricoes, array $mapa): array {
 $categorias_usuario = mapear_categorias_usuario($descricoes_despesas, $mapa_categorias);
 
 // ─── Lógica de Cache ────────────────────────────────────────────────────────
-require_once dirname(dirname(dirname(__FILE__))) . '/includes/ai_handler.php';
+require_once dirname(dirname(dirname(__FILE__))) . '/ia/noticias/ai/ai_handler.php';
 
 $analises_finais = [];
 $noticias_para_processar = [];
 
-// Gerar uma chave de categorias (ordenada para consistência)
-sort($categorias_usuario);
-$cat_key = implode(',', $categorias_usuario);
 $perfil_c = $perfil['perfil_comportamento'] ?? 'moderado';
 
 foreach ($noticias as $n) {
@@ -191,23 +188,24 @@ if (empty($noticias_para_processar)) {
 }
 
 // ─── Chamar IA (Apenas para o que não está no cache) ───────────────────────
-$noticias_texto = "";
-foreach (array_slice($noticias_para_processar, 0, 10) as $i => $n) {
-    $idx    = $i + 1;
-    $fonte  = $n['fonte']  ?? '';
-    $titulo = $n['titulo'] ?? '';
-    $resumo = mb_substr($n['resumo'] ?? '', 0, 200);
-    $noticias_texto .= "\n{$idx}. [{$fonte}] {$titulo}\n   Resumo: {$resumo}\n";
-}
+try {
+    $noticias_texto = "";
+    foreach (array_slice($noticias_para_processar, 0, 10) as $i => $n) {
+        $idx    = $i + 1;
+        $fonte  = $n['fonte']  ?? '';
+        $titulo = $n['titulo'] ?? '';
+        $resumo = mb_substr($n['resumo'] ?? '', 0, 200);
+        $noticias_texto .= "\n{$idx}. [{$fonte}] {$titulo}\n   Resumo: {$resumo}\n";
+    }
 
-$categorias_usuario_str = !empty($categorias_usuario) ? implode(", ", $categorias_usuario) : "não identificadas";
-$objetivo  = $perfil['objetivo_financeiro']  ?? 'Não informado';
-$renda     = number_format(floatval($perfil['renda_mensal'] ?? 0), 2, ',', '.');
-$saldo_fmt = number_format($saldo_atual, 2, ',', '.');
-$ganhos_f  = number_format($total_ganhos, 2, ',', '.');
-$desp_f    = number_format($total_despesas, 2, ',', '.');
+    $categorias_usuario_str = !empty($categorias_usuario) ? implode(", ", $categorias_usuario) : "não identificadas";
+    $objetivo  = $perfil['objetivo_financeiro']  ?? 'Não informado';
+    $renda     = number_format(floatval($perfil['renda_mensal'] ?? 0), 2, ',', '.');
+    $saldo_fmt = number_format($saldo_atual, 2, ',', '.');
+    $ganhos_f  = number_format($total_ganhos, 2, ',', '.');
+    $desp_f    = number_format($total_despesas, 2, ',', '.');
 
-$prompt = <<<PROMPT
+    $prompt = <<<PROMPT
 Você é o Arquiteto Financeiro do InvestAI. Analise as notícias econômicas abaixo e gere um relatório de impacto PERSONALIZADO.
 
 PERFIL DO USUÁRIO:
@@ -247,63 +245,72 @@ Analise cada notícia e responda APENAS com JSON puro, seguindo exatamente esta 
 }
 PROMPT;
 
-$ai_res = call_ai_service($prompt, [
-    'temperature' => 0.65,
-    'max_tokens'  => 2500,
-    'ollama_model'=> 'llama3'
-]);
+    $ai_res = call_ai_service($prompt, [
+        'temperature' => 0.65,
+        'max_tokens'  => 2500,
+        'ollama_model'=> 'llama3'
+    ]);
 
-if (!$ai_res['success']) {
-    ob_clean();
-    echo json_encode(["status" => "error", "mensagem" => "IA Offline: " . $ai_res['message']]);
-    exit;
-}
-
-$raw = clean_ai_json($ai_res['data']);
-$resultado = json_decode($raw, true);
-
-if (json_last_error() !== JSON_ERROR_NONE || empty($resultado['analises'])) {
-    ob_clean();
-    echo json_encode(["status" => "error", "mensagem" => "Erro no processamento do JSON da IA.", "raw" => $raw]);
-    exit;
-}
-
-// ─── SALVAR NO CACHE E MESCLAR ──────────────────────────────────────────────
-foreach ($resultado['analises'] as $nova_analise) {
-    // Encontrar a URL original para o hash
-    $titulo_original = $nova_analise['titulo_noticia'];
-    $url_original = "";
-    foreach($noticias_para_processar as $np) {
-        if ($np['titulo'] === $titulo_original) {
-            $url_original = $np['url'];
-            break;
-        }
+    if (!$ai_res['success']) {
+        throw new Exception("Falha ao chamar serviço de IA: " . ($ai_res['message'] ?? 'Erro desconhecido'));
     }
-    
-    $url_hash = md5($url_original ?: $titulo_original);
-    $analise_json = json_encode($nova_analise, JSON_UNESCAPED_UNICODE);
-    
-    // Salva no banco para uso futuro
-    $stmt_save = $conexao->prepare("INSERT INTO cache_ia_noticias (noticia_url_hash, perfil_usuario, categorias_usuario, analise_json) VALUES (?, ?, ?, ?)");
-    $stmt_save->bind_param("ssss", $url_hash, $perfil_c, $cat_key, $analise_json);
-    $stmt_save->execute();
-    
-    $analises_finais[] = $nova_analise;
-}
 
-// Cruzamento final de relevância
-foreach ($analises_finais as &$af) {
-    $af['relevante_para_usuario'] = in_array($af['categoria'], $categorias_usuario);
-}
+    $raw = clean_ai_json($ai_res['data']);
+    $resultado = json_decode($raw, true);
 
-ob_clean();
-echo json_encode([
-    "status"            => "ok",
-    "source"            => $ai_res['source'],
-    "resumo_geral"      => $resultado['resumo_geral'] ?? "Análise financeira atualizada.",
-    "nivel_alerta"      => $resultado['nivel_alerta'] ?? "baixo",
-    "analises"          => $analises_finais,
-    "top_acao_da_semana"=> $resultado['top_acao_da_semana'] ?? "",
-    "categorias_usuario"=> $categorias_usuario
-], JSON_UNESCAPED_UNICODE);
+    if (json_last_error() !== JSON_ERROR_NONE || empty($resultado['analises'])) {
+        throw new Exception("Resposta de IA em formato JSON inválido ou sem análises");
+    }
+
+    // ─── SALVAR NO CACHE E MESCLAR ──────────────────────────────────────────────
+    foreach ($resultado['analises'] as $nova_analise) {
+        // Encontrar a URL original para o hash
+        $titulo_original = $nova_analise['titulo_noticia'];
+        $url_original = "";
+        foreach($noticias_para_processar as $np) {
+            if ($np['titulo'] === $titulo_original) {
+                $url_original = $np['url'];
+                break;
+            }
+        }
+        
+        $url_hash = md5($url_original ?: $titulo_original);
+        $analise_json = json_encode($nova_analise, JSON_UNESCAPED_UNICODE);
+        
+        // Salva no banco para uso futuro
+        $stmt_save = $conexao->prepare("INSERT INTO cache_ia_noticias (noticia_url_hash, perfil_usuario, analise_json) VALUES (?, ?, ?)");
+        $stmt_save->bind_param("sss", $url_hash, $perfil_c, $analise_json);
+        $stmt_save->execute();
+        
+        $analises_finais[] = $nova_analise;
+    }
+
+    // Cruzamento final de relevância
+    foreach ($analises_finais as &$af) {
+        $af['relevante_para_usuario'] = in_array($af['categoria'], $categorias_usuario);
+    }
+
+    ob_clean();
+    echo json_encode([
+        "status"            => "ok",
+        "source"            => $ai_res['source'],
+        "resumo_geral"      => $resultado['resumo_geral'] ?? "Análise financeira atualizada.",
+        "nivel_alerta"      => $resultado['nivel_alerta'] ?? "baixo",
+        "analises"          => $analises_finais,
+        "top_acao_da_semana"=> $resultado['top_acao_da_semana'] ?? "",
+        "categorias_usuario"=> $categorias_usuario
+    ], JSON_UNESCAPED_UNICODE);
+
+} catch (Exception $e) {
+    // Tratamento seguro de erros — retorna JSON sempre
+    http_response_code(500);
+    ob_clean();
+    error_log("Erro em analyze.php: " . $e->getMessage() . " | " . $e->getFile() . ":" . $e->getLine());
+    echo json_encode([
+        "status" => "error",
+        "message" => "Erro no processamento de análise: " . $e->getMessage(),
+        "analises" => $analises_finais ?? [],
+        "categorias_usuario" => $categorias_usuario ?? []
+    ], JSON_UNESCAPED_UNICODE);
+}
 

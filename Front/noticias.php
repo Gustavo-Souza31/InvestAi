@@ -13,7 +13,7 @@ $usuarioId = (int) $_SESSION['usuario_id'];
 
 // ─── Carregar notícias do banco diretamente ───────────────────────────────────
 $root = dirname(dirname(__FILE__));
-require_once $root . '/DataBase/conexao.php';
+require_once $root . '/backend/database/conexao.php';
 
 // Categorias de despesas do usuário (para cruzamento)
 $mapaCategorias = [

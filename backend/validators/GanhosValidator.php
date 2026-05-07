@@ -5,18 +5,21 @@
 
 require_once __DIR__ . '/ValidatorHelper.php';
 
-class GanhosValidator {
+class GanhosValidator
+{
 
     /**
      * Valida dados de criação/atualização de ganho
      */
-    public static function validate($data) {
+    public static function validate($data)
+    {
         $errors = [];
 
         $descricao = trim($data['descricao'] ?? '');
         $valor = floatval(str_replace(',', '.', $data['valor'] ?? 0));
         $data_ganho = trim($data['data_ganho'] ?? '');
         $fixo = intval($data['fixo'] ?? 0);
+        $categoria_id = isset($data['categoria_id']) && $data['categoria_id'] !== '' ? intval($data['categoria_id']) : null;
 
         // Verificar campos vazios
         if (empty($descricao)) {
@@ -58,7 +61,8 @@ class GanhosValidator {
                 'descricao' => $descricao,
                 'valor' => round($valor, 2),
                 'data_ganho' => $data_ganho,
-                'fixo' => $fixo
+                'fixo' => $fixo,
+                'categoria_id' => $categoria_id
             ]
         ];
     }
