@@ -25,14 +25,14 @@ function get_gemini_api_key() {
 function call_ai_service($prompt, $options = []) {
     $temperature  = $options['temperature']  ?? 0.7;
     $max_tokens   = $options['max_tokens']   ?? 2000;
-    $model_ollama = $options['ollama_model'] ?? 'llama3';
-
-    $ollama_res = call_ollama_local($prompt, $model_ollama, $temperature);
-    if ($ollama_res) {
-        return ['success' => true, 'source' => 'ollama', 'data' => $ollama_res];
-    }
 
     $gemini_key = get_gemini_api_key();
+    
+    // Fallback hardcoded (não recomendado, mas adicionado conforme o pedido)
+    if (!$gemini_key) {
+        $gemini_key = 'AIzaSyAXXrib7MKwGIxBw47I_wNyoYcbcouGF5Q';
+    }
+
     if ($gemini_key) {
         $gemini_res = call_gemini_api($prompt, $gemini_key, $temperature, $max_tokens);
         if ($gemini_res) {
@@ -42,52 +42,11 @@ function call_ai_service($prompt, $options = []) {
 
     return [
         'success' => false,
-        'message' => 'Nenhum serviço de IA disponível (Ollama offline e Gemini sem chave ou cota).'
+        'message' => 'Serviço de IA Indisponível (Gemini API falhou).'
     ];
 }
 
-/**
- * Comunicação com Ollama Local
- */
-function call_ollama_local($prompt, $model, $temp) {
-    $url  = "http://localhost:11434/api/generate";
-    $data = [
-        "model"   => $model,
-        "prompt"  => $prompt,
-        "stream"  => false,
-        "options" => ["temperature" => $temp]
-    ];
 
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => json_encode($data),
-        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-        CURLOPT_TIMEOUT        => 120,
-        CURLOPT_SSL_VERIFYPEER => false,
-    ]);
-
-    $response  = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curl_err  = curl_error($ch);
-    curl_close($ch);
-
-    $logFile = dirname(dirname(dirname(dirname(__FILE__)))) . '/logs/ai_debug.log';
-    $log_msg = "Time: " . date('H:i:s') . " | Code: $http_code | Err: $curl_err | RAW Start: " . substr($response, 0, 80) . "...\n";
-    file_put_contents($logFile, $log_msg, FILE_APPEND);
-
-    if ($http_code === 200 && $response) {
-        $json    = json_decode($response, true);
-        $ai_text = $json['response'] ?? null;
-
-        $cleaned = clean_ai_json($ai_text);
-        file_put_contents($logFile, "Time: " . date('H:i:s') . " | CLEANED Start: " . substr($cleaned, 0, 80) . "...\n", FILE_APPEND);
-
-        return $ai_text;
-    }
-    return null;
-}
 
 /**
  * Comunicação com Gemini API
@@ -135,8 +94,14 @@ function clean_ai_json($raw) {
             $raw = substr($raw, $start, $end - $start + 1);
         }
     }
-
+    // 4. Limpeza profunda: remove caracteres de controle que podem quebrar o JSON
     $raw = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $raw);
 
+    // 5. REPARO BÁSICO: Corrigir falta de aspas em valores comuns (ex: nivel_impacto: Alto)
+    // Procura por : seguido de uma palavra sem aspas antes de , ou }
+    $raw = preg_replace('/:\s*(Alto|Medio|Baixo|alto|medio|baixo)\s*([,}])/i', ': "$1"$2', $raw);
+
+    // 6. REPARO BÁSICO: Remover vírgulas pendentes (trailing commas)
+    $raw = preg_replace('/,\s*([}\]])/', '$1', $raw);
     return $raw;
 }
