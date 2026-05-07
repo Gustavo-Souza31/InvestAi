@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * relatorio.php — API de relatório financeiro agrupado por período
  * 

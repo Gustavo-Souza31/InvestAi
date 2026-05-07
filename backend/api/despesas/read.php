@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // backend/api/despesas/read.php — Retorna lista de despesas do usuário autenticado
 header('Content-Type: application/json');
 

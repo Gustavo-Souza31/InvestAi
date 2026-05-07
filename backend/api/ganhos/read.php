@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // backend/api/ganhos/read.php — Retorna lista de ganhos do usuário autenticado
 header('Content-Type: application/json');
 

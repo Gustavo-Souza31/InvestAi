@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * backend/api/noticias/analyze.php
  * Analisa notícias via Gemini com categorização obrigatória em 7 tags,

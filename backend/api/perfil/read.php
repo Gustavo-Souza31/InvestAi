@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // backend/api/perfil/read.php — Retorna dados do perfil do usuário
 header('Content-Type: application/json');
 

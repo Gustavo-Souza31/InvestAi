@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // backend/api/dashboard/dados.php — Retorna dados financeiros consolidados do usuário
 session_start();
 header('Content-Type: application/json');

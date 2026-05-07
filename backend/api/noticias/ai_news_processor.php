@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * backend/api/noticias/ai_news_processor.php
  * Recebe notícias brutas do RSS, processa via Gemini AI

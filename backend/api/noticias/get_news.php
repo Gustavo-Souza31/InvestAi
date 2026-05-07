@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * backend/api/noticias/get_news.php
  * Endpoint autenticado: lê notícias do banco e calcula impacto_pessoal
