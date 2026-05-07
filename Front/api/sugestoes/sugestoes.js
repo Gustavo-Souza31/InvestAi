@@ -23,7 +23,7 @@ async function carregarSugestoes(mes = null, ano = null) {
         }
 
         const response = await fetch(
-            `/inventai/backend/api/sugestoes/economia.php?mes=${mes}&ano=${ano}`,
+            `../backend/api/sugestoes/economia.php?mes=${mes}&ano=${ano}`,
             {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
@@ -319,7 +319,7 @@ async function regenerarSugestao(sugestaoId, cardElement) {
     
     try {
         const response = await fetch(
-            `/inventai/backend/api/sugestoes/regenerar.php`,
+            `../backend/api/sugestoes/regenerar.php`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

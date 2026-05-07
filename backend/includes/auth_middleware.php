@@ -1,6 +1,8 @@
 <?php
 // backend/includes/auth_middleware.php — Verifica se o usuário está logado
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 function requireAuth() {
     if (!isset($_SESSION['usuario_id'])) {

@@ -2,7 +2,7 @@
 // backend/database/conexao.php — Conexão centralizada ao banco
 // Carrega configurações de .env
 
-require_once dirname(dirname(__DIR__)) . '/backend/config/ConfigHelper.php';
+require_once __DIR__ . '/../config/ConfigHelper.php';
 ConfigHelper::load();
 
 $servername = ConfigHelper::get('DB_HOST', '127.0.0.1');
