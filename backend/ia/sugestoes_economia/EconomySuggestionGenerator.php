@@ -156,24 +156,37 @@ class EconomySuggestionGenerator {
             // 3. Calcular percentual
             $percentual = ($gasto / $limite) * 100;
 
-            // 4. Verificar alertas
-            if ($percentual >= 80) {
+            // 4. Verificar alertas e determinar tipo
+            if ($tem_limite_usuario) {
+                // Categorias com orçamento definido: faixas de alerta por percentual
+                if ($percentual >= 125) {
+                    $tipo = 'limite_ultrapassado';
+                } elseif ($percentual >= 100) {
+                    $tipo = 'limite_atingido';
+                } elseif ($percentual >= 75) {
+                    $tipo = 'quase_no_limite';
+                } else {
+                    continue; // Abaixo de 75%, sem alerta
+                }
+
                 $alertas[] = [
                     'categoria' => $categoria,
-                    'gasto' => $gasto,
-                    'limite' => $limite,
-                    'percentual' => $percentual,
-                    // 'orcamento' só quando o usuário definiu um limite real
-                    'tipo' => $tem_limite_usuario ? 'orcamento' : 'comportamento',
+                    'gasto'     => $gasto,
+                    'limite'    => $limite,
+                    'percentual'=> $percentual,
+                    'tipo'      => $tipo,
                 ];
-            } elseif ($this->ehCategoriaFrivola($categoria) && $gasto > $limite) {
-                $alertas[] = [
-                    'categoria' => $categoria,
-                    'gasto' => $gasto,
-                    'limite' => $limite,
-                    'percentual' => $percentual,
-                    'tipo' => 'comportamento',
-                ];
+            } else {
+                // Sem orçamento definido: apenas categorias frívolas ou acima de 80% do padrão
+                if ($percentual >= 80 || ($this->ehCategoriaFrivola($categoria) && $gasto > $limite)) {
+                    $alertas[] = [
+                        'categoria' => $categoria,
+                        'gasto'     => $gasto,
+                        'limite'    => $limite,
+                        'percentual'=> $percentual,
+                        'tipo'      => 'comportamento',
+                    ];
+                }
             }
         }
 
@@ -342,34 +355,55 @@ class EconomySuggestionGenerator {
         string $tipo_alerta
     ): string {
         $percentual_fmt = number_format($percentual, 1, ',', '.');
-        $gasto_fmt = number_format($gasto, 2, ',', '.');
-        $limite_fmt = number_format($limite, 2, ',', '.');
+        $gasto_fmt      = number_format($gasto,      2, ',', '.');
+        $limite_fmt     = number_format($limite,     2, ',', '.');
 
-        $descricao_alerta = ($tipo_alerta === 'orcamento')
-            ? "ultrapassou o orçamento ($percentual_fmt% do limite)"
-            : "comportamento de gasto anormal (categoria fútil)";
+        switch ($tipo_alerta) {
+            case 'quase_no_limite':
+                $contexto = "já usou {$percentual_fmt}% do orçamento de {$categoria} este mês e está chegando perto do limite";
+                $urgencia = "Use um tom amigável e preventivo — o usuário ainda pode frear antes de estourar.";
+                break;
+            case 'limite_atingido':
+                $contexto = "atingiu o limite do orçamento de {$categoria} este mês ({$percentual_fmt}%)";
+                $urgencia = "Use um tom direto mas encorajador — o limite chegou, hora de apertar o cinto.";
+                break;
+            case 'limite_ultrapassado':
+                $contexto = "ultrapassou bastante o orçamento de {$categoria} este mês ({$percentual_fmt}% do limite)";
+                $urgencia = "Use um tom urgente mas sem assustar — o usuário precisa agir agora.";
+                break;
+            case 'orcamento':
+                $contexto = "ultrapassou o orçamento de {$categoria} ({$percentual_fmt}% do limite)";
+                $urgencia = "Use um tom motivador e prático.";
+                break;
+            default: // comportamento
+                $contexto = "tem gasto elevado na categoria {$categoria}, que é considerada uma categoria de consumo fútil ou sem limite definido";
+                $urgencia = "Use um tom leve e educativo — o usuário pode não ter percebido o padrão.";
+                break;
+        }
 
         return <<<PROMPT
-Você é um consultor financeiro do InvestAI.
+Você é um assistente financeiro descontraído do InvestAI.
 
-Um usuário $descricao_alerta em **{$categoria}**.
+Um usuário {$contexto}.
 
-**Dados do alerta:**
+**Dados:**
 - Categoria: {$categoria}
 - Gasto este mês: R\$ {$gasto_fmt}
-- Limite recomendado: R\$ {$limite_fmt}
-- Percentual: {$percentual_fmt}%
+- Limite: R\$ {$limite_fmt}
+- Percentual usado: {$percentual_fmt}%
 
-Gere uma sugestão concisa, prática e motivadora em JSON com:
-1. "titulo": Título curto (5-8 palavras)
-2. "mensagem": Mensagem principal (20-40 palavras)
-3. "acoes": Array de 2-3 ações específicas para reduzir gasto nesta categoria
+**Tom:** Seja conversacional, humano e use 1 emoji relevante na mensagem. Evite linguagem robótica ou muito formal. {$urgencia}
+
+Gere a sugestão em JSON com:
+1. "titulo": Título curto e direto (5-8 palavras), pode ter 1 emoji
+2. "mensagem": Mensagem principal conversacional (20-40 palavras), com 1 emoji
+3. "acoes": Array de 2-3 ações práticas e específicas para esta categoria
 
 Responda APENAS com JSON válido, sem markdown:
 {"titulo":"...","mensagem":"...","acoes":["acao1","acao2","acao3"]}
 
-Exemplo:
-{"titulo":"Cuidado com as compras online","mensagem":"Você está gastando demais com compras pela internet. Tente economizar planificando antecipadamente e comparando preços.","acoes":["Compare preços em 3 lojas antes de comprar","Use cupons de desconto","Defina um orçamento semanal"]}
+Exemplo de tom esperado:
+{"titulo":"Ei, o limite de Delivery tá chegando! 🚨","mensagem":"Você já usou 80% do seu orçamento de delivery este mês. Que tal cozinhar em casa nos próximos dias? 🍳","acoes":["Planeje 3 refeições caseiras esta semana","Use o que já tem na geladeira antes de pedir","Reserve delivery só para ocasiões especiais"]}
 
 Agora crie a sugestão:
 PROMPT;
@@ -449,13 +483,32 @@ PROMPT;
         $acoes = $acoes_por_categoria[$categoria]
             ?? ['Revise seus gastos nesta categoria', 'Defina um limite mensal', 'Registre todas as despesas'];
 
-        $titulo = $tipo === 'orcamento'
-            ? "Orçamento de $categoria ultrapassado"
-            : "Gasto elevado em $categoria";
+        switch ($tipo) {
+            case 'quase_no_limite':
+                $titulo   = "Ei, o orçamento de $categoria tá quase no limite! 🚨";
+                $mensagem = "Você já usou boa parte do seu orçamento de $categoria este mês. Melhor segurar um pouco antes de estourar! 😅";
+                break;
+            case 'limite_atingido':
+                $titulo   = "Orçamento de $categoria chegou ao limite 😬";
+                $mensagem = "Você atingiu o limite de gastos em $categoria este mês. Hora de apertar o cinto e evitar novas despesas nessa categoria!";
+                break;
+            case 'limite_ultrapassado':
+                $titulo   = "Opa, passou muito do orçamento de $categoria! 😰";
+                $mensagem = "Você ultrapassou bastante o limite de $categoria este mês. Bora revisar os gastos com urgência e ver onde dá pra cortar?";
+                break;
+            case 'orcamento':
+                $titulo   = "Orçamento de $categoria ultrapassado ⚠️";
+                $mensagem = "Seus gastos em $categoria estão acima do esperado. Confira as dicas abaixo para economizar.";
+                break;
+            default: // comportamento
+                $titulo   = "Gasto elevado em $categoria 📈";
+                $mensagem = "Seus gastos em $categoria chamaram atenção este mês. Que tal dar uma olhada e ver onde dá pra economizar?";
+                break;
+        }
 
         return [
             'titulo'   => $titulo,
-            'mensagem' => "Seus gastos em $categoria estão acima do esperado. Confira as dicas abaixo para economizar.",
+            'mensagem' => $mensagem,
             'acoes'    => $acoes,
         ];
     }

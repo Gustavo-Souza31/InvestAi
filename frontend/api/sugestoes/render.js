@@ -39,9 +39,18 @@ function renderizarSugestoes(sugestoes) {
 function renderizarSugestaoCard(sugestao) {
     const card = document.createElement('div');
     const tipo = sugestao.tipo || 'comportamento';
-    const isBadgeTipo = tipo === 'orcamento' ? 'orcamento' : 'comportamento';
-    const labelTipo = tipo === 'orcamento' ? 'Orçamento' : 'Gasto Elevado';
-    const icon = tipo === 'orcamento' ? '⚠️' : '📈';
+
+    const tipoConfig = {
+        'quase_no_limite':     { icon: '🚨', label: 'Quase no Limite', badge: 'quase_no_limite' },
+        'limite_atingido':     { icon: '😬', label: 'Limite Atingido',  badge: 'limite_atingido' },
+        'limite_ultrapassado': { icon: '😰', label: 'Limite Excedido',  badge: 'limite_ultrapassado' },
+        'orcamento':           { icon: '⚠️', label: 'Orçamento',        badge: 'orcamento' },
+        'comportamento':       { icon: '📈', label: 'Gasto Elevado',    badge: 'comportamento' },
+    };
+    const cfg = tipoConfig[tipo] ?? tipoConfig['comportamento'];
+    const isBadgeTipo = cfg.badge;
+    const labelTipo   = cfg.label;
+    const icon        = cfg.icon;
 
     card.className = `sugestao-card tipo-${tipo}`;
     card.style.display = 'flex';
