@@ -126,9 +126,9 @@ DIRETRIZES DE ESCRITA (OBRIGATÓRIO):
 1. Profundidade Institucional: Escreva como um relatório premium. Desenvolva as ideias. Não use respostas curtas.
 2. Efeito Cascata: Explique não apenas o que aconteceu, mas os efeitos de segunda ordem (ex: se o petróleo sobe, o frete sobe, a inflação sobe, a Selic não cai).
 3. Personalização Extrema: Você DEVE cruzar o fato com a renda, saldo, gastos e objetivo do usuário.
-4. Responda APENAS com um objeto JSON puro e válido. Sem blocos de código (```json), sem introduções.
+4. Responda APENAS com um objeto JSON puro e válido. Siga RIGOROSAMENTE a sintaxe JSON: todas as chaves e valores string DEVEM estar entre aspas duplas, e aspas internas DEVEM ser escapadas.
 
-ESTRUTURA JSON:
+ESTRUTURA JSON (Respeite as aspas):
 {
   "manchete": "Título focado no impacto (máx 90 carac)",
   "resumo_executivo": "Contexto e fato central (2-3 frases).",
@@ -198,9 +198,10 @@ PROMPT;
     if (json_last_error() !== JSON_ERROR_NONE) {
         $erro_json = json_last_error_msg();
         // Logar o erro técnico para depuração
-        file_put_contents(dirname(dirname(dirname(__FILE__))) . '/ai_debug.log', "JSON Error: $erro_json | Final: " . substr($raw, -30) . "\n", FILE_APPEND);
+        $debug_log = dirname(dirname(dirname(__FILE__))) . '/ai_debug.log';
+        file_put_contents($debug_log, "Time: ".date('H:i:s')." | JSON Error: $erro_json | RAW: " . $raw . "\n", FILE_APPEND);
         
-        throw new Exception("IA instável (Erro: $erro_json). Tente novamente em instantes.");
+        throw new Exception("IA instável (Erro de Sintaxe). Tente novamente em instantes.");
     }
 
     $resultado['status'] = 'ok';

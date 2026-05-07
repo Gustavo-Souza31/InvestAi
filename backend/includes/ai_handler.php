@@ -154,8 +154,14 @@ function clean_ai_json($raw) {
     }
     
     // 4. Limpeza profunda: remove caracteres de controle que podem quebrar o JSON
-    // (Exceto tabulação, quebra de linha e retorno de carro)
     $raw = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $raw);
+
+    // 5. REPARO BÁSICO: Corrigir falta de aspas em valores comuns (ex: nivel_impacto: Alto)
+    // Procura por : seguido de uma palavra sem aspas antes de , ou }
+    $raw = preg_replace('/:\s*(Alto|Medio|Baixo|alto|medio|baixo)\s*([,}])/i', ': "$1"$2', $raw);
+
+    // 6. REPARO BÁSICO: Remover vírgulas pendentes (trailing commas)
+    $raw = preg_replace('/,\s*([}\]])/', '$1', $raw);
     
     return $raw;
 }
