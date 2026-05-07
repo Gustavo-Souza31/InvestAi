@@ -60,7 +60,7 @@ if (
         'status'   => 'success',
         'message'  => 'Login realizado com sucesso!',
         'nome'     => 'Admin',
-        'redirect' => 'admin.php',
+        'redirect' => 'public/pages/admin/admin.php',
     ]);
     exit;
 }
@@ -120,6 +120,6 @@ echo json_encode([
     'status'   => 'success',
     'message'  => 'Login realizado com sucesso!',
     'nome'     => $usuario['nome'],
-    'redirect' => 'dashboard.php',
+    'redirect' => 'public/pages/user/dashboard.php',
 ]);
 ?>

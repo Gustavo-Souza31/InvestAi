@@ -21,10 +21,10 @@ function requireAdminPage(): void
     if (empty($_SESSION['is_admin'])) {
         // Sem sessão nenhuma → login; com sessão mas não admin → dashboard
         if (empty($_SESSION['usuario_id']) && empty($_SESSION['usuario_email'])) {
-            header('Location: login.php');
+            header('Location: ../../../login.php');
             exit;
         }
-        header('Location: dashboard.php');
+        header('Location: ../user/dashboard.php');
         exit;
     }
 }

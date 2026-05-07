@@ -1,0 +1,116 @@
+/* ===== Tour Onboarding — driver.js dark theme overrides ===== */
+
+.driver-popover {
+    background: #161821 !important;
+    border: 1px solid rgba(179, 157, 219, 0.25) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(179, 157, 219, 0.08) !important;
+    color: #fff !important;
+    font-family: 'Outfit', sans-serif !important;
+    padding: 24px 26px !important;
+    min-width: 300px !important;
+    max-width: 360px !important;
+}
+
+.driver-popover * {
+    font-family: 'Outfit', sans-serif !important;
+}
+
+.driver-popover-title {
+    color: #ffffff !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0 !important;
+    line-height: 1.3 !important;
+}
+
+.driver-popover-description {
+    color: #a0a0a0 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.65 !important;
+    margin-top: 8px !important;
+}
+
+.driver-popover-progress-text {
+    color: #555 !important;
+    font-size: 0.78rem !important;
+}
+
+.driver-popover-footer {
+    margin-top: 18px !important;
+    gap: 8px !important;
+}
+
+/* Botão Próximo / Concluir */
+.driver-popover-next-btn,
+.driver-popover-done-btn {
+    background: #B39DDB !important;
+    color: #0b0d11 !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    padding: 8px 18px !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    transition: background 0.15s !important;
+}
+
+.driver-popover-next-btn:hover,
+.driver-popover-done-btn:hover {
+    background: #c9b3ef !important;
+    color: #0b0d11 !important;
+}
+
+/* Botão Voltar */
+.driver-popover-prev-btn {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #888 !important;
+    border-radius: 10px !important;
+    font-size: 0.85rem !important;
+    padding: 8px 18px !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    transition: border-color 0.15s, color 0.15s !important;
+}
+
+.driver-popover-prev-btn:hover {
+    border-color: rgba(179, 157, 219, 0.35) !important;
+    color: #B39DDB !important;
+    background: transparent !important;
+}
+
+/* Overlay escuro combinando com o bg do site */
+.driver-overlay {
+    background: rgba(11, 13, 17, 0.65) !important;
+}
+
+/* Seta do popover — mesma cor do card */
+.driver-popover-arrow-side-top .driver-popover-arrow {
+    border-bottom-color: #161821 !important;
+}
+.driver-popover-arrow-side-bottom .driver-popover-arrow {
+    border-top-color: #161821 !important;
+}
+.driver-popover-arrow-side-left .driver-popover-arrow {
+    border-right-color: #161821 !important;
+}
+.driver-popover-arrow-side-right .driver-popover-arrow {
+    border-left-color: #161821 !important;
+}
+
+/* Elemento destacado — visível como no uso normal do site */
+.driver-active-element,
+.driver-active-element * {
+    opacity: 1 !important;
+    filter: brightness(1.1) !important;
+    color: inherit;
+}
+
+.driver-active-element {
+    border-radius: 12px !important;
+    outline: 2px solid rgba(179, 157, 219, 0.6) !important;
+    outline-offset: 4px !important;
+    box-shadow: 0 0 24px rgba(179, 157, 219, 0.15) !important;
+}
