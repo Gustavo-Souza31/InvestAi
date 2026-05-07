@@ -67,12 +67,19 @@ if (
 
 
 // ── Autenticação de usuário normal (banco de dados) ──────────────────────────
-$stmt = $conexao->prepare(
-    "SELECT id, nome, email, senha_hash, ativo FROM usuarios WHERE email = ?"
-);
-$stmt->bind_param('s', $email);
-$stmt->execute();
-$result = $stmt->get_result();
+try {
+    $stmt = $conexao->prepare(
+        "SELECT id, nome, email, senha_hash, ativo FROM usuarios WHERE email = ?"
+    );
+    if (!$stmt) throw new Exception("Tabela usuarios não encontrada. Você importou o schema.sql?");
+    
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+} catch (Exception $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Erro no Banco: ' . $e->getMessage()]);
+    exit;
+}
 
 if ($result->num_rows === 0) {
     Logger::log('WARN', 'USER_LOGIN_FAILED', ['motivo' => 'E-mail não encontrado'], 'falha');
