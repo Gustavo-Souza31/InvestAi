@@ -13,11 +13,17 @@ $porta = ConfigHelper::get('DB_PORT', 3306);
 
 $conexao = mysqli_init();
 // TiDB Serverless e outros bancos em nuvem exigem conexão segura (SSL)
-$conexao->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
-$conexao->ssl_set(NULL, NULL, '/etc/ssl/certs/ca-certificates.crt', NULL, NULL);
-
-// Tenta conectar, permitindo SSL caso o banco exija
-$conexao->real_connect($servername, $usuario_db, $senha_db, $banco, $porta, NULL, MYSQLI_CLIENT_SSL);
+if ($servername !== '127.0.0.1' && $servername !== 'localhost') {
+    $conexao->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
+    if (file_exists('/etc/ssl/certs/ca-certificates.crt')) {
+        $conexao->ssl_set(NULL, NULL, '/etc/ssl/certs/ca-certificates.crt', NULL, NULL);
+    }
+    // Tenta conectar, permitindo SSL caso o banco exija
+    $conexao->real_connect($servername, $usuario_db, $senha_db, $banco, $porta, NULL, MYSQLI_CLIENT_SSL);
+} else {
+    // Conexão local XAMPP (sem SSL)
+    $conexao->real_connect($servername, $usuario_db, $senha_db, $banco, $porta);
+}
 
 if ($conexao->connect_error) {
     http_response_code(500);

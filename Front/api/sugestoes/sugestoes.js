@@ -78,10 +78,10 @@ function renderizarSugestoes(sugestoes) {
     // Adicionar header
     const header = document.createElement('div');
     header.className = 'sugestoes-header';
-    
+
     const h2 = document.createElement('h2');
     h2.innerHTML = '<i class="bi bi-lightbulb-fill"></i>Sugestões de Economia';
-    
+
     header.appendChild(h2);
     container.appendChild(header);
 
@@ -266,7 +266,7 @@ function renderizarSugestaoCard(sugestao) {
     card.appendChild(acoesLabel);
     card.appendChild(acoesList);
     card.appendChild(overlay);
-    
+
     // Guardar referência ao loading indicator no card
     card.loadingIndicator = loadingIndicator;
 
@@ -310,13 +310,13 @@ async function inicializarSugestoes(mes = null, ano = null) {
  */
 async function regenerarSugestao(sugestaoId, cardElement) {
     if (!cardElement || !cardElement.loadingIndicator) return;
-    
+
     const loadingIndicator = cardElement.loadingIndicator;
     loadingIndicator.style.display = 'flex';
     loadingIndicator.setAttribute('data-updating', 'true');
     cardElement.style.pointerEvents = 'none';
     cardElement.style.opacity = '0.7';
-    
+
     try {
         const response = await fetch(
             `../backend/api/sugestoes/regenerar.php`,
