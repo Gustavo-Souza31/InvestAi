@@ -29,6 +29,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <link rel="stylesheet" href="../../../assets/style/css/internal-pages.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/perfil.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/footer.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../../assets/style/css/chat.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -38,7 +39,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <div class="main-container">
 
         <!-- ===== HEADER ===== -->
-        <div class="page-header">
+        <div class="page-header fade-in-up">
             <h1><i class="bi bi-person-gear"></i>Meu Perfil</h1>
             <p>Gerencie suas informações pessoais e preferências financeiras.</p>
         </div>
@@ -56,7 +57,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
         <div id="content" style="display: none;">
 
             <!-- ===== PROFILE HEADER ===== -->
-            <div class="profile-header">
+            <div class="profile-header fade-in-up delay-1">
                 <div class="profile-avatar">
                     <span id="avatar-initials">--</span>
                     <div class="status-dot"></div>
@@ -92,7 +93,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
             <div class="profile-sections">
 
                 <!-- ===== DADOS PESSOAIS ===== -->
-                <div class="profile-section">
+                <div class="profile-section fade-in-up delay-1">
                     <div class="section-header">
                         <div class="section-icon personal"><i class="bi bi-person"></i></div>
                         <div style="flex:1;">
@@ -144,7 +145,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                 </div>
 
                 <!-- ===== PERFIL FINANCEIRO ===== -->
-                <div class="profile-section">
+                <div class="profile-section fade-in-up delay-2">
                     <div class="section-header">
                         <div class="section-icon financial"><i class="bi bi-cash-coin"></i></div>
                         <div style="flex:1;">
@@ -220,7 +221,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
                 </div>
 
                 <!-- ===== SEGURANÇA ===== -->
-                <div class="profile-section">
+                <div class="profile-section fade-in-up delay-3">
                     <div class="section-header">
                         <div class="section-icon security"><i class="bi bi-shield-lock"></i></div>
                         <div style="flex:1;">
@@ -335,6 +336,8 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
 
     <?php include '../../components/footer.php'; ?>
     <script src="../../../assets/style/js/legal-modals.js"></script>
+    <script src="../../../api/chat/enviar.js?v=<?= time() ?>"></script>
+    <script src="../../../api/chat/ui.js?v=<?= time() ?>"></script>
 
 </body>
 

@@ -59,13 +59,13 @@ Logger::log('INFO', 'ADMIN_ACCESS', ['secao' => 'painel'], 'sucesso', $usuario_i
     <div class="main-container">
 
         <!-- ===== HEADER ===== -->
-        <div class="admin-header">
+        <div class="admin-header fade-in-up">
             <h1><i class="bi bi-shield-lock-fill"></i>Painel Administrativo</h1>
             <p>Logs de auditoria e gerenciamento de usuários do sistema.</p>
         </div>
 
         <!-- ===== TABS ===== -->
-        <div class="admin-tabs">
+        <div class="admin-tabs fade-in-up delay-1">
             <button class="admin-tab-btn active" data-tab="logs">
                 <i class="bi bi-journal-text"></i> Logs de Auditoria
             </button>

@@ -31,6 +31,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <link rel="stylesheet" href="../../../assets/style/css/noticias.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/noticia_detalhe.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/footer.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../../assets/style/css/chat.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -40,14 +41,14 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <div class="main-container detalhe-container">
 
         <!-- BREADCRUMB -->
-        <div class="breadcrumb-bar">
+        <div class="breadcrumb-bar fade-in-up">
             <a href="noticias.php" id="btn-voltar">
                 <i class="bi bi-arrow-left"></i> Voltar às Notícias
             </a>
         </div>
 
         <!-- HEADER DA NOTÍCIA -->
-        <div class="detalhe-header" id="detalhe-header">
+        <div class="detalhe-header fade-in-up delay-1" id="detalhe-header">
             <div class="detalhe-meta" id="detalhe-meta">
                 <!-- preenchido via JS -->
             </div>
@@ -85,6 +86,8 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
 
     <?php include '../../components/footer.php'; ?>
     <script src="../../../assets/style/js/legal-modals.js"></script>
+    <script src="../../../api/chat/enviar.js?v=<?= time() ?>"></script>
+    <script src="../../../api/chat/ui.js?v=<?= time() ?>"></script>
 </body>
 
 </html>

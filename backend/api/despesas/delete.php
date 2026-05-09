@@ -26,9 +26,9 @@ if (!$validation['valid']) {
 }
 
 
-// Verificar se despesa existe
-$stmt = $conexao->prepare('SELECT id FROM despesas WHERE id = ?');
-$stmt->bind_param('i', $id);
+// Verificar se despesa existe e pertence ao usuário
+$stmt = $conexao->prepare('SELECT id FROM despesas WHERE id = ? AND usuario_id = ?');
+$stmt->bind_param('ii', $id, $usuario_id);
 $stmt->execute();
 if ($stmt->get_result()->num_rows === 0) {
     echo json_encode(['status' => 'error', 'message' => 'Despesa não encontrada.']);
@@ -37,8 +37,8 @@ if ($stmt->get_result()->num_rows === 0) {
 
 
 // Deletar despesa do banco de dados
-$stmt = $conexao->prepare('DELETE FROM despesas WHERE id = ?');
-$stmt->bind_param('i', $id);
+$stmt = $conexao->prepare('DELETE FROM despesas WHERE id = ? AND usuario_id = ?');
+$stmt->bind_param('ii', $id, $usuario_id);
 
 
 // Executar e verificar deleção

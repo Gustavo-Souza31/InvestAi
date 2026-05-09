@@ -35,6 +35,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     <link rel="stylesheet" href="../../../assets/style/css/internal-pages.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/dashboard.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/footer.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../../assets/style/css/chat.css?v=<?= time() ?>">
 
     <?php if ($is_first_login): ?>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css" />
@@ -52,7 +53,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     <div class="main-container">
 
         <!-- ===== HEADER ===== -->
-        <div class="page-header">
+        <div class="page-header fade-in-up">
             <h1><i class="bi bi-pie-chart"></i>Resumo Financeiro</h1>
             <p>Análise detalhada da sua evolução financeira por período.</p>
         </div>
@@ -68,34 +69,34 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
 
             <!-- ===== CARDS DE RESUMO ===== -->
             <div class="summary-cards">
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-1">
                     <div class="label"><i class="bi bi-wallet2 me-1"></i>Saldo Atual</div>
                     <div class="value" id="saldo-atual">R$ 0,00</div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-2">
                     <div class="label"><i class="bi bi-percent me-1"></i>Saldo Inicial</div>
                     <div class="value" id="saldo-inicial">R$ 0,00</div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-1">
                     <div class="label"><i class="bi bi-arrow-up-right me-1"></i>Total Ganhos</div>
                     <div class="value" id="total-ganhos">R$ 0,00</div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-2">
                     <div class="label"><i class="bi bi-arrow-down-left me-1"></i>Total Despesas</div>
                     <div class="value" id="total-despesas">R$ 0,00</div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-1">
                     <div class="label"><i class="bi bi-cash-stack me-1"></i>Renda Mensal</div>
                     <div class="value" id="renda-mensal">R$ 0,00</div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-2">
                     <div class="label"><i class="bi bi-target me-1"></i>Objetivo Financeiro</div>
                     <div class="value" id="objetivo">Não definido</div>
                 </div>
             </div>
 
             <!-- ===== GRÁFICOS DE RELATÓRIO ===== -->
-            <div class="charts-section">
+            <div class="charts-section anim-on-scroll">
                 <div class="charts-section-header">
                     <h2><i class="bi bi-bar-chart-line"></i>Relatório Financeiro</h2>
                     <div class="chart-filters">
@@ -189,6 +190,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
 
     </div>
 
+    <script src="../../../assets/js/scroll-animations.js?v=<?= time() ?>"></script>
     <script src="../../../api/utils/shared.js?v=<?= time() ?>"></script>
     <script src="../../../api/utils/nav.js?v=<?= time() ?>"></script>
     <script src="../../../assets/style/js/ui.js?v=<?= time() ?>"></script>
@@ -203,6 +205,8 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
 
     <?php include '../../components/footer.php'; ?>
     <script src="../../../assets/style/js/legal-modals.js"></script>
+    <script src="../../../api/chat/enviar.js?v=<?= time() ?>"></script>
+    <script src="../../../api/chat/ui.js?v=<?= time() ?>"></script>
 
 </body>
 

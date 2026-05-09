@@ -26,6 +26,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <link rel="stylesheet" href="../../../assets/style/css/internal-pages.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/despesas.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/footer.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../../assets/style/css/chat.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -38,7 +39,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <div class="main-container">
 
         <!-- ===== HEADER ===== -->
-        <div class="page-header">
+        <div class="page-header fade-in-up">
             <h1><i class="bi bi-credit-card-2-back"></i>Minhas Despesas</h1>
             <p>Registre e acompanhe seus gastos mensais.</p>
         </div>
@@ -47,22 +48,22 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
 
         <!-- ===== CARDS DE RESUMO ===== -->
         <div class="summary-cards">
-            <div class="summary-card">
+            <div class="summary-card fade-in-up delay-1">
                 <div class="label"><i class="bi bi-cash-stack me-1"></i>Total do Mês</div>
                 <div class="value" id="total-mes">R$ 0,00</div>
             </div>
-            <div class="summary-card">
+            <div class="summary-card fade-in-up delay-2">
                 <div class="label"><i class="bi bi-arrow-repeat me-1"></i>Despesas Fixas</div>
                 <div class="value" id="total-fixos">R$ 0,00</div>
             </div>
-            <div class="summary-card">
+            <div class="summary-card fade-in-up delay-3">
                 <div class="label"><i class="bi bi-list-ol me-1"></i>Registros</div>
                 <div class="value neutral" id="total-registros">0</div>
             </div>
         </div>
 
         <!-- ===== FORM NOVA DESPESA ===== -->
-        <div class="form-card">
+        <div class="form-card fade-in-up delay-2">
             <h2><i class="bi bi-plus-circle"></i>Registrar Nova Despesa</h2>
             <form id="form-despesa">
                 <div class="row g-3 mb-3">
@@ -202,6 +203,8 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
 
     <?php include '../../components/footer.php'; ?>
     <script src="../../../assets/style/js/legal-modals.js"></script>
+    <script src="../../../api/chat/enviar.js?v=<?= time() ?>"></script>
+    <script src="../../../api/chat/ui.js?v=<?= time() ?>"></script>
 
 </body>
 

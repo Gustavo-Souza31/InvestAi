@@ -192,7 +192,7 @@
 
 .section-body {
     padding: 24px 26px;
-    transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.35s ease;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     max-height: 600px;
     opacity: 1;
     overflow: hidden;

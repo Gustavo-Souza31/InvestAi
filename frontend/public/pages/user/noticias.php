@@ -127,6 +127,7 @@ $ultimaJson = json_encode($ultimaAtualiz);
     <link rel="stylesheet" href="../../../assets/style/css/internal-pages.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/noticias.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/footer.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../../assets/style/css/chat.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -148,13 +149,13 @@ $ultimaJson = json_encode($ultimaAtualiz);
     <div class="main-container" style="max-width:1200px;">
 
         <!-- ===== HEADER ===== -->
-        <div class="page-header">
+        <div class="page-header fade-in-up">
             <h1><i class="bi bi-newspaper"></i>Notícias & IA</h1>
             <p>Curadoria inteligente de notícias financeiras com análise de impacto personalizada para o seu perfil.</p>
         </div>
 
         <!-- ===== HERO ===== -->
-        <div class="hero-ia">
+        <div class="hero-ia fade-in-up delay-1">
             <div class="hero-ia-content">
                 <div class="hero-badge"><i class="bi bi-stars"></i>Powered by Gemini AI</div>
                 <h2>Radar Econômico Personalizado</h2>
@@ -216,7 +217,7 @@ $ultimaJson = json_encode($ultimaAtualiz);
         <div class="categoria-filters" id="categoria-filters"></div>
 
         <!-- ===== GRID DE NOTÍCIAS ===== -->
-        <div class="noticias-grid" id="noticias-grid">
+        <div class="noticias-grid anim-on-scroll" id="noticias-grid">
             <?php if ($totalNoticias === 0): ?>
                 <div class="empty-state" style="grid-column:1/-1">
                     <i class="bi bi-newspaper"></i>
@@ -235,10 +236,13 @@ $ultimaJson = json_encode($ultimaAtualiz);
         <span class="toast-msg"></span>
     </div>
 
+    <script src="../../../assets/js/scroll-animations.js?v=<?= time() ?>"></script>
     <script src="../../../api/noticias/noticias.js?v=<?= time() ?>"></script>
 
     <?php include '../../components/footer.php'; ?>
     <script src="../../../assets/style/js/legal-modals.js"></script>
+    <script src="../../../api/chat/enviar.js?v=<?= time() ?>"></script>
+    <script src="../../../api/chat/ui.js?v=<?= time() ?>"></script>
 </body>
 
 </html>

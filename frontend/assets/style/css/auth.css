@@ -46,6 +46,8 @@ body::after {
     backdrop-filter: blur(12px);
     position: relative;
     z-index: 1;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    animation: fadeInUp 0.5s ease-out forwards;
 }
 
 /* Logo */

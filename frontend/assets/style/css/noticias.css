@@ -176,9 +176,9 @@
 
 .noticia-card:hover {
     background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.12);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(255, 255, 255, 0.03);
+    border-color: rgba(179, 157, 219, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(179, 157, 219, 0.07);
 }
 
 .noticia-card .card-header-row {

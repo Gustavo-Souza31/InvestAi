@@ -58,7 +58,8 @@
 
 /* Utilitários de animação */
 .fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
 }
 
 .fade-in-up.delay-1 {
@@ -74,15 +75,62 @@
 }
 
 .fade-in {
-    animation: fadeIn 0.5s ease-out;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards;
 }
 
 .slide-down {
-    animation: slideDown 0.3s ease;
+    animation: slideDown 0.3s ease forwards;
 }
 
 .modal-in {
-    animation: modalIn 0.25s ease;
+    animation: modalIn 0.25s ease forwards;
+}
+
+/* Variante: desliza da esquerda */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-in-left {
+    opacity: 0;
+    animation: fadeInLeft 0.5s ease-out forwards;
+}
+
+/* Variante: cresce suavemente */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.scale-in {
+    opacity: 0;
+    animation: scaleIn 0.35s ease-out forwards;
+}
+
+/* Scroll-triggered: ativado por IntersectionObserver */
+.anim-on-scroll {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.anim-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Progress bar animation */

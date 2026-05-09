@@ -34,7 +34,8 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     <link rel="stylesheet" href="../../../assets/style/css/navbar.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/internal-pages.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/dashboard.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="../../../assets/style/css/sugestoes.css?v=<?= time() ?>">>
+    <link rel="stylesheet" href="../../../assets/style/css/sugestoes.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../../../assets/style/css/chat.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../../../assets/style/css/footer.css?v=<?= time() ?>">
 
     <?php if ($is_first_login): ?>
@@ -54,7 +55,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     <div class="main-container">
 
         <!-- ===== HEADER ===== -->
-        <div class="page-header">
+        <div class="page-header fade-in-up">
             <h1><i class="bi bi-speedometer2"></i>Dashboard</h1>
             <p>Visão geral de suas finanças.</p>
         </div>
@@ -70,27 +71,27 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
 
             <!-- ===== CARDS DE RESUMO ===== -->
             <div class="summary-cards">
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-1">
                     <div class="label"><i class="bi bi-wallet2 me-1"></i>Saldo Atual</div>
                     <div class="value" id="saldo-atual">R$ 0,00</div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-2">
                     <div class="label"><i class="bi bi-percent me-1"></i>Saldo Inicial</div>
                     <div class="value" id="saldo-inicial">R$ 0,00</div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-1">
                     <div class="label"><i class="bi bi-arrow-up-right me-1"></i>Total Ganhos</div>
                     <div class="value" id="total-ganhos">R$ 0,00</div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-2">
                     <div class="label"><i class="bi bi-arrow-down-left me-1"></i>Total Despesas</div>
                     <div class="value" id="total-despesas">R$ 0,00</div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-1">
                     <div class="label"><i class="bi bi-cash-stack me-1"></i>Renda Mensal</div>
                     <div class="value" id="renda-mensal">R$ 0,00</div>
                 </div>
-                <div class="summary-card">
+                <div class="summary-card fade-in-up delay-2">
                     <div class="label"><i class="bi bi-target me-1"></i>Objetivo Financeiro</div>
                     <div class="value" id="objetivo">Não definido</div>
                 </div>
@@ -101,7 +102,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
         </div>
 
         <!-- ===== SEÇÃO PLANEJAMENTO DE ORÇAMENTO ===== -->
-        <div class="orcamento-section" id="orcamento-section">
+        <div class="orcamento-section anim-on-scroll" id="orcamento-section">
             <div class="orcamento-header">
                 <div>
                     <h2><i class="bi bi-pie-chart-fill"></i>Planejamento de Orçamento</h2>
@@ -123,7 +124,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
         </div>
 
         <!-- ===== SEÇÃO SUGESTÕES DE ECONOMIA ===== -->
-        <div id="sugestoes-container"></div>
+        <div id="sugestoes-container" class="anim-on-scroll"></div>
 
         </div><!-- /#content -->
 
@@ -189,6 +190,7 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
         </div>
     </div>
 
+    <script src="../../../assets/js/scroll-animations.js?v=<?= time() ?>"></script>
     <script src="../../../api/utils/shared.js?v=<?= time() ?>"></script>
     <script src="../../../api/utils/nav.js?v=<?= time() ?>"></script>
     <script src="../../../assets/style/js/ui.js?v=<?= time() ?>"></script>
@@ -205,6 +207,8 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     <script src="../../../api/sugestoes/render.js?v=<?= time() ?>"></script>
     <script src="../../../api/sugestoes/regenerar.js?v=<?= time() ?>"></script>
     <script src="../../../api/sugestoes/read.js?v=<?= time() ?>"></script>
+    <script src="../../../api/chat/enviar.js?v=<?= time() ?>"></script>
+    <script src="../../../api/chat/ui.js?v=<?= time() ?>"></script>
 
     <?php if ($is_first_login): ?>
         <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
