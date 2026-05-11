@@ -26,30 +26,132 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $usuario_id = $_SESSION['usuario_id'];
 $periodo = $_GET['periodo'] ?? '3m';
+$categoria_id = isset($_GET['categoria_id']) && $_GET['categoria_id'] !== '' ? intval($_GET['categoria_id']) : null;
+$ano = isset($_GET['ano']) && $_GET['ano'] !== '' ? intval($_GET['ano']) : null;
+$intervalo = isset($_GET['intervalo']) && $_GET['intervalo'] !== '' ? intval($_GET['intervalo']) : null;
+$tipo_comparacao = $_GET['comparacao'] ?? 'yoy'; // yoy ou consecutivo
 
-// Definir período e tipo de agrupamento baseado no parâmetro
-$hoje = date('Y-m-d');
+// Definir período e tipo de agrupamento
+$data_inicio = '';
+$data_fim = '';
+$data_inicio_ant = '';
+$data_fim_ant = '';
+$agrupamento = 'mes';
 
-switch ($periodo) {
-    case '1m':
-        $data_inicio = date('Y-m-d', strtotime('-1 month'));
-        $agrupamento = 'dia';
-        break;
-    case '3m':
-        $data_inicio = date('Y-m-d', strtotime('-3 months'));
-        $agrupamento = 'mes';
-        break;
-    case '6m':
-        $data_inicio = date('Y-m-d', strtotime('-6 months'));
-        $agrupamento = 'mes';
-        break;
-    case '1a':
-        $data_inicio = date('Y-m-d', strtotime('-1 year'));
-        $agrupamento = 'mes';
-        break;
-    default:
-        $data_inicio = date('Y-m-d', strtotime('-3 months'));
-        $agrupamento = 'mes';
+if ($ano && $intervalo !== null) {
+    // Usar datas exatas baseadas na seleção do usuário
+    switch ($periodo) {
+        case '1m':
+            $data_inicio = sprintf('%04d-%02d-01', $ano, $intervalo);
+            $data_fim = date('Y-m-t', strtotime($data_inicio));
+            
+            if ($tipo_comparacao === 'yoy') {
+                $data_inicio_ant = date('Y-m-01', strtotime($data_inicio . ' -1 year'));
+                $data_fim_ant = date('Y-m-t', strtotime($data_fim . ' -1 year'));
+            } else {
+                $data_inicio_ant = date('Y-m-01', strtotime($data_inicio . ' -1 month'));
+                $data_fim_ant = date('Y-m-t', strtotime($data_inicio_ant));
+            }
+            
+            $agrupamento = 'dia';
+            break;
+        case '3m':
+            $mes_inicio = ($intervalo - 1) * 3 + 1;
+            $data_inicio = sprintf('%04d-%02d-01', $ano, $mes_inicio);
+            $mes_fim = $intervalo * 3;
+            $data_fim = date('Y-m-t', strtotime(sprintf('%04d-%02d-01', $ano, $mes_fim)));
+            
+            if ($tipo_comparacao === 'yoy') {
+                $data_inicio_ant = date('Y-m-01', strtotime($data_inicio . ' -1 year'));
+                $data_fim_ant = date('Y-m-t', strtotime($data_fim . ' -1 year'));
+            } else {
+                $data_inicio_ant = date('Y-m-01', strtotime($data_inicio . ' -3 months'));
+                $data_fim_ant = date('Y-m-t', strtotime($data_inicio_ant . ' +2 months'));
+            }
+            
+            $agrupamento = 'mes';
+            break;
+        case '6m':
+            $mes_inicio = ($intervalo - 1) * 6 + 1;
+            $data_inicio = sprintf('%04d-%02d-01', $ano, $mes_inicio);
+            $mes_fim = $intervalo * 6;
+            $data_fim = date('Y-m-t', strtotime(sprintf('%04d-%02d-01', $ano, $mes_fim)));
+            
+            if ($tipo_comparacao === 'yoy') {
+                $data_inicio_ant = date('Y-m-01', strtotime($data_inicio . ' -1 year'));
+                $data_fim_ant = date('Y-m-t', strtotime($data_fim . ' -1 year'));
+            } else {
+                $data_inicio_ant = date('Y-m-01', strtotime($data_inicio . ' -6 months'));
+                $data_fim_ant = date('Y-m-t', strtotime($data_inicio_ant . ' +5 months'));
+            }
+            
+            $agrupamento = 'mes';
+            break;
+        case '1a':
+            $data_inicio = sprintf('%04d-01-01', $ano);
+            $data_fim = sprintf('%04d-12-31', $ano);
+            
+            $data_inicio_ant = sprintf('%04d-01-01', $ano - 1);
+            $data_fim_ant = sprintf('%04d-12-31', $ano - 1);
+            
+            $agrupamento = 'mes';
+            break;
+    }
+} else {
+    // Fallback para datas relativas (comportamento original)
+    $data_fim = date('Y-m-d');
+    switch ($periodo) {
+        case '1m':
+            $data_inicio = date('Y-m-d', strtotime('-1 month'));
+            if ($tipo_comparacao === 'yoy') {
+                $data_inicio_ant = date('Y-m-d', strtotime($data_inicio . ' -1 year'));
+                $data_fim_ant = date('Y-m-d', strtotime('-1 day -1 year'));
+            } else {
+                $data_inicio_ant = date('Y-m-d', strtotime($data_inicio . ' -1 month'));
+                $data_fim_ant = date('Y-m-d', strtotime($data_inicio . ' -1 day'));
+            }
+            $agrupamento = 'dia';
+            break;
+        case '3m':
+            $data_inicio = date('Y-m-d', strtotime('-3 months'));
+            if ($tipo_comparacao === 'yoy') {
+                $data_inicio_ant = date('Y-m-d', strtotime($data_inicio . ' -1 year'));
+                $data_fim_ant = date('Y-m-d', strtotime('-1 day -1 year'));
+            } else {
+                $data_inicio_ant = date('Y-m-d', strtotime($data_inicio . ' -3 months'));
+                $data_fim_ant = date('Y-m-d', strtotime($data_inicio . ' -1 day'));
+            }
+            $agrupamento = 'mes';
+            break;
+        case '6m':
+            $data_inicio = date('Y-m-d', strtotime('-6 months'));
+            if ($tipo_comparacao === 'yoy') {
+                $data_inicio_ant = date('Y-m-d', strtotime($data_inicio . ' -1 year'));
+                $data_fim_ant = date('Y-m-d', strtotime('-1 day -1 year'));
+            } else {
+                $data_inicio_ant = date('Y-m-d', strtotime($data_inicio . ' -6 months'));
+                $data_fim_ant = date('Y-m-d', strtotime($data_inicio . ' -1 day'));
+            }
+            $agrupamento = 'mes';
+            break;
+        case '1a':
+            $data_inicio = date('Y-m-d', strtotime('-1 year'));
+            // 1 ano YoY ou Consecutivo é sempre 1 ano antes
+            $data_inicio_ant = date('Y-m-d', strtotime($data_inicio . ' -1 year'));
+            $data_fim_ant = date('Y-m-d', strtotime($data_inicio . ' -1 day'));
+            $agrupamento = 'mes';
+            break;
+        default:
+            $data_inicio = date('Y-m-d', strtotime('-3 months'));
+            if ($tipo_comparacao === 'yoy') {
+                $data_inicio_ant = date('Y-m-d', strtotime($data_inicio . ' -1 year'));
+                $data_fim_ant = date('Y-m-d', strtotime('-1 day -1 year'));
+            } else {
+                $data_inicio_ant = date('Y-m-d', strtotime($data_inicio . ' -3 months'));
+                $data_fim_ant = date('Y-m-d', strtotime($data_inicio . ' -1 day'));
+            }
+            $agrupamento = 'mes';
+    }
 }
 
 
@@ -69,7 +171,7 @@ if ($agrupamento === 'dia') {
 }
 
 $stmt = $conexao->prepare($sql_ganhos);
-$stmt->bind_param("iss", $usuario_id, $data_inicio, $hoje);
+$stmt->bind_param("iss", $usuario_id, $data_inicio, $data_fim);
 $stmt->execute();
 $result_ganhos = $stmt->get_result();
 
@@ -81,22 +183,28 @@ while ($row = $result_ganhos->fetch_assoc()) {
 
 
 // ===== DESPESAS agrupadas =====
+$filtro_categoria = $categoria_id ? " AND categoria_id = ?" : "";
+
 if ($agrupamento === 'dia') {
     $sql_despesas = "SELECT DATE(data_despesa) AS periodo, COALESCE(SUM(valor), 0) AS total
                      FROM despesas
-                     WHERE usuario_id = ? AND data_despesa BETWEEN ? AND ?
+                     WHERE usuario_id = ? AND data_despesa BETWEEN ? AND ?$filtro_categoria
                      GROUP BY DATE(data_despesa)
                      ORDER BY periodo ASC";
 } else {
     $sql_despesas = "SELECT DATE_FORMAT(data_despesa, '%Y-%m') AS periodo, COALESCE(SUM(valor), 0) AS total
                      FROM despesas
-                     WHERE usuario_id = ? AND data_despesa BETWEEN ? AND ?
+                     WHERE usuario_id = ? AND data_despesa BETWEEN ? AND ?$filtro_categoria
                      GROUP BY DATE_FORMAT(data_despesa, '%Y-%m')
                      ORDER BY periodo ASC";
 }
 
 $stmt = $conexao->prepare($sql_despesas);
-$stmt->bind_param("iss", $usuario_id, $data_inicio, $hoje);
+if ($categoria_id) {
+    $stmt->bind_param("issi", $usuario_id, $data_inicio, $data_fim, $categoria_id);
+} else {
+    $stmt->bind_param("iss", $usuario_id, $data_inicio, $data_fim);
+}
 $stmt->execute();
 $result_despesas = $stmt->get_result();
 
@@ -120,7 +228,7 @@ $meses_pt = [
 if ($agrupamento === 'dia') {
     // Gerar cada dia do período
     $current = new DateTime($data_inicio);
-    $end = new DateTime($hoje);
+    $end = new DateTime($data_fim);
     $end->modify('+1 day');
     
     while ($current < $end) {
@@ -137,7 +245,7 @@ if ($agrupamento === 'dia') {
     // Gerar cada mês do período
     $current = new DateTime($data_inicio);
     $current->modify('first day of this month');
-    $end = new DateTime($hoje);
+    $end = new DateTime($data_fim);
     $end->modify('first day of next month');
     
     while ($current < $end) {
@@ -160,6 +268,24 @@ $total_ganhos = array_sum($ganhos_data);
 $total_despesas = array_sum($despesas_data);
 
 
+// ===== Consultar totais do período anterior =====
+$sql_ganhos_ant = "SELECT COALESCE(SUM(valor), 0) AS total FROM ganhos WHERE usuario_id = ? AND data_ganho BETWEEN ? AND ?";
+$stmt = $conexao->prepare($sql_ganhos_ant);
+$stmt->bind_param("iss", $usuario_id, $data_inicio_ant, $data_fim_ant);
+$stmt->execute();
+$total_ganhos_ant = floatval($stmt->get_result()->fetch_assoc()['total']);
+
+$sql_despesas_ant = "SELECT COALESCE(SUM(valor), 0) AS total FROM despesas WHERE usuario_id = ? AND data_despesa BETWEEN ? AND ?" . $filtro_categoria;
+$stmt = $conexao->prepare($sql_despesas_ant);
+if ($categoria_id) {
+    $stmt->bind_param("issi", $usuario_id, $data_inicio_ant, $data_fim_ant, $categoria_id);
+} else {
+    $stmt->bind_param("iss", $usuario_id, $data_inicio_ant, $data_fim_ant);
+}
+$stmt->execute();
+$total_despesas_ant = floatval($stmt->get_result()->fetch_assoc()['total']);
+
+
 echo json_encode([
     'status' => 'success',
     'periodo' => $periodo,
@@ -167,6 +293,8 @@ echo json_encode([
     'ganhos' => $ganhos_data,
     'despesas' => $despesas_data,
     'total_ganhos' => $total_ganhos,
-    'total_despesas' => $total_despesas
+    'total_despesas' => $total_despesas,
+    'total_ganhos_anterior' => $total_ganhos_ant,
+    'total_despesas_anterior' => $total_despesas_ant
 ]);
 ?>
