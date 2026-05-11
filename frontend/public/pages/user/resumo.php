@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 // Redirecionar se não logado
@@ -97,13 +97,31 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
 
             <!-- ===== GRÁFICOS DE RELATÓRIO ===== -->
             <div class="charts-section anim-on-scroll">
-                <div class="charts-section-header">
+                <div class="charts-section-header" style="flex-wrap: wrap; gap: 15px;">
                     <h2><i class="bi bi-bar-chart-line"></i>Relatório Financeiro</h2>
-                    <div class="chart-filters">
-                        <button class="chart-filter-btn" data-periodo="1m">Mensal</button>
-                        <button class="chart-filter-btn active" data-periodo="3m">Trimestral</button>
-                        <button class="chart-filter-btn" data-periodo="6m">Semestral</button>
-                        <button class="chart-filter-btn" data-periodo="1a">Anual</button>
+                    <div class="d-flex flex-column align-items-end gap-2">
+                        <div class="chart-filters">
+                            <button class="chart-filter-btn active" data-periodo="1m">Mensal</button>
+                            <button class="chart-filter-btn" data-periodo="3m">Trimestral</button>
+                            <button class="chart-filter-btn" data-periodo="6m">Semestral</button>
+                            <button class="chart-filter-btn" data-periodo="1a">Anual</button>
+                        </div>
+                        <div class="d-flex gap-2 align-items-center mt-1">
+                            <div class="d-flex gap-2" id="container-intervalos" style="display: none;">
+                                <select id="select-intervalo" class="form-select form-select-sm" style="background-color: var(--bg-dark); color: var(--text-main); border-color: rgba(255,255,255,0.1); width: auto;">
+                                </select>
+                                <select id="select-ano" class="form-select form-select-sm" style="background-color: var(--bg-dark); color: var(--text-main); border-color: rgba(255,255,255,0.1); width: auto;">
+                                </select>
+                            </div>
+                            <select id="filtro-categoria-dashboard" class="form-select form-select-sm" style="background-color: var(--bg-dark); color: var(--text-main); border-color: rgba(255,255,255,0.1); width: auto; min-width: 200px;">
+                                <option value="">Resumo Geral (Ganhos vs Despesas)</option>
+                                <option value="todas">Visão por Categorias (Apenas Despesas)</option>
+                            </select>
+                            <select id="tipo-comparacao" class="form-select form-select-sm" style="background-color: var(--bg-dark); color: var(--text-main); border-color: rgba(255,255,255,0.1); width: auto;">
+                                <option value="yoy">Comparar: Ano a Ano</option>
+                                <option value="consecutivo">Comparar: Período Anterior</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -112,14 +130,14 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
                     <div class="comp-box" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 15px 20px; border-radius: 12px; flex: 1; min-width: 280px;">
                         <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Ganhos no Período</span>
                         <div class="d-flex align-items-center gap-3 mt-1">
-                            <span style="font-size: 1.4rem; font-weight: 700; color: var(--text-main);" id="total-ganhos">R$ 0,00</span>
+                            <span style="font-size: 1.4rem; font-weight: 700; color: var(--text-main);" id="comp-total-ganhos">R$ 0,00</span>
                             <div id="badge-ganhos" class="comparison-badge" style="font-size: 0.85rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: rgba(0,0,0,0.2);"></div>
                         </div>
                     </div>
                     <div class="comp-box" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 15px 20px; border-radius: 12px; flex: 1; min-width: 280px;">
                         <span style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Despesas no Período</span>
                         <div class="d-flex align-items-center gap-3 mt-1">
-                            <span style="font-size: 1.4rem; font-weight: 700; color: var(--text-main);" id="total-despesas">R$ 0,00</span>
+                            <span style="font-size: 1.4rem; font-weight: 700; color: var(--text-main);" id="comp-total-despesas">R$ 0,00</span>
                             <div id="badge-despesas" class="comparison-badge" style="font-size: 0.85rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; background: rgba(0,0,0,0.2);"></div>
                         </div>
                     </div>
@@ -137,18 +155,23 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
                     <!-- Conteúdo dos gráficos -->
                     <div id="charts-content"
                         style="display:none; grid-column: 1 / -1; grid-template-columns: 1.6fr 1fr; gap: 20px;">
-                        <!-- Gráfico de Linha -->
+                        <!-- Gráfico de Linha ou Lista de Categorias -->
                         <div class="chart-container">
-                            <h3><i class="bi bi-graph-up"></i> Evolução Mensal</h3>
-                            <div class="chart-canvas-wrapper">
+                            <h3 id="linha-titulo"><i class="bi bi-graph-up"></i> Evolução Mensal</h3>
+                            <div class="chart-canvas-wrapper" id="linha-wrapper-geral">
                                 <canvas id="grafico-linha"></canvas>
+                            </div>
+                            
+                            <!-- Lista de Categorias (oculta por padrão) -->
+                            <div id="linha-wrapper-cat" style="display: none; height: 100%; min-height: 300px; max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                                <div id="cat-lista-container"></div>
                             </div>
                         </div>
 
                         <!-- Gráfico de Rosca -->
                         <div class="chart-container">
-                            <h3><i class="bi bi-pie-chart"></i> Proporção</h3>
-                            <div class="chart-doughnut-wrapper">
+                            <h3 id="rosca-titulo"><i class="bi bi-pie-chart"></i> Proporção</h3>
+                            <div class="chart-doughnut-wrapper" id="rosca-wrapper-geral">
                                 <div class="chart-doughnut-canvas">
                                     <canvas id="grafico-rosca"></canvas>
                                 </div>
@@ -181,10 +204,23 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
                                     <div class="chart-saldo positivo" id="saldo-periodo">R$ 0,00</div>
                                 </div>
                             </div>
+                            
+                            <!-- Wrapper alternativo para rosca de categorias -->
+                            <div id="rosca-wrapper-cat" style="display: none; width: 100%; position: relative; margin-top: 20px;">
+                                <div class="chart-doughnut-canvas" style="height: 300px;">
+                                    <canvas id="grafico-categoria"></canvas>
+                                </div>
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Total</div>
+                                    <div id="cat-total-geral" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">R$ 0,00</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
 
         </div>
 
