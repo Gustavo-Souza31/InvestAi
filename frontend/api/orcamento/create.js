@@ -24,7 +24,7 @@
     try {
         const payload = { categoria_id: parseInt(categoriaValue), limite };
 
-        const resposta = await fetch('/inventai/backend/api/orcamento/create.php', {
+        const resposta = await fetch(BASE_PATH + '/backend/api/orcamento/create.php', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify(payload),

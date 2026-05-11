@@ -12,7 +12,7 @@ async function confirmarDeleteOrcamento() {
     const categoriaId = document.getElementById('orc-delete-id').value;
 
     try {
-        const resposta = await fetch('/inventai/backend/api/orcamento/delete.php', {
+        const resposta = await fetch(BASE_PATH + '/backend/api/orcamento/delete.php', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ categoria_id: parseInt(categoriaId) }),

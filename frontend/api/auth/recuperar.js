@@ -13,7 +13,7 @@
     formData.append('nova_senha', novaSenha);
 
     try {
-        const response = await fetch('/inventai/backend/api/auth/recuperar.php', {
+        const response = await fetch(BASE_PATH + '/backend/api/auth/recuperar.php', {
             method: 'POST',
             body: formData
         });

@@ -9,7 +9,7 @@ let graficoLinha = null;
 let graficoRosca = null;
 
 async function carregarRelatorio(periodo) {
-    const resultado = await fetch(`/inventai/backend/api/dashboard/relatorio.php?periodo=${periodo}`);
+    const resultado = await fetch(`${BASE_PATH}/backend/api/dashboard/relatorio.php?periodo=${periodo}`);
     return await resultado.json();
 }
 

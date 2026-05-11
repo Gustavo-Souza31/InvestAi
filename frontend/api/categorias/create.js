@@ -9,7 +9,7 @@ async function adicionarCategoria() {
     }
 
     try {
-        const response = await fetch('/inventai/backend/api/categorias/create.php', {
+        const response = await fetch(BASE_PATH + '/backend/api/categorias/create.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome, tipo })

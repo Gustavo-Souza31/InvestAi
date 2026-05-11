@@ -167,7 +167,7 @@ function renderExplicacao(data) {
 /* ─── Busca explicação na IA ────────────────────────────────────────────────── */
 async function buscarExplicacao(n) {
     try {
-        const resp = await fetch('/inventai/backend/api/noticias/explain.php', {
+        const resp = await fetch(BASE_PATH + '/backend/api/noticias/explain.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ noticia: n })

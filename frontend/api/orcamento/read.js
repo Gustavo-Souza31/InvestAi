@@ -1,12 +1,12 @@
 ﻿async function listarOrcamentos() {
-    const resposta = await fetch('/inventai/backend/api/orcamento/read.php');
+    const resposta = await fetch(BASE_PATH + '/backend/api/orcamento/read.php');
     return await resposta.json();
 }
 
 // ─── Carregar categorias de despesa e popular o select ──────────────────────
 async function carregarCategoriasNoModal() {
     try {
-        const res = await fetch('/inventai/backend/api/categorias/read.php?tipo=despesa');
+        const res = await fetch(BASE_PATH + '/backend/api/categorias/read.php?tipo=despesa');
         const data = await res.json();
 
         if (data.status === 'success' && data.categorias) {

@@ -21,7 +21,7 @@ if (!isset($_SESSION['usuario_id'])) {
 $backendRoot = dirname(dirname(dirname(__DIR__)));   // backend/
 $lockFile    = $backendRoot . '/logs/cron_news.lock';
 $logFile     = $backendRoot . '/logs/cron_news.log';
-$phpBin      = '/Applications/MAMP/bin/php/php8.4.1/bin/php';
+$phpBin      = PHP_BINARY; // Detecta automaticamente o binário PHP (funciona em XAMPP, MAMP, etc.)
 $cronFile    = __DIR__ . '/cron_news.php';
 
 if (file_exists($lockFile)) {
@@ -37,7 +37,12 @@ if (file_exists($lockFile)) {
     }
 }
 
-$cmd    = escapeshellarg($phpBin) . ' ' . escapeshellarg($cronFile) . ' >> ' . escapeshellarg($logFile) . ' 2>&1 &';
+// Executa em background de forma cross-platform (Windows usa start /B, Unix usa &)
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $cmd = 'start /B "" ' . escapeshellarg($phpBin) . ' ' . escapeshellarg($cronFile) . ' >> ' . escapeshellarg($logFile) . ' 2>&1';
+} else {
+    $cmd = escapeshellarg($phpBin) . ' ' . escapeshellarg($cronFile) . ' >> ' . escapeshellarg($logFile) . ' 2>&1 &';
+}
 $output = [];
 exec($cmd, $output);
 

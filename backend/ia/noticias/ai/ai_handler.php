@@ -27,22 +27,21 @@ function call_ai_service($prompt, $options = []) {
     $max_tokens   = $options['max_tokens']   ?? 2000;
 
     $gemini_key = get_gemini_api_key();
-    
-    // Fallback hardcoded (não recomendado, mas adicionado conforme o pedido)
-    if (!$gemini_key) {
-        $gemini_key = 'AIzaSyAXXrib7MKwGIxBw47I_wNyoYcbcouGF5Q';
-    }
 
     if ($gemini_key) {
         $gemini_res = call_gemini_api($prompt, $gemini_key, $temperature, $max_tokens);
         if ($gemini_res) {
             return ['success' => true, 'source' => 'gemini', 'data' => $gemini_res];
         }
+        return [
+            'success' => false,
+            'message' => 'Serviço de IA Indisponível (Gemini API falhou).'
+        ];
     }
 
     return [
         'success' => false,
-        'message' => 'Serviço de IA Indisponível (Gemini API falhou).'
+        'message' => 'Chave GEMINI_API_KEY não configurada no .env.'
     ];
 }
 

@@ -7,7 +7,7 @@ async function carregarSugestoes(mes = null, ano = null) {
         }
 
         const response = await fetch(
-            `/inventai/backend/api/sugestoes/economia.php?mes=${mes}&ano=${ano}`,
+            `${BASE_PATH}/backend/api/sugestoes/economia.php?mes=${mes}&ano=${ano}`,
             { method: 'GET', headers: { 'Content-Type': 'application/json' } }
         );
 

@@ -30,7 +30,7 @@
 
     try {
         // Envia para backend
-        const resposta = await fetch('/inventai/backend/api/auth/cadastro.php', {
+        const resposta = await fetch(BASE_PATH + '/backend/api/auth/cadastro.php', {
             method: 'POST',
             body: formData
         });

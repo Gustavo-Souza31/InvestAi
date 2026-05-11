@@ -226,7 +226,7 @@ btnAtualizar.addEventListener('click', async () => {
     showToast('Iniciando busca de novas notícias...', 'info');
 
     try {
-        const resp = await fetch('/inventai/backend/ia/noticias/logic/run_cron.php', { credentials: 'include' });
+        const resp = await fetch(BASE_PATH + '/backend/ia/noticias/logic/run_cron.php', { credentials: 'include' });
         const data = await resp.json();
 
         if (data.status === 'iniciado') {
@@ -262,7 +262,7 @@ btnAnalisar.addEventListener('click', async () => {
     iaPanelEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     try {
-        const resp = await fetch('/inventai/backend/api/noticias/analyze.php', {
+        const resp = await fetch(BASE_PATH + '/backend/api/noticias/analyze.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',

@@ -1,4 +1,4 @@
-﻿const API_BASE = '/inventai/backend/api/perfil';
+﻿const API_BASE = BASE_PATH + '/backend/api/perfil';
 let dadosPerfil = null;
 let temAlteracoes = false;
 

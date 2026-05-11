@@ -44,7 +44,7 @@ const LogsAdmin = (() => {
         });
 
         try {
-            const res  = await fetch(`/inventai/backend/api/admin/logs.php?${params}`);
+            const res  = await fetch(`${BASE_PATH}/backend/api/admin/logs.php?${params}`);
             const data = await res.json();
 
             if (data.status !== 'success') {

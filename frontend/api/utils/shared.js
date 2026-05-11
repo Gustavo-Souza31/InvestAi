@@ -1,3 +1,16 @@
+// ===== BASE PATH DINÂMICO =====
+// Detecta automaticamente o caminho até a pasta "inventai" na URL.
+// Funciona independente de onde o projeto estiver (ex: /gustavo/inventai, /joao/inventai)
+const BASE_PATH = (() => {
+    const path = window.location.pathname;
+    const idx = path.indexOf('/inventai');
+    if (idx !== -1) {
+        return path.substring(0, idx + '/inventai'.length);
+    }
+    // Fallback: tenta encontrar na URL completa
+    return '/inventai';
+})();
+
 // Formata número para padrão de dinheiro brasileiro (R$ 1.234,56)
 function formatMoney(valor) {
     return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });

@@ -30,7 +30,7 @@ const UsuariosAdmin = (() => {
         });
 
         try {
-            const res  = await fetch(`/inventai/backend/api/admin/usuarios.php?${params}`);
+            const res  = await fetch(`${BASE_PATH}/backend/api/admin/usuarios.php?${params}`);
             const data = await res.json();
 
             if (data.status !== 'success') {
@@ -88,7 +88,7 @@ const UsuariosAdmin = (() => {
         btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
         try {
-            const res  = await fetch('/inventai/backend/api/admin/toggle_usuario.php', {
+            const res  = await fetch(BASE_PATH + '/backend/api/admin/toggle_usuario.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ usuario_id: usuarioId, ativo: novoAtivo }),

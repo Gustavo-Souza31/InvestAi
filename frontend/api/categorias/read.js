@@ -2,7 +2,7 @@ let categoriasAtuais = [];
 
 async function carregarCategorias(tipo, selectIds) {
     try {
-        const response = await fetch(`/inventai/backend/api/categorias/read.php?tipo=${tipo}`);
+        const response = await fetch(`${BASE_PATH}/backend/api/categorias/read.php?tipo=${tipo}`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
 

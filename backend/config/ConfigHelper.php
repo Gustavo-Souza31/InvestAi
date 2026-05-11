@@ -60,7 +60,7 @@ class ConfigHelper
      */
     public static function get($key, $default = null)
     {
-        return $_ENV[$key] ?? getenv($key) ?: $default;
+        return $_ENV[$key] ?? (getenv($key) ?: $default);
     }
 }
 ?>

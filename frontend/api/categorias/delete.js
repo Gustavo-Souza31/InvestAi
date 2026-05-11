@@ -6,7 +6,7 @@ function excluirCategoria(id) {
 async function confirmarExclusaoCategoria() {
     const id = document.getElementById('delete-categoria-id').value;
     try {
-        const response = await fetch('/inventai/backend/api/categorias/delete.php', {
+        const response = await fetch(BASE_PATH + '/backend/api/categorias/delete.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id })

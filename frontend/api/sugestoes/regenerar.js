@@ -9,7 +9,7 @@ async function regenerarSugestao(sugestaoId, cardElement) {
 
     try {
         const response = await fetch(
-            `/inventai/backend/api/sugestoes/regenerar.php`,
+            `${BASE_PATH}/backend/api/sugestoes/regenerar.php`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

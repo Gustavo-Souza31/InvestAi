@@ -14,7 +14,7 @@ async function salvarEdicaoCategoria() {
     }
 
     try {
-        const response = await fetch('/inventai/backend/api/categorias/update.php', {
+        const response = await fetch(BASE_PATH + '/backend/api/categorias/update.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id, nome: novoNome })

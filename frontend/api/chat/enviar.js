@@ -7,7 +7,7 @@ async function enviarMensagemChat(texto, mes = null, ano = null, historico = [])
         historico: historico,
     };
 
-    const response = await fetch('/inventai/backend/api/chat/mensagem.php', {
+    const response = await fetch(BASE_PATH + '/backend/api/chat/mensagem.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

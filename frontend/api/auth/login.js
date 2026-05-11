@@ -17,7 +17,7 @@
 
     try {
         // Envia para backend
-        const resposta = await fetch('/inventai/backend/api/auth/login.php', {
+        const resposta = await fetch(BASE_PATH + '/backend/api/auth/login.php', {
             method: 'POST',
             body: formData
         });

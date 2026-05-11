@@ -142,7 +142,6 @@ ESTRUTURA JSON (Respeite as aspas):
 PROMPT;
 
     // ─── Sistema de Cache ───────────────────────────────────────────────────────
-    require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/backend/database/conexao.php';
     
     // Gerar uma chave única para esta notícia (Assinatura)
     $noticia_id_cache = md5($noticia['titulo'] . ($noticia['fonte'] ?? ''));

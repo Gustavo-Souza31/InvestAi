@@ -25,7 +25,7 @@
 
     try {
         // Envia para backend
-        const resposta = await fetch('/inventai/backend/api/ganhos/update.php', {
+        const resposta = await fetch(BASE_PATH + '/backend/api/ganhos/update.php', {
             method: 'POST',
             body: formData
         });
