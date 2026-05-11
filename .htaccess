@@ -1,0 +1,10 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# Remove qualquer Content-Security-Policy injetado pelo Apache global
+Header always unset Content-Security-Policy
+Header always unset X-Content-Security-Policy
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+</IfModule>
