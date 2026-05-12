@@ -6,22 +6,22 @@ async function carregarSugestoes(mes = null, ano = null) {
             ano = ano || hoje.getFullYear();
         }
 
-        const response = await fetch(
+        const resposta = await fetch(
             `${BASE_PATH}/backend/api/sugestoes/economia.php?mes=${mes}&ano=${ano}`,
             { method: 'GET', headers: { 'Content-Type': 'application/json' } }
         );
 
-        if (!response.ok) {
-            console.error(`Erro ao carregar sugestões: ${response.status}`);
+        if (!resposta.ok) {
+            console.error(`Erro ao carregar sugestões: ${resposta.status}`);
             return [];
         }
 
-        const data = await response.json();
+        const resultado = await resposta.json();
 
-        if (data.status === 'success') {
-            return data.sugestoes || [];
+        if (resultado.status === 'success') {
+            return resultado.sugestoes || [];
         } else {
-            console.error('Erro na resposta de sugestões:', data.mensagem);
+            console.error('Erro na resposta de sugestões:', resultado.mensagem);
             return [];
         }
     } catch (error) {

@@ -54,7 +54,7 @@ function renderizarOrcamentos(orcamentos) {
                     <button class="orc-edit-btn" onclick="abrirModalOrcamentoEdicao(${orc.categoria_id}, '${orc.categoria}', ${orc.limite})" title="Editar limite">
                         <i class="bi bi-pencil-fill"></i>
                     </button>
-                    <button class="orc-delete-btn" onclick="abrirModalDeleteOrcamento(${orc.categoria_id}, '${orc.categoria}')" title="Deletar orçamento">
+                    <button class="orc-delete-btn" onclick="abrirExclusaoOrcamento(${orc.categoria_id}, '${orc.categoria}')" title="Excluir orçamento">
                         <i class="bi bi-trash3"></i>
                     </button>
                 </div>
@@ -90,7 +90,6 @@ function abrirModalOrcamento() {
     _orcModo = 'create';
     document.getElementById('orc-categoria').value = '';
     document.getElementById('orc-limite').value    = '';
-    ocultarAlertOrc();
     carregarCategoriasNoModal();
     document.getElementById('orcamento-overlay').classList.add('active');
     document.getElementById('orc-categoria').focus();
@@ -109,20 +108,6 @@ function salvarOrcamento() {
     }
 }
 
-// ===== ALERT INTERNO DO MODAL =====
-
-function mostrarAlertOrc(msg, tipo) {
-    const el = document.getElementById('orc-alert');
-    el.textContent = msg;
-    el.className   = `orc-alert orc-alert-${tipo}`;
-    el.style.display = 'block';
-}
-
-function ocultarAlertOrc() {
-    const el = document.getElementById('orc-alert');
-    el.style.display = 'none';
-}
-
 // ===== INIT =====
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -131,10 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('orc-modal-delete')?.addEventListener('click', e => {
-        if (e.target.id === 'orc-modal-delete') fecharModalDeleteOrcamento();
+        if (e.target.id === 'orc-modal-delete') fecharExclusaoOrcamento();
     });
 
-    document.getElementById('orc-btn-confirm-delete')?.addEventListener('click', confirmarDeleteOrcamento);
+    document.getElementById('orc-btn-confirm-delete')?.addEventListener('click', excluirOrcamento);
 
     carregarOrcamentos();
 });

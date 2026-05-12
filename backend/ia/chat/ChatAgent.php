@@ -93,6 +93,9 @@ class ChatAgent {
         'deletar_todos_orcamentos',
         'deletar_despesa',
         'deletar_ganho',
+        'deletar_meta',
+        'deletar_todas_metas',
+        'deletar_aporte',
     ];
 
     /**
@@ -174,6 +177,26 @@ class ChatAgent {
         if ((str_contains($norm_ass, 'todos') || str_contains($norm_ass, 'todas')) && (str_contains($norm_ass, 'orcamento') || str_contains($norm_ass, 'orcamentos') || str_contains($norm_ass, 'budget'))) {
             error_log("ChatAgent: retomando confirmação pendente → deletar_todos_orcamentos");
             return ['name' => 'deletar_todos_orcamentos', 'args' => ['confirmado' => true]];
+        }
+
+        // Detecção de confirmação para metas e aportes
+        if ((str_contains($norm_ass, 'todas') || str_contains($norm_ass, 'todos')) && str_contains($norm_ass, 'meta')) {
+            error_log("ChatAgent: retomando confirmação pendente → deletar_todas_metas");
+            return ['name' => 'deletar_todas_metas', 'args' => ['confirmado' => true]];
+        }
+
+        if (str_contains($norm_ass, 'aporte')) {
+            error_log("ChatAgent: retomando confirmação pendente → deletar_aporte");
+            return ['name' => 'deletar_aporte', 'args' => ['meta_nome_busca' => '', 'confirmado' => true]];
+        }
+
+        if (str_contains($norm_ass, 'meta')) {
+            $nome_meta = '';
+            if (preg_match('/["\u{201C}\u{201D}](.+?)["\u{201C}\u{201D}]/u', $ultima_assistente_texto, $m)) {
+                $nome_meta = trim($m[1]);
+            }
+            error_log("ChatAgent: retomando confirmação pendente → deletar_meta nome='$nome_meta'");
+            return ['name' => 'deletar_meta', 'args' => ['nome_busca' => $nome_meta, 'confirmado' => true]];
         }
 
         // Para delete específico: tenta extrair o nome do item entre aspas da mensagem

@@ -9,7 +9,6 @@ require_once $root . '/backend/includes/Logger.php';
 require_once $root . '/backend/ia/chat/ChatAgent.php';
 
 
-// Autenticação
 $usuario_id    = requireAuth();
 $usuario_email = $_SESSION['usuario_email'] ?? null;
 
@@ -22,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 
-// Receber dados
+// Receber dados do body JSON
 $body     = json_decode(file_get_contents('php://input'), true);
 $mensagem = trim($body['mensagem'] ?? '');
 

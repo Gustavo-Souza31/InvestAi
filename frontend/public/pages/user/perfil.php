@@ -332,6 +332,8 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
     <script src="../../../api/utils/shared.js"></script>
     <script src="../../../api/utils/nav.js"></script>
     <script src="../../../assets/style/js/ui.js"></script>
+    <script src="../../../api/perfil/read.js?v=<?= time() ?>"></script>
+    <script src="../../../api/perfil/update.js?v=<?= time() ?>"></script>
     <script src="../../../api/perfil/perfil.js?v=<?= time() ?>"></script>
 
     <?php include '../../components/footer.php'; ?>

@@ -2,7 +2,6 @@
     _orcModo = 'edit';
     document.getElementById('orc-categoria').value = categoriaId;
     document.getElementById('orc-limite').value    = limite;
-    ocultarAlertOrc();
     carregarCategoriasNoModal();
     document.getElementById('orcamento-overlay').classList.add('active');
     document.getElementById('orc-limite').focus();
@@ -15,21 +14,17 @@ async function atualizarOrcamento() {
 
     // Validações
     if (categoriaValue === null || categoriaValue === undefined || categoriaValue === '') {
-        mostrarAlertOrc('Selecione uma categoria de despesa.', 'erro');
+        showAlert('Selecione uma categoria de despesa.', 'error');
         return;
     }
     if (limiteStr === '' || isNaN(limite)) {
-        mostrarAlertOrc('Informe um valor numérico válido.', 'erro');
+        showAlert('Informe um valor numérico válido.', 'error');
         return;
     }
     if (limite <= 0) {
-        mostrarAlertOrc('O limite deve ser maior que zero.', 'erro');
+        showAlert('O limite deve ser maior que zero.', 'error');
         return;
     }
-
-    const btn = document.getElementById('orc-btn-salvar');
-    btn.disabled = true;
-    btn.innerHTML = '<div class="orc-spinner"></div> Salvando...';
 
     try {
         const payload = { categoria_id: parseInt(categoriaValue), limite };
@@ -46,12 +41,10 @@ async function atualizarOrcamento() {
             showAlert('Limite atualizado com sucesso! 🎯', 'success');
             carregarOrcamentos();
         } else {
-            mostrarAlertOrc(resultado.message || 'Erro ao atualizar.', 'erro');
+            showAlert(resultado.message || 'Erro ao atualizar.', 'error');
         }
-    } catch (e) {
-        mostrarAlertOrc('Erro de conexão. Tente novamente.', 'erro');
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-check2-all me-1"></i>Salvar Limite';
+    } catch (error) {
+        console.error('Erro ao atualizar orçamento:', error);
+        showAlert('Erro de conexão. Tente novamente.', 'error');
     }
 }

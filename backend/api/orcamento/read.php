@@ -1,13 +1,12 @@
 <?php
 // backend/api/orcamento/read.php — Retorna orçamentos do mês com o gasto real de cada categoria
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 
 
-// Autenticação
 $usuario_id = requireAuth();
 
 
@@ -26,10 +25,10 @@ $stmt = $conexao->prepare(
 );
 $stmt->bind_param('iii', $usuario_id, $mes, $ano);
 $stmt->execute();
-$res = $stmt->get_result();
+$result = $stmt->get_result();
 
 $orcamentos = [];
-while ($row = $res->fetch_assoc()) {
+while ($row = $result->fetch_assoc()) {
     $orcamentos[$row['categoria_id']] = [
         'categoria_id' => $row['categoria_id'],
         'categoria'    => $row['categoria'],
@@ -59,9 +58,9 @@ $stmt2 = $conexao->prepare(
 );
 $stmt2->bind_param('iss', $usuario_id, $inicio, $fim);
 $stmt2->execute();
-$res2 = $stmt2->get_result();
+$result2 = $stmt2->get_result();
 
-while ($row2 = $res2->fetch_assoc()) {
+while ($row2 = $result2->fetch_assoc()) {
     $cat_id = $row2['categoria_id'];
     if (isset($orcamentos[$cat_id])) {
         $gasto = floatval($row2['total_gasto']);

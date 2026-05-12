@@ -1,4 +1,4 @@
-async function adicionarCategoria() {
+async function criarCategoria() {
     const input = document.getElementById('nova-categoria-nome');
     const nome = input.value.trim();
     const tipo = window.location.pathname.includes('ganhos') ? 'ganho' : 'despesa';
@@ -9,23 +9,26 @@ async function adicionarCategoria() {
     }
 
     try {
-        const response = await fetch(BASE_PATH + '/backend/api/categorias/create.php', {
+        const formData = new FormData();
+        formData.append('nome', nome);
+        formData.append('tipo', tipo);
+
+        const resposta = await fetch(BASE_PATH + '/backend/api/categorias/create.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, tipo })
+            body: formData
         });
 
-        const data = await response.json();
-        if (data.status === 'success') {
+        const resultado = await resposta.json();
+        if (resultado.status === 'success') {
             input.value = '';
-            showAlert(data.message, 'success');
+            showAlert(resultado.message || 'Categoria criada com sucesso!', 'success');
             const selectIds = tipo === 'ganho' ? ['ganho-categoria', 'edit-categoria'] : ['despesa-categoria', 'edit-categoria'];
             await carregarCategorias(tipo, selectIds);
         } else {
-            showAlert(data.message, 'error');
+            showAlert(resultado.message || 'Erro ao criar categoria.', 'error');
         }
     } catch (error) {
-        console.error('Erro ao adicionar categoria:', error);
+        console.error('Erro ao criar categoria:', error);
         showAlert('Erro de conexão.', 'error');
     }
 }

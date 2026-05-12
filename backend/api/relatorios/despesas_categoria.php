@@ -1,5 +1,5 @@
 <?php
-// backend/api/relatorios/despesas_categoria.php
+// backend/api/relatorios/despesas_categoria.php — Retorna despesas agrupadas por categoria no período
 session_start();
 header('Content-Type: application/json');
 
@@ -7,10 +7,13 @@ $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 
+
 $usuario_id = requireAuth();
 
-$periodo = $_GET['periodo'] ?? '3m';
-$ano = isset($_GET['ano']) && $_GET['ano'] !== '' ? intval($_GET['ano']) : null;
+
+// Receber parâmetros de query string
+$periodo   = $_GET['periodo'] ?? '3m';
+$ano       = isset($_GET['ano'])       && $_GET['ano']       !== '' ? intval($_GET['ano'])       : null;
 $intervalo = isset($_GET['intervalo']) && $_GET['intervalo'] !== '' ? intval($_GET['intervalo']) : null;
 
 $data_inicio = '';

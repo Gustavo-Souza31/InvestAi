@@ -1,6 +1,6 @@
 <?php
 // backend/api/orcamento/create.php — Salva (cria) o limite mensal de uma categoria de despesa
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
@@ -9,17 +9,16 @@ require_once $root . '/backend/includes/Logger.php';
 require_once $root . '/backend/validators/OrcamentoValidator.php';
 
 
-// Autenticação
 $usuario_id    = requireAuth();
 $usuario_email = $_SESSION['usuario_email'] ?? null;
 
 
 // Receber dados do body JSON
-$body       = json_decode(file_get_contents('php://input'), true);
-$validation = OrcamentoValidator::validate($body ?? []);
+$body = json_decode(file_get_contents('php://input'), true);
 
 
 // Validar dados contra regras de negócio
+$validation = OrcamentoValidator::validate($body ?? []);
 if (!$validation['valid']) {
     http_response_code(400);
     echo json_encode(['status' => 'error', 'message' => $validation['errors'][0]]);

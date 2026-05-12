@@ -1,14 +1,14 @@
-﻿function abrirModalDeleteOrcamento(categoriaId, categoriaNome) {
+function abrirExclusaoOrcamento(categoriaId, categoriaNome) {
     document.getElementById('orc-delete-id').value   = categoriaId;
     document.getElementById('orc-delete-nome').value = categoriaNome;
     document.getElementById('orc-modal-delete').classList.add('active');
 }
 
-function fecharModalDeleteOrcamento() {
+function fecharExclusaoOrcamento() {
     document.getElementById('orc-modal-delete').classList.remove('active');
 }
 
-async function confirmarDeleteOrcamento() {
+async function excluirOrcamento() {
     const categoriaId = document.getElementById('orc-delete-id').value;
 
     try {
@@ -20,14 +20,14 @@ async function confirmarDeleteOrcamento() {
         const resultado = await resposta.json();
 
         if (resultado.status === 'success') {
-            fecharModalDeleteOrcamento();
-            showAlert('Orçamento deletado com sucesso! 🗑️', 'success');
+            fecharExclusaoOrcamento();
+            showAlert(resultado.message || 'Orçamento excluído com sucesso!', 'success');
             carregarOrcamentos();
         } else {
-            showAlert(resultado.message || 'Erro ao deletar orçamento.', 'error');
+            showAlert(resultado.message || 'Erro ao excluir orçamento.', 'error');
         }
-    } catch (e) {
-        console.error('Erro ao deletar:', e);
-        showAlert('Erro de conexão ao deletar.', 'error');
+    } catch (error) {
+        console.error('Erro ao excluir orçamento:', error);
+        showAlert('Erro de conexão ao excluir.', 'error');
     }
 }

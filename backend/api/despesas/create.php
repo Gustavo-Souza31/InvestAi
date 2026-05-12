@@ -9,12 +9,11 @@ require_once $root . '/backend/includes/Logger.php';
 require_once $root . '/backend/validators/DespesasValidator.php';
 
 
-// Autenticação
 $usuario_id    = requireAuth();
 $usuario_email = $_SESSION['usuario_email'] ?? null;
 
 
-// Receber dados de POST (FormData)
+// Receber dados de FormData
 $data = [
     'descricao'    => $_POST['descricao']    ?? '',
     'valor'        => $_POST['valor']        ?? 0,

@@ -9,7 +9,6 @@ require_once $root . '/backend/includes/Logger.php';
 require_once $root . '/backend/ia/sugestoes_economia/EconomySuggestionGenerator.php';
 
 
-// Autenticação
 $usuario_id    = requireAuth();
 $usuario_email = $_SESSION['usuario_email'] ?? null;
 

@@ -7,7 +7,6 @@ require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 
 
-// Autenticação
 $usuario_id = requireAuth();
 
 

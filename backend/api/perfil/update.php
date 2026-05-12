@@ -7,6 +7,7 @@ require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/auth_middleware.php';
 require_once $root . '/backend/includes/Logger.php';
 
+
 $usuario_id    = requireAuth();
 $usuario_email = $_SESSION['usuario_email'] ?? null;
 

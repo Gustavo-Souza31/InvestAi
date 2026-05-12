@@ -7,7 +7,6 @@ $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
 
 
-// Autenticação
 if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401);
     echo json_encode([
@@ -78,7 +77,6 @@ $stmt_ganhos->execute();
 $total_ganhos = $stmt_ganhos->get_result()->fetch_assoc()['total'];
 
 
-// ===== Despesas =====
 // Calcular total de despesas para o período selecionado
 if ($periodo === 'all') {
     $stmt_despesas = $conexao->prepare(
@@ -97,8 +95,24 @@ $stmt_despesas->execute();
 $total_despesas = $stmt_despesas->get_result()->fetch_assoc()['total'];
 
 
-// Calcular saldo atual (saldo_inicial + ganhos - despesas)
-$saldo_atual = ($perfil['saldo_inicial'] ?? 0) + $total_ganhos - $total_despesas;
+// Calcular total de aportes para o período selecionado (saídas para metas)
+if ($periodo === 'all') {
+    $stmt_aportes = $conexao->prepare(
+        "SELECT COALESCE(SUM(valor), 0) as total FROM aportes WHERE usuario_id = ?"
+    );
+    $stmt_aportes->bind_param("i", $usuario_id);
+} else {
+    $stmt_aportes = $conexao->prepare(
+        "SELECT COALESCE(SUM(valor), 0) as total FROM aportes WHERE usuario_id = ? AND data_aporte BETWEEN ? AND ?"
+    );
+    $stmt_aportes->bind_param("iss", $usuario_id, $data_inicio, $hoje);
+}
+$stmt_aportes->execute();
+$total_aportes = $stmt_aportes->get_result()->fetch_assoc()['total'];
+
+
+// Calcular saldo atual (saldo_inicial + ganhos - despesas - aportes)
+$saldo_atual = ($perfil['saldo_inicial'] ?? 0) + $total_ganhos - $total_despesas - $total_aportes;
 
 
 // Retornar dados consolidados
@@ -113,7 +127,8 @@ echo json_encode([
         'renda_mensal' => floatval($perfil['renda_mensal'] ?? 0),
         'objetivo_financeiro' => $perfil['objetivo_financeiro'] ?? 'Não definido',
         'total_ganhos' => floatval($total_ganhos),
-        'total_despesas' => floatval($total_despesas)
+        'total_despesas' => floatval($total_despesas),
+        'total_aportes' => floatval($total_aportes)
     ]
 ]);
 ?>

@@ -1,7 +1,5 @@
-// Lógica do relatório de despesas por categoria
 let graficoCategoria = null;
 
-// Populate year dropdown
 function popularSelectAnos(selectAno) {
     const anoAtual = new Date().getFullYear();
     selectAno.innerHTML = '';
@@ -14,7 +12,6 @@ function popularSelectAnos(selectAno) {
     }
 }
 
-// Update specific period options based on the chosen type
 function atualizarSelectIntervalo(tipo, selectIntervalo, containerIntervalo) {
     selectIntervalo.innerHTML = '';
     let mostrar = true;
@@ -52,9 +49,9 @@ function atualizarSelectIntervalo(tipo, selectIntervalo, containerIntervalo) {
         }
     } else if (tipo === '1a') {
         mostrar = false;
-        // Mock a value so the API receives something numeric
+        // envia valor 1 para que a API receba um número válido
         const option = document.createElement('option');
-        option.value = 1; 
+        option.value = 1;
         option.selected = true;
         selectIntervalo.appendChild(option);
     }
@@ -83,20 +80,20 @@ async function carregarRelatorioCategoria() {
     emptyState.style.display = 'none';
 
     try {
-        const res = await fetch(`${BASE_PATH}/backend/api/relatorios/despesas_categoria.php?tipo=${tipo}&ano=${ano}&intervalo=${intervalo}`);
-        const dados = await res.json();
+        const resposta = await fetch(`${BASE_PATH}/backend/api/relatorios/despesas_categoria.php?tipo=${tipo}&ano=${ano}&intervalo=${intervalo}`);
+        const resultado = await resposta.json();
 
-        if (dados.status === 'success') {
+        if (resultado.status === 'success') {
             chartLoading.style.display = 'none';
-            if (dados.total_geral > 0) {
-                renderizarGraficoCategoria(dados);
-                renderizarListaCategoria(dados);
-                
+            if (resultado.total_geral > 0) {
+                renderizarGraficoCategoria(resultado);
+                renderizarListaCategoria(resultado);
+
                 const saldoEl = document.getElementById('cat-total-geral');
                 if (saldoEl) {
-                    saldoEl.textContent = formatMoney(dados.total_geral);
+                    saldoEl.textContent = formatMoney(resultado.total_geral);
                 }
-                
+
                 chartContent.style.display = 'grid';
             } else {
                 emptyState.style.display = 'block';
@@ -104,8 +101,8 @@ async function carregarRelatorioCategoria() {
         } else {
             chartLoading.innerHTML = '<p style="color: #f87171;">Erro ao carregar relatório</p>';
         }
-    } catch (e) {
-        console.error('Erro ao carregar relatório de categoria:', e);
+    } catch (error) {
+        console.error('Erro ao carregar relatório de categoria:', error);
         chartLoading.innerHTML = '<p style="color: #f87171;">Erro ao carregar relatório</p>';
     }
 }
@@ -120,7 +117,6 @@ function renderizarGraficoCategoria(dados) {
         graficoCategoria.destroy();
     }
 
-    // Gerar paleta de cores harmoniosa e moderna
     const baseColors = [
         '#ef9a9a', '#f48fb1', '#ce93d8', '#b39ddb', '#9fa8da', 
         '#90caf9', '#81d4fa', '#80cbc4', '#a5d6a7', '#c5e1a5', 
@@ -212,8 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!selectAno || !selectIntervalo || !btnGerar || botoes.length === 0) return;
 
     popularSelectAnos(selectAno);
-    
-    // Init state based on active button (e.g. Mensal)
+
     let activeBtn = document.querySelector('.btn-filtro-cat.active');
     if (!activeBtn) {
         activeBtn = botoes[0];
@@ -226,14 +221,10 @@ document.addEventListener('DOMContentLoaded', () => {
             botoes.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             atualizarSelectIntervalo(btn.dataset.periodo, selectIntervalo, containerIntervalo);
-            // Optionally, we could auto-generate on button click, but since we have a "Gerar Relatório" button, let's just wait for that.
-            // Or auto generate to save clicks:
-            // carregarRelatorioCategoria();
         });
     });
 
     btnGerar.addEventListener('click', carregarRelatorioCategoria);
 
-    // Initial load
     carregarRelatorioCategoria();
 });

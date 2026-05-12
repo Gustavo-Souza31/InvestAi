@@ -1,20 +1,11 @@
 <?php
-/**
- * relatorio.php — API de relatório financeiro agrupado por período
- * 
- * Parâmetros GET:
- *   periodo: 1s (1 semana), 3m (3 meses), 6m (6 meses), 1a (1 ano)
- * 
- * Retorna JSON com labels, ganhos[] e despesas[] para Chart.js
- */
-
+// backend/api/dashboard/relatorio.php — Retorna dados financeiros agrupados por período para gráficos
 session_start();
 header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
 
-// Verificar autenticação
 if (!isset($_SESSION['usuario_id'])) {
     http_response_code(401);
     echo json_encode([
@@ -182,7 +173,7 @@ while ($row = $result_ganhos->fetch_assoc()) {
 }
 
 
-// ===== DESPESAS agrupadas =====
+// Consultar despesas agrupadas por período
 $filtro_categoria = $categoria_id ? " AND categoria_id = ?" : "";
 
 if ($agrupamento === 'dia') {
@@ -214,7 +205,7 @@ while ($row = $result_despesas->fetch_assoc()) {
 }
 
 
-// ===== Gerar labels completos (preencher períodos sem dados com 0) =====
+// Gerar labels completos (preencher períodos sem dados com 0)
 $labels = [];
 $ganhos_data = [];
 $despesas_data = [];
@@ -263,12 +254,12 @@ if ($agrupamento === 'dia') {
 }
 
 
-// ===== Totais para gráfico de rosca =====
+// Calcular totais para gráfico de rosca
 $total_ganhos = array_sum($ganhos_data);
 $total_despesas = array_sum($despesas_data);
 
 
-// ===== Consultar totais do período anterior =====
+// Consultar totais do período anterior para comparação
 $sql_ganhos_ant = "SELECT COALESCE(SUM(valor), 0) AS total FROM ganhos WHERE usuario_id = ? AND data_ganho BETWEEN ? AND ?";
 $stmt = $conexao->prepare($sql_ganhos_ant);
 $stmt->bind_param("iss", $usuario_id, $data_inicio_ant, $data_fim_ant);

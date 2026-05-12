@@ -123,8 +123,30 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
             </div>
         </div>
 
+        <!-- ===== SEÇÃO METAS FINANCEIRAS ===== -->
+        <div class="orcamento-section anim-on-scroll" id="metas-section">
+            <div class="orcamento-header">
+                <div>
+                    <h2><i class="bi bi-flag-fill"></i>Metas</h2>
+                    <p class="orcamento-subtitle">Registre objetivos financeiros e acompanhe seu progresso.</p>
+                </div>
+                <button class="btn-orcamento" id="btn-abrir-meta" onclick="abrirModalMeta()">
+                    <i class="bi bi-plus-lg me-1"></i>Nova Meta
+                </button>
+            </div>
+
+            <div class="orcamento-grid" id="metas-grid">
+                <div class="orcamento-empty" id="metas-empty">
+                    <i class="bi bi-flag"></i>
+                    <p>Nenhuma meta cadastrada ainda.</p>
+                    <span>Clique em <strong>Nova Meta</strong> para começar!</span>
+                </div>
+            </div>
+        </div><!-- /.orcamento-section #metas-section -->
+
         <!-- ===== SEÇÃO SUGESTÕES DE ECONOMIA ===== -->
-        <div id="sugestoes-container" class="anim-on-scroll"></div>
+        <div id="sugestoes-container"></div>
+
 
         </div><!-- /#content -->
 
@@ -182,9 +204,121 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
             <input type="hidden" id="orc-delete-id">
             <input type="hidden" id="orc-delete-nome">
             <div class="d-flex gap-3 justify-content-center">
-                <button class="btn-cancel" onclick="fecharModalDeleteOrcamento()">Cancelar</button>
+                <button class="btn-cancel" onclick="fecharExclusaoOrcamento()">Cancelar</button>
                 <button class="btn-danger" id="orc-btn-confirm-delete">
                     <i class="bi bi-trash3 me-1"></i>Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL METAS (CREATE / EDIT) ===== -->
+    <div class="orcamento-overlay" id="meta-overlay">
+        <div class="orcamento-modal">
+            <div class="orcamento-modal-header">
+                <div class="orcamento-modal-title">
+                    <i class="bi bi-flag-fill"></i>
+                    <span>Nova Meta</span>
+                </div>
+                <button class="orcamento-close" onclick="fecharModalMeta()" title="Fechar">&times;</button>
+            </div>
+
+            <div class="orcamento-modal-body">
+                <form id="form-meta">
+                    <input type="hidden" id="meta-id">
+                    <div class="orcamento-form-group">
+                        <label for="meta-nome">NOME DA META</label>
+                        <div class="orcamento-input-wrap">
+                            <i class="bi bi-card-text"></i>
+                            <input type="text" id="meta-nome" placeholder="Ex: Viagem para Paris">
+                        </div>
+                    </div>
+                    <div class="orcamento-form-group">
+                        <label for="meta-valor">VALOR TOTAL (R$)</label>
+                        <div class="orcamento-input-wrap">
+                            <i class="bi bi-currency-dollar"></i>
+                            <input type="number" id="meta-valor" placeholder="Ex: 1000.00" min="0.01" step="0.01">
+                        </div>
+                        <span class="orcamento-hint">Valores zerados, negativos ou em texto não são aceitos.</span>
+                    </div>
+                    <div class="orcamento-form-group">
+                        <label for="meta-prazo">PRAZO (opcional)</label>
+                        <div class="orcamento-input-wrap">
+                            <i class="bi bi-calendar-date"></i>
+                            <input type="date" id="meta-prazo">
+                        </div>
+                    </div>
+                </form>
+                <div id="meta-alert" class="orc-alert" style="display:none;"></div>
+            </div>
+
+            <div class="orcamento-modal-footer">
+                <button class="orc-btn-cancelar" onclick="fecharModalMeta()">Cancelar</button>
+                <button class="orc-btn-salvar" id="meta-btn-salvar" onclick="salvarMeta()">
+                    <i class="bi bi-check2-all me-1"></i>Salvar Meta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL CONFIRMAR DELETE META ===== -->
+    <div class="orcamento-overlay" id="meta-modal-delete">
+        <div class="confirm-card">
+            <div class="icon-danger"><i class="bi bi-trash3"></i></div>
+            <h3>Remover meta?</h3>
+            <p>Esta ação deixará a meta inativa. Você pode recriá-la depois.</p>
+            <input type="hidden" id="meta-delete-id">
+            <input type="hidden" id="meta-delete-nome">
+            <div class="d-flex gap-3 justify-content-center">
+                <button class="btn-cancel" onclick="fecharExclusaoMeta()">Cancelar</button>
+                <button class="btn-danger" id="meta-btn-confirm-delete">
+                    <i class="bi bi-trash3 me-1"></i>Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL APORTAR ===== -->
+    <div class="orcamento-overlay" id="aporte-overlay">
+        <div class="orcamento-modal">
+            <div class="orcamento-modal-header">
+                <div class="orcamento-modal-title">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Registrar Aporte</span>
+                </div>
+                <button class="orcamento-close" onclick="fecharModalAporte()" title="Fechar">&times;</button>
+            </div>
+            <div class="orcamento-modal-body">
+                <form id="form-aporte">
+                    <input type="hidden" id="aporte-meta-id">
+                    <div class="aporte-meta-header">
+                        <i class="bi bi-flag-fill"></i>
+                        <span id="aporte-meta-nome"></span>
+                    </div>
+                    <div class="orcamento-form-group">
+                        <label for="aporte-valor">VALOR (R$)</label>
+                        <div class="orcamento-input-wrap">
+                            <i class="bi bi-currency-dollar"></i>
+                            <input type="number" id="aporte-valor" placeholder="Ex: 50.00" min="0.01" step="0.01">
+                        </div>
+                    </div>
+                    <div class="orcamento-form-group">
+                        <label for="aporte-data">DATA</label>
+                        <div class="orcamento-input-wrap">
+                            <i class="bi bi-calendar-date"></i>
+                            <input type="date" id="aporte-data" value="<?= date('Y-m-d') ?>">
+                        </div>
+                    </div>
+                </form>
+                <div id="aportes-lista-wrap" style="margin-top:12px;">
+                    <div id="aportes-lista"></div>
+                </div>
+                <div id="aporte-alert" class="orc-alert" style="display:none;"></div>
+            </div>
+            <div class="orcamento-modal-footer">
+                <button class="orc-btn-cancelar" onclick="fecharModalAporte()">Cancelar</button>
+                <button class="orc-btn-salvar" onclick="document.getElementById('form-aporte').dispatchEvent(new Event('submit'))">
+                    <i class="bi bi-check2-all me-1"></i>Registrar
                 </button>
             </div>
         </div>
@@ -204,6 +338,16 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
     <script src="../../../api/orcamento/create.js?v=<?= time() ?>"></script>
     <script src="../../../api/orcamento/update.js?v=<?= time() ?>"></script>
     <script src="../../../api/orcamento/delete.js?v=<?= time() ?>"></script>
+    <script src="../../../api/metas/read.js?v=<?= time() ?>"></script>
+    <script src="../../../api/metas/render.js?v=<?= time() ?>"></script>
+    <script src="../../../api/metas/create.js?v=<?= time() ?>"></script>
+    <script src="../../../api/metas/update.js?v=<?= time() ?>"></script>
+    <script src="../../../api/metas/delete.js?v=<?= time() ?>"></script>
+    <script src="../../../api/aportes/read.js?v=<?= time() ?>"></script>
+    <script src="../../../api/aportes/render.js?v=<?= time() ?>"></script>
+    <script src="../../../api/aportes/create.js?v=<?= time() ?>"></script>
+    <script src="../../../api/aportes/update.js?v=<?= time() ?>"></script>
+    <script src="../../../api/aportes/delete.js?v=<?= time() ?>"></script>
     <script src="../../../api/sugestoes/render.js?v=<?= time() ?>"></script>
     <script src="../../../api/sugestoes/regenerar.js?v=<?= time() ?>"></script>
     <script src="../../../api/sugestoes/read.js?v=<?= time() ?>"></script>

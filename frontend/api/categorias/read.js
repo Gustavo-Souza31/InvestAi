@@ -2,12 +2,12 @@ let categoriasAtuais = [];
 
 async function carregarCategorias(tipo, selectIds) {
     try {
-        const response = await fetch(`${BASE_PATH}/backend/api/categorias/read.php?tipo=${tipo}`);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
+        const resposta = await fetch(`${BASE_PATH}/backend/api/categorias/read.php?tipo=${tipo}`);
+        if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+        const resultado = await resposta.json();
 
-        if (data.status === 'success' && data.categorias) {
-            categoriasAtuais = data.categorias;
+        if (resultado.status === 'success' && resultado.categorias) {
+            categoriasAtuais = resultado.categorias;
 
             selectIds.forEach(id => {
                 const select = document.getElementById(id);

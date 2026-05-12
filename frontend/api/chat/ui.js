@@ -206,6 +206,8 @@
             || acao === 'consultar_gastos'
             || acao === 'consultar_orcamentos'
             || acao === 'consultar_ganhos'
+            || acao === 'consultar_metas'
+            || acao === 'consultar_aportes'
             || acao === 'resumo_dashboard'
         ) return;
 
@@ -241,6 +243,10 @@
                 const hoje = new Date();
                 inicializarSugestoes(hoje.getMonth() + 1, hoje.getFullYear());
             }
+        }
+
+        if (['criar_meta', 'editar_meta', 'deletar_meta', 'deletar_todas_metas', 'criar_aporte', 'editar_aporte', 'deletar_aporte'].includes(acao)) {
+            if (typeof carregarMetas === 'function') carregarMetas();
         }
     }
 

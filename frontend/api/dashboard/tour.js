@@ -87,10 +87,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             {
+                element: '#metas-section',
+                popover: {
+                    title: 'Metas Financeiras 🏁',
+                    description: 'Aqui você define objetivos de poupança! Crie metas como "viagem", "novo carro" ou "fundo de emergência" e registre aportes conforme economiza. Veja o progresso em tempo real!',
+                    side: 'top',
+                    align: 'center'
+                }
+            },
+            {
                 element: '#sugestoes-container',
                 popover: {
                     title: 'Sugestões da IA 💡',
                     description: 'Com base nos seus gastos, a IA gera sugestões personalizadas de economia todo mês. Clique em qualquer sugestão para atualizar a análise.',
+                    side: 'top',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#chat-fab',
+                popover: {
+                    title: 'Chat com IA 💬',
+                    description: 'No final da página, clique neste botão para abrir o assistente de IA. Tire suas dúvidas sobre finanças, metas, gastos e receba estratégias personalizadas. Faça perguntas livremente!',
                     side: 'top',
                     align: 'center'
                 }
@@ -106,6 +124,5 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     });
 
-    // Inicia o Tour!
     driverObj.drive();
 });

@@ -179,7 +179,40 @@ CREATE TABLE IF NOT EXISTS orcamento_categorias (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- =========================
--- 11. LOGS DE AUDITORIA
+-- 11. METAS FINANCEIRAS
+-- Usuário cria metas com prazo e valor; aportes registram depósitos
+-- =========================
+CREATE TABLE IF NOT EXISTS metas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    nome VARCHAR(255) NOT NULL,
+    valor_total DECIMAL(12,2) NOT NULL,
+    valor_guardado DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    prazo DATE NULL,
+    ativo TINYINT(1) NOT NULL DEFAULT 1,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_meta_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================
+-- 12. APORTES (depósitos para metas)
+-- Não são despesas, mas devem ser refletidos no Resumo Financeiro como saídas identificadas
+-- =========================
+CREATE TABLE IF NOT EXISTS aportes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    meta_id INT NOT NULL,
+    valor DECIMAL(12,2) NOT NULL,
+    data_aporte DATE NOT NULL DEFAULT (CURDATE()),
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_aporte_meta FOREIGN KEY (meta_id) REFERENCES metas(id) ON DELETE CASCADE,
+    CONSTRAINT fk_aporte_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================
+-- 13. LOGS DE AUDITORIA
 -- =========================
 CREATE TABLE IF NOT EXISTS logs (
     id            INT AUTO_INCREMENT PRIMARY KEY,

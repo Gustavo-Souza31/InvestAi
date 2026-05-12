@@ -1,6 +1,6 @@
 <?php
 // backend/api/orcamento/delete.php — Deleta o orçamento de uma categoria no mês/ano
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json');
 
 $root = dirname(dirname(dirname(dirname(__FILE__))));
 require_once $root . '/backend/database/conexao.php';
@@ -8,7 +8,6 @@ require_once $root . '/backend/includes/auth_middleware.php';
 require_once $root . '/backend/includes/Logger.php';
 
 
-// Autenticação
 $usuario_id    = requireAuth();
 $usuario_email = $_SESSION['usuario_email'] ?? null;
 

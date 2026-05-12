@@ -34,6 +34,9 @@ function renderizarSugestoes(sugestoes) {
     });
 
     container.appendChild(grid);
+
+    // força reflow para garantir que o IntersectionObserver detecte os elementos
+    void container.offsetHeight;
 }
 
 function renderizarSugestaoCard(sugestao) {
@@ -78,7 +81,6 @@ function renderizarSugestaoCard(sugestao) {
         await regenerarSugestao(sugestao.id, card);
     };
 
-    // Header compacto
     const headerContainer = document.createElement('div');
     headerContainer.style.display = 'flex';
     headerContainer.style.alignItems = 'flex-start';
@@ -156,7 +158,6 @@ function renderizarSugestaoCard(sugestao) {
         });
     }
 
-    // Overlay de hover
     const overlay = document.createElement('div');
     overlay.style.position = 'absolute';
     overlay.style.inset = '0';

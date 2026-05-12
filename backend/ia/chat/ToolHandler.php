@@ -27,6 +27,15 @@ require_once __DIR__ . '/tools/comum/CategoriaResolver.php';
 require_once __DIR__ . '/tools/comum/BulkDeleteHelper.php';
 require_once __DIR__ . '/tools/comum/Conversa.php';
 require_once __DIR__ . '/tools/comum/AcaoIndisponivel.php';
+require_once __DIR__ . '/tools/metas/CriarMeta.php';
+require_once __DIR__ . '/tools/metas/EditarMeta.php';
+require_once __DIR__ . '/tools/metas/DeletarMeta.php';
+require_once __DIR__ . '/tools/metas/ConsultarMetas.php';
+require_once __DIR__ . '/tools/metas/DeletarTodasMetas.php';
+require_once __DIR__ . '/tools/aportes/CriarAporte.php';
+require_once __DIR__ . '/tools/aportes/EditarAporte.php';
+require_once __DIR__ . '/tools/aportes/DeletarAporte.php';
+require_once __DIR__ . '/tools/aportes/ConsultarAportes.php';
 
 class ToolHandler {
 
@@ -50,6 +59,15 @@ class ToolHandler {
         'pedir_confirmacao'      => PedirConfirmacao::class,
         'conversa'            => Conversa::class,
         'acao_indisponivel'   => AcaoIndisponivel::class,
+        'criar_meta'          => CriarMeta::class,
+        'editar_meta'         => EditarMeta::class,
+        'deletar_meta'        => DeletarMeta::class,
+        'consultar_metas'     => ConsultarMetas::class,
+        'deletar_todas_metas' => DeletarTodasMetas::class,
+        'criar_aporte'        => CriarAporte::class,
+        'editar_aporte'       => EditarAporte::class,
+        'deletar_aporte'      => DeletarAporte::class,
+        'consultar_aportes'   => ConsultarAportes::class,
     ];
 
     /**

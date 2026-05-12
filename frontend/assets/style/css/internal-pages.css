@@ -232,7 +232,28 @@ body::after {
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, var(--danger-color), var(--danger-dark));
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: #888;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-danger:hover {
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.07);
+}
+
+.btn-save {
+    background: linear-gradient(135deg, var(--brand-accent), var(--brand-dark, #7c5cbf));
     border: none;
     border-radius: 10px;
     color: #fff;
@@ -244,10 +265,105 @@ body::after {
     display: flex;
     align-items: center;
     gap: 6px;
+    white-space: nowrap;
 }
 
-.btn-danger:hover {
-    opacity: 0.9;
+.btn-save:hover { opacity: 0.88; }
+
+/* Modal de categorias */
+.cat-add-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.cat-add-row .form-control {
+    flex: 1;
+}
+
+.cat-lista-wrap {
+    max-height: 280px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 2px;
+}
+
+.cat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    transition: border-color 0.2s;
+}
+
+.cat-item:hover { border-color: rgba(179, 157, 219, 0.2); }
+
+.cat-item-icon {
+    color: var(--brand-accent);
+    font-size: 0.8rem;
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+.cat-item-nome {
+    flex: 1;
+    font-size: 0.88rem;
+    color: #d0d4e0;
+    font-weight: 500;
+}
+
+.cat-item-actions {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.cat-edit-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #666;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.cat-edit-btn:hover {
+    background: rgba(179, 157, 219, 0.15);
+    border-color: rgba(179, 157, 219, 0.3);
+    color: var(--brand-accent);
+}
+
+.cat-delete-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #666;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.cat-delete-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
 }
 
 /* Alert de feedback */
@@ -292,7 +408,7 @@ body::after {
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(6px);
-    z-index: 200;
+    z-index: 1000;
     align-items: center;
     justify-content: center;
     padding: 20px;

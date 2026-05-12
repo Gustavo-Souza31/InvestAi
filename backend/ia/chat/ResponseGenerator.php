@@ -87,8 +87,26 @@ PROMPT;
                 $emoji = $saldo >= 0 ? '📈' : '📉';
                 $sinal = $saldo >= 0 ? '+' : '';
                 return "Resumo do mês: ganhos R$ {$resultado['total_ganhos']}, despesas R$ {$resultado['total_despesas']}, saldo {$sinal}R$ {$saldo}. {$emoji}";
+            case 'criar_meta':
+                return "Meta \"{$resultado['nome']}\" de R$ {$resultado['valor_total']} criada! 🎯";
+            case 'editar_meta':
+                return "Meta \"{$resultado['nome']}\" atualizada! ✏️";
+            case 'deletar_meta':
+                return "Meta \"{$resultado['nome']}\" removida! 🗑️";
+            case 'deletar_todas_metas':
+                return "Pronto! {$resultado['apagadas']} meta(s) apagada(s). 🗑️";
+            case 'consultar_metas':
+                return 'Aqui estão suas metas! 🎯';
+            case 'criar_aporte':
+                return "Aporte de R$ {$resultado['valor']} para \"{$resultado['meta_nome']}\" registrado! 💰";
+            case 'editar_aporte':
+                return "Aporte atualizado para R$ {$resultado['valor']} na meta \"{$resultado['meta_nome']}\"! ✏️";
+            case 'deletar_aporte':
+                return "Aporte de R$ {$resultado['valor']} na meta \"{$resultado['meta_nome']}\" removido! 🗑️";
+            case 'consultar_aportes':
+                return 'Aqui estão seus aportes! 💰';
             default:
-                return 'Posso ajudar com orçamentos, despesas, ganhos e consultas financeiras! 💬';
+                return 'Posso ajudar com orçamentos, despesas, ganhos, metas e consultas financeiras! 💬';
         }
     }
 }

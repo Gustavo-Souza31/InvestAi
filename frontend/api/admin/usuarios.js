@@ -98,12 +98,12 @@ const UsuariosAdmin = (() => {
             if (data.status === 'success') {
                 carregar();
             } else {
-                alert(data.message || 'Erro ao alterar usuário.');
+                showAlert(data.message || 'Erro ao alterar usuário.', 'error');
                 btn.disabled = false;
                 btn.textContent = novoAtivo ? 'Ativar' : 'Desativar';
             }
         } catch {
-            alert('Falha na requisição.');
+            showAlert('Falha na requisição.', 'error');
             btn.disabled = false;
         }
     }

@@ -9,17 +9,16 @@ require_once $root . '/backend/includes/Logger.php';
 require_once $root . '/backend/validators/CategoriasValidator.php';
 
 
-// Autenticação
 $usuario_id    = requireAuth();
 $usuario_email = $_SESSION['usuario_email'] ?? null;
 
 
 // Receber dados do body JSON ou FormData
-$input      = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-$validation = CategoriasValidator::validateCreate($input);
+$input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
 
 // Validar dados contra regras de negócio
+$validation = CategoriasValidator::validateCreate($input);
 if (!$validation['valid']) {
     echo json_encode(['status' => 'error', 'message' => $validation['errors'][0]]);
     exit;

@@ -8,7 +8,7 @@ async function regenerarSugestao(sugestaoId, cardElement) {
     cardElement.style.opacity = '0.7';
 
     try {
-        const response = await fetch(
+        const resposta = await fetch(
             `${BASE_PATH}/backend/api/sugestoes/regenerar.php`,
             {
                 method: 'POST',
@@ -17,7 +17,7 @@ async function regenerarSugestao(sugestaoId, cardElement) {
             }
         );
 
-        if (response.ok) {
+        if (resposta.ok) {
             const hoje = new Date();
             const mes = hoje.getMonth() + 1;
             const ano = hoje.getFullYear();

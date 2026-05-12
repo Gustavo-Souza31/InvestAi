@@ -1,16 +1,10 @@
-// Lógica dos gráficos do Dashboard (Chart.js)
-// Responsável por:
-// - Buscar dados do relatório por período e data específica
-// - Renderizar gráfico de linha (evolução) e rosca (proporção ou categoria)
-// - Gerenciar filtros de período, categoria e datas específicas
-
 let graficoLinha = null;
 let graficoRosca = null;
 let graficoCategoria = null;
 
 const mesesAno = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
-// ======================== API FETCHERS ========================
+// ===== API FETCHERS =====
 
 async function carregarRelatorio(periodo, categoriaId, ano, intervalo, comparacao) {
     let url = `${BASE_PATH}/backend/api/dashboard/relatorio.php?periodo=${periodo}`;
@@ -34,24 +28,24 @@ async function carregarRelatorioCategoriaAPI(periodo, ano, intervalo) {
 
 async function buscarCategoriasDespesa() {
     try {
-        const res = await fetch(`${BASE_PATH}/backend/api/categorias/read.php?tipo=despesa`);
-        const data = await res.json();
-        if (data.status === 'success') {
+        const resposta = await fetch(`${BASE_PATH}/backend/api/categorias/read.php?tipo=despesa`);
+        const resultado = await resposta.json();
+        if (resultado.status === 'success') {
             const select = document.getElementById('filtro-categoria-dashboard');
-            data.categorias.forEach(cat => {
+            resultado.categorias.forEach(cat => {
                 const option = document.createElement('option');
                 option.value = cat.id;
                 option.textContent = cat.nome;
                 select.appendChild(option);
             });
         }
-    } catch (e) {
-        console.error("Erro ao carregar categorias", e);
+    } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
     }
 }
 
 
-// ======================== FILTROS DE DATA ========================
+// ===== FILTROS DE DATA =====
 
 function atualizarSelectsData(periodo) {
     const container = document.getElementById('container-intervalos');
@@ -66,7 +60,6 @@ function atualizarSelectsData(periodo) {
     const anoAtual = hoje.getFullYear();
     const mesAtual = hoje.getMonth() + 1; // 1-12
 
-    // Preencher Anos
     if (selectAno.options.length === 0) {
         for (let i = anoAtual; i >= anoAtual - 5; i--) {
             const opt = document.createElement('option');
@@ -110,7 +103,7 @@ function atualizarSelectsData(periodo) {
 }
 
 
-// ======================== RENDERIZAÇÃO GERAL ========================
+// ===== RENDERIZAÇÃO GERAL =====
 
 function mostrarEmptyStateGeral(containerHtml, message) {
     const msg = message || "Nenhum dado encontrado para o período selecionado.";
@@ -193,10 +186,9 @@ function renderizarGraficoLinha(dados) {
 function renderizarGraficoRosca(dados) {
     const total = dados.total_ganhos + dados.total_despesas;
     
-    // Elementos da interface
     const container = document.getElementById('rosca-wrapper-geral');
-    
-    // Sempre atualizar legendas e saldo, mesmo zerado
+
+    // sempre atualizar legendas e saldo, mesmo quando total é zero
     const percGanhos = total > 0 ? ((dados.total_ganhos / total) * 100).toFixed(1) : 0;
     const percDespesas = total > 0 ? ((dados.total_despesas / total) * 100).toFixed(1) : 0;
     document.getElementById('legenda-ganhos-valor').textContent = formatMoney(dados.total_ganhos);
@@ -210,12 +202,10 @@ function renderizarGraficoRosca(dados) {
     saldoEl.className = saldo >= 0 ? 'chart-saldo positivo' : 'chart-saldo negativo';
 
     if (total === 0) {
-        // Se zerado, não renderiza a rosca no DOM
         const canvasWrapper = container.querySelector('.chart-doughnut-canvas');
         if(canvasWrapper) canvasWrapper.innerHTML = '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#555;">Sem dados</div>';
         return;
     } else {
-        // Restaurar canvas se foi removido
         const canvasWrapper = container.querySelector('.chart-doughnut-canvas');
         if(canvasWrapper) canvasWrapper.innerHTML = '<canvas id="grafico-rosca"></canvas>';
     }
@@ -292,7 +282,6 @@ function renderizarComparativo(dados) {
         badge.style.background = bgColor;
     };
 
-    // Atualiza os totais principais (que já estavam definidos em HTML)
     const elTotalGanhos = document.getElementById('comp-total-ganhos');
     const elTotalDespesas = document.getElementById('comp-total-despesas');
     
@@ -301,13 +290,12 @@ function renderizarComparativo(dados) {
 
     atualizarBadge('ganho', dados.total_ganhos, dados.total_ganhos_anterior, 'badge-ganhos');
     atualizarBadge('despesa', dados.total_despesas, dados.total_despesas_anterior, 'badge-despesas');
-    
-    // Mostra o container que estava oculto ou em estado inicial
+
     const compContainer = document.getElementById('comparative-summary-container');
     if (compContainer) compContainer.style.display = 'flex';
 }
 
-// ======================== RENDERIZAÇÃO CATEGORIAS ========================
+// ===== RENDERIZAÇÃO CATEGORIAS =====
 
 function renderizarGraficoCategoria(dados) {
     const container = document.getElementById('rosca-wrapper-cat');
@@ -394,7 +382,7 @@ function renderizarListaCategoria(dados) {
 }
 
 
-// ======================== ORQUESTRAÇÃO ========================
+// ===== ORQUESTRAÇÃO =====
 
 async function atualizarGraficos(periodoBtn) {
     const chartLoading = document.getElementById('charts-loading');
@@ -411,7 +399,6 @@ async function atualizarGraficos(periodoBtn) {
 
     try {
         if (categoriaVal === 'todas') {
-            // Modo Visão por Categorias
             document.getElementById('linha-wrapper-geral').style.display = 'none';
             document.getElementById('rosca-wrapper-geral').style.display = 'none';
             document.getElementById('linha-wrapper-cat').style.display = 'block';
@@ -433,7 +420,6 @@ async function atualizarGraficos(periodoBtn) {
                 mostrarEmptyStateGeral('linha-wrapper-cat', 'Não foi possível carregar as despesas.');
             }
         } else {
-            // Modo Resumo Geral ou Filtrado por 1 Categoria
             document.getElementById('linha-wrapper-cat').style.display = 'none';
             document.getElementById('rosca-wrapper-cat').style.display = 'none';
             document.getElementById('linha-wrapper-geral').style.display = 'block';
@@ -462,7 +448,6 @@ async function atualizarGraficos(periodoBtn) {
     }
 }
 
-// Inicializar
 async function inicializarGraficos() {
     await buscarCategoriasDespesa();
 
@@ -472,7 +457,6 @@ async function inicializarGraficos() {
     const selectIntervalo = document.getElementById('select-intervalo');
     const selectComparacao = document.getElementById('tipo-comparacao');
 
-    // Inicializa selects de data com o botão padrão (3 meses)
     atualizarSelectsData('3m');
 
     const changeListener = () => {
@@ -499,7 +483,6 @@ async function inicializarGraficos() {
     if (selectIntervalo) selectIntervalo.addEventListener('change', changeListener);
     if (selectComparacao) selectComparacao.addEventListener('change', changeListener);
 
-    // Carregar padrão inicial
     atualizarGraficos('3m');
 }
 
