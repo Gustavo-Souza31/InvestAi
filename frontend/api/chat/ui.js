@@ -30,6 +30,7 @@
     // ── Init ──────────────────────────────────────────────────────────────────
 
     function inicializarChat() {
+        if (document.getElementById('chat-fab')) return;
         carregarHistorico();
 
         // FAB (botão flutuante)
@@ -158,17 +159,20 @@
     // ── Envio ─────────────────────────────────────────────────────────────────
 
     async function onEnviar() {
-        if (enviando) return;
+        console.trace('[CHAT] onEnviar chamado');
+        if (enviando) {
+            console.log('[CHAT] bloqueado por enviando=true');
+            return;
+        }
 
         const input = document.getElementById('chat-input');
         const texto = input.value.trim();
 
         if (!texto) return;
 
+        enviando = true;
         input.value = '';
         adicionarMensagem(texto, 'usuario');
-
-        enviando = true;
         document.getElementById('chat-enviar').disabled = true;
         mostrarCarregando();
 

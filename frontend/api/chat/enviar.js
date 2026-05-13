@@ -19,6 +19,7 @@ async function enviarMensagemChat(texto, mes = null, ano = null, historico = [])
     }
 
     const data = await response.json();
+    console.log('[CHAT] data recebido:', data);
 
     if (data.status === 'success') {
         return { resposta: data.resposta, acao: data.acao, precisa_confirmacao: data.precisa_confirmacao ?? false };
