@@ -1,14 +1,13 @@
 // ===== BASE PATH DINÂMICO =====
-// Detecta automaticamente o caminho até a pasta "inventai" na URL.
-// Funciona independente de onde o projeto estiver (ex: /gustavo/inventai, /joao/inventai)
+// Detecta automaticamente o caminho raiz do projeto encontrando a pasta "/frontend".
 const BASE_PATH = (() => {
     const path = window.location.pathname;
-    const idx = path.indexOf('/inventai');
+    const idx = path.indexOf('/frontend');
     if (idx !== -1) {
-        return path.substring(0, idx + '/inventai'.length);
+        return path.substring(0, idx);
     }
-    // Fallback: tenta encontrar na URL completa
-    return '/inventai';
+    // Fallback: se não encontrar /frontend, assume raiz
+    return '';
 })();
 
 // Formata número para padrão de dinheiro brasileiro (R$ 1.234,56)
