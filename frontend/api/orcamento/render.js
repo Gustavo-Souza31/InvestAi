@@ -18,6 +18,38 @@ const ORC_ICONS = {
 // Modo atual do modal: 'create' para novo, 'edit' para edição
 let _orcModo = 'create';
 
+// ===== ALERTA DO MODAL =====
+
+/**
+ * Exibe mensagem de erro ou sucesso DENTRO do modal de orçamento.
+ * Diferente do showAlert() global que procura .alert-message (que não existe no dashboard),
+ * essa função usa o <div id="orc-alert"> que já está no HTML do modal.
+ *
+ * @param {string} msg  — Texto da mensagem
+ * @param {string} type — 'error' ou 'success'
+ */
+function showOrcAlert(msg, type = 'error') {
+    const el = document.getElementById('orc-alert');
+    if (!el) return;
+
+    el.textContent = msg;
+    el.className = 'orc-alert ' + type;
+    el.style.display = 'block';
+
+    // Esconde automaticamente após 5 segundos
+    clearTimeout(el._timeout);
+    el._timeout = setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+
+/** Esconde o alerta do modal de orçamento */
+function hideOrcAlert() {
+    const el = document.getElementById('orc-alert');
+    if (el) {
+        el.style.display = 'none';
+        el.textContent = '';
+    }
+}
+
 // ===== RENDER =====
 
 function renderizarOrcamentos(orcamentos) {
@@ -90,6 +122,7 @@ function abrirModalOrcamento() {
     _orcModo = 'create';
     document.getElementById('orc-categoria').value = '';
     document.getElementById('orc-limite').value    = '';
+    hideOrcAlert(); // Limpa erros de tentativas anteriores
     carregarCategoriasNoModal();
     document.getElementById('orcamento-overlay').classList.add('active');
     document.getElementById('orc-categoria').focus();

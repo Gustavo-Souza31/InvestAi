@@ -25,7 +25,7 @@ class Config
 
     // ==================== GEMINI API ====================
     const GEMINI_API_KEY = null;                                                  // Lê de .env
-    const GEMINI_MODEL = 'gemini-2.0-flash-lite';                                     // Modelo padrão
+    const GEMINI_MODEL = 'gemini-2.0-flash';                                         // Modelo padrão (deve bater com .env)
     const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
     const GEMINI_TIMEOUT = 35;                                                    // Segundos
     const GEMINI_MAX_RETRIES = 2;

@@ -1,7 +1,8 @@
-﻿function abrirModalOrcamentoEdicao(categoriaId, categoriaNome, limite) {
+function abrirModalOrcamentoEdicao(categoriaId, categoriaNome, limite) {
     _orcModo = 'edit';
     document.getElementById('orc-categoria').value = categoriaId;
     document.getElementById('orc-limite').value    = limite;
+    hideOrcAlert(); // Limpa erros de tentativas anteriores
     carregarCategoriasNoModal();
     document.getElementById('orcamento-overlay').classList.add('active');
     document.getElementById('orc-limite').focus();
@@ -12,17 +13,17 @@ async function atualizarOrcamento() {
     const limiteStr = document.getElementById('orc-limite').value.trim();
     const limite    = parseFloat(limiteStr);
 
-    // Validações
+    // Validações — usa showOrcAlert() para exibir erro DENTRO do modal
     if (categoriaValue === null || categoriaValue === undefined || categoriaValue === '') {
-        showAlert('Selecione uma categoria de despesa.', 'error');
+        showOrcAlert('Selecione uma categoria de despesa.', 'error');
         return;
     }
     if (limiteStr === '' || isNaN(limite)) {
-        showAlert('Informe um valor numérico válido.', 'error');
+        showOrcAlert('Informe um valor numérico válido.', 'error');
         return;
     }
     if (limite <= 0) {
-        showAlert('O limite deve ser maior que zero.', 'error');
+        showOrcAlert('O limite deve ser maior que zero.', 'error');
         return;
     }
 
@@ -41,10 +42,10 @@ async function atualizarOrcamento() {
             showAlert('Limite atualizado com sucesso! 🎯', 'success');
             carregarOrcamentos();
         } else {
-            showAlert(resultado.message || 'Erro ao atualizar.', 'error');
+            showOrcAlert(resultado.message || 'Erro ao atualizar.', 'error');
         }
     } catch (error) {
         console.error('Erro ao atualizar orçamento:', error);
-        showAlert('Erro de conexão. Tente novamente.', 'error');
+        showOrcAlert('Erro de conexão. Tente novamente.', 'error');
     }
 }

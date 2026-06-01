@@ -1,19 +1,19 @@
-﻿async function criarOrcamento() {
+async function criarOrcamento() {
     const categoriaValue = document.getElementById('orc-categoria').value;
     const limiteStr = document.getElementById('orc-limite').value.trim();
     const limite    = parseFloat(limiteStr);
 
-    // Validações
+    // Validações — usa showOrcAlert() para exibir erro DENTRO do modal
     if (categoriaValue === null || categoriaValue === undefined || categoriaValue === '') {
-        showAlert('Selecione uma categoria de despesa.', 'error');
+        showOrcAlert('Selecione uma categoria de despesa.', 'error');
         return;
     }
     if (limiteStr === '' || isNaN(limite)) {
-        showAlert('Informe um valor numérico válido.', 'error');
+        showOrcAlert('Informe um valor numérico válido.', 'error');
         return;
     }
     if (limite <= 0) {
-        showAlert('O limite deve ser maior que zero.', 'error');
+        showOrcAlert('O limite deve ser maior que zero.', 'error');
         return;
     }
 
@@ -32,10 +32,10 @@
             showAlert('Limite definido com sucesso! 🎯', 'success');
             carregarOrcamentos();
         } else {
-            showAlert(resultado.message || 'Erro ao salvar.', 'error');
+            showOrcAlert(resultado.message || 'Erro ao salvar.', 'error');
         }
     } catch (error) {
         console.error('Erro ao criar orçamento:', error);
-        showAlert('Erro de conexão. Tente novamente.', 'error');
+        showOrcAlert('Erro de conexão. Tente novamente.', 'error');
     }
 }

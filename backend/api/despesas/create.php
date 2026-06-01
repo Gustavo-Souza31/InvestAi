@@ -26,6 +26,7 @@ $data = [
 // Validar dados contra regras de negócio
 $validation = DespesasValidator::validate($data);
 if (!$validation['valid']) {
+    http_response_code(400);
     echo json_encode(['status' => 'error', 'message' => $validation['errors'][0]]);
     exit;
 }

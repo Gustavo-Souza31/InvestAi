@@ -1,4 +1,4 @@
-﻿async function criarGanho() {
+async function criarGanho() {
 
     // Coleta valores do formulário
     const descricao = document.getElementById('ganho-descricao').value.trim();
@@ -38,6 +38,7 @@
 
         // Sucesso: mostra alerta, limpa campos e recarrega lista
         showAlert(resultado.message || 'Ganho criado com sucesso!', 'success');
+        document.getElementById('ganho-descricao').value = '';
         document.getElementById('ganho-valor').value = '';
         document.getElementById('ganho-data').value = new Date().toISOString().split('T')[0];
         document.getElementById('ganho-fixo').checked = false;
