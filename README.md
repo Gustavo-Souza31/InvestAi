@@ -1,13 +1,13 @@
 # InventAI - Controle de Finanças com Sugestões de IA
 
-Um sistema web de controle de despesas e ganhos pessoais com recomendações inteligentes geradas por IA (Google Gemini API).
+Um sistema web de controle de despesas e ganhos pessoais com recomendações inteligentes geradas por IA local via Ollama.
 
 ## 🎯 Funcionalidades
 
 - **Controle de Despesas**: Registrar, visualizar, atualizar e deletar despesas
 - **Controle de Ganhos**: Registrar, visualizar, atualizar e deletar ganhos
 - **Autenticação**: Login seguro com sessões PHP
-- **Sugestões de IA**: Análise inteligente de despesas e recomendações de economia usando Google Gemini API
+- **Sugestões de IA**: Análise inteligente de despesas e recomendações de economia usando Ollama local
 - **Interface Web**: Frontend responsivo em JavaScript/HTML/CSS
 
 ## 🏗️ Arquitetura
@@ -23,7 +23,7 @@ backend/
 O backend utiliza:
 - **PHP 7.4+** com orientação a objetos
 - **MySQL** para persistência de dados
-- **Google Gemini API** para análise inteligente
+- **Ollama local** para análise inteligente
 - **Padrão MVC** com Controllers e Services
 
 ### Frontend
@@ -51,7 +51,7 @@ db/
 
 ### Pré-requisitos
 - XAMPP (Apache + PHP + MySQL)
-- Google Gemini API Key
+- Ollama rodando localmente em `http://localhost:11434`
 
 ### Passos
 
@@ -77,9 +77,9 @@ db/
    $senha = 'sua_senha';
    ```
 
-4. **Configure a Google Gemini API**
-   - Obtenha sua chave em: https://ai.google.dev/
-   - Adicione a chave no arquivo de configuração apropriado
+4. **Configure o Ollama local**
+   - Instale o Ollama e baixe o modelo configurado no projeto
+   - Verifique se o serviço está ativo em `http://localhost:11434`
 
 5. **Inicie o servidor**
    ```bash
@@ -133,7 +133,7 @@ inventai/
 
 ## 🤖 Sugestões de IA
 
-O sistema utiliza Google Gemini API para:
+O sistema utiliza Ollama local para:
 - Analisar padrões de gastos
 - Identificar áreas de economia
 - Propor categorização automática
@@ -166,7 +166,7 @@ fetch('backend/api/ai_suggestion.php', {
 **Backend:**
 - PHP 7.4+
 - MySQL 5.7+
-- Google Gemini API
+- Ollama local
 
 **Frontend:**
 - HTML5
@@ -216,7 +216,7 @@ Este projeto é de uso pessoal/educacional.
 Para dúvidas ou problemas:
 - Verifique se XAMPP está rodando
 - Confirme as credenciais do banco de dados
-- Teste a conexão com Google Gemini API
+- Teste a conexão com Ollama local
 - Verifique os logs de erro do Apache
 
 ---
