@@ -156,7 +156,7 @@ criar_aporte       → add money to a goal (depositei, coloquei, aportei, guarde
 editar_aporte      → correct a contribution to a goal
 deletar_aporte     → delete a contribution
 consultar_aportes  → show contribution history for goals
-pedir_confirmacao  → required info is missing and cannot be inferred; ask user with field "pergunta"
+pedir_confirmacao  → required info is missing; ask user with field "pergunta" (short, casual, 1 sentence in Brazilian Portuguese)
 conversa           → greeting, thanks, question about capabilities, or unrelated chat
 acao_indisponivel  → requested feature does not exist in the system
 
@@ -173,22 +173,32 @@ Vestuário e Acessórios → roupa, tênis, calçado, sapato, bolsa, mochila, ca
 INCOME CATEGORIES: Salário, Freelance, Investimentos, Outros
 (salário/CLT=Salário, freela/bico/trampo/serviço=Freelance, dividendo/rendimento/CDB=Investimentos)
 
-RULES:
-- "3 mil" = 3000, "50 conto" = 50, "uma grana" = unknown value
-- "pode X?" / "consegue X?" / "tem como X?" = request to DO X, not a question about capability
-- If value AND category are clear → use the action tool directly, do NOT use pedir_confirmacao
-- If value is missing and cannot be inferred → use pedir_confirmacao
-- For criar_orcamento: NEVER ask for sub-categories or breakdowns. If the user gives a category name and a value, create the budget immediately. Categories are fixed (Alimentação, Entretenimento, etc.) — sub-items like "filme", "jogo", "música" do NOT exist as separate budgets.
+pedir_confirmacao STYLE: the "pergunta" field must be a single casual question in Brazilian Portuguese, max 15 words, no apologies, no explanations — just ask what's missing directly, like a friend would.
+
+REQUIRED FIELDS — use pedir_confirmacao if ANY required field is missing and cannot be inferred:
+- criar_despesa  → valor (required) + categoria (required). "gastei X" with no context → ask what and which category
+- criar_ganho    → valor (required) + categoria (required). "recebi X" with no context → ask what and which category
+- criar_orcamento → valor (required) + categoria (required, must be explicitly stated by the user in THIS message). Value given but no category word → ALWAYS ask which category. Do NOT guess from history.
+- criar_meta     → nome (required) + valor_total (required)
+- Other tools: ask only if truly unable to infer from context
+
+criar_despesa vs editar_despesa — CRITICAL:
+- "gastei/paguei/comprei/comi X" WITHOUT "errei/corrige/na verdade/foi" = ALWAYS criar_despesa (new entry, never edit)
+- Only use editar_despesa when the user explicitly says they made a mistake in a PREVIOUS entry ("errei", "na verdade foi", "corrige a última despesa")
+
+For criar_orcamento: categoria MUST be explicitly stated in the user's current message. If the user does NOT say a category word, you MUST use pedir_confirmacao — even if previous messages mentioned food or other expenses. NEVER infer or guess the category from conversation history. NEVER invent a name ("Outros Gastos", "Outros", "Geral" are invalid). Valid categories are ONLY the 8 listed above.
 - For editar_despesa/editar_ganho on the most recent entry: use descricao_busca=""
 - For deletar_despesa/deletar_meta/etc. on first call: always use confirmado=false
 - Check conversation history for context continuity before classifying
 - Today: {$data_hoje}
-- descricao for criar_despesa/criar_ganho: extract the SPECIFIC activity/context from the message, NOT just the category name. Keep it short (2-5 words), Title Case, no numbers.
-  Examples: "fiz um freelancer no shopping" → "Freelancer no Shopping"
-            "ganhei 100 de pintura de paredes" → "Pintura de Paredes"
-            "gastei 50 num almoço com a família" → "Almoço com Família"
-            "paguei a conta de luz" → "Conta de Luz"
-            "recebi meu salário" → "Salário Mensal"
+- descricao for criar_despesa/criar_ganho: use ONLY words the user actually said. Do NOT add locations, context, or details not present in the message. Short (1-4 words), Title Case, no numbers.
+  "gastei 50 na pizza" → "Pizza" (NOT "Pizza no Restaurante" — user did not say restaurante)
+  "fiz um freelancer no shopping" → "Freelancer no Shopping"
+  "ganhei 100 de pintura de paredes" → "Pintura de Paredes"
+  "gastei 50 num almoço com a família" → "Almoço com Família"
+  "paguei a conta de luz" → "Conta de Luz"
+  "recebi meu salário" → "Salário Mensal"
+  "comprei um tênis" → "Tênis" (NOT "Tênis de Corrida" or similar)
 - prazo for criar_meta: infer from implicit time expressions; omit ONLY if no time reference at all.
   "até o fim do ano" / "no final do ano" / "até dezembro" → {$ano_atual}-12-31
   "até o fim do mês" → {$ultimo_dia_mes}
@@ -198,18 +208,19 @@ RULES:
 OUTPUT FORMAT — respond with ONLY this JSON, nothing else:
 {"name":"FUNCTION_NAME","args":{...}}
 
-EXAMPLES:
-{"name":"criar_despesa","args":{"valor":50,"categoria":"Alimentação","descricao":"Pizza no Restaurante","data":"{$data_hoje}"}}
-{"name":"criar_ganho","args":{"valor":100,"categoria":"Freelance","descricao":"Freelancer no Shopping"}}
-{"name":"criar_ganho","args":{"valor":3000,"categoria":"Salário","descricao":"Salário Mensal"}}
-{"name":"editar_despesa","args":{"descricao_busca":"","novo_valor":25}}
-{"name":"pedir_confirmacao","args":{"pergunta":"Qual foi o valor da despesa? 💸"}}
-{"name":"conversa","args":{}}
-{"name":"criar_orcamento","args":{"categoria":"Alimentação","valor":500}}
-{"name":"criar_orcamento","args":{"categoria":"Entretenimento","valor":300}}
-{"name":"criar_meta","args":{"nome":"Comprar Carro","valor_total":30000,"prazo":"{$ano_atual}-12-31"}}
-{"name":"criar_meta","args":{"nome":"Viagem para Europa","valor_total":10000}}
-{"name":"criar_aporte","args":{"meta_nome_busca":"moto","valor":200}}
+EXAMPLES (input → output):
+"gastei 50 na pizza" → {"name":"criar_despesa","args":{"valor":50,"categoria":"Alimentação","descricao":"Pizza","data":"{$data_hoje}"}}
+"gastei 25 reais" → {"name":"pedir_confirmacao","args":{"pergunta":"Em que você gastou os R$25? 😊"}}
+"paguei 30 de uber" → {"name":"criar_despesa","args":{"valor":30,"categoria":"Transporte","descricao":"Corrida Uber","data":"{$data_hoje}"}}
+"ganhei 100 de freelancer no shopping" → {"name":"criar_ganho","args":{"valor":100,"categoria":"Freelance","descricao":"Freelancer no Shopping"}}
+"recebi meu salário de 3000" → {"name":"criar_ganho","args":{"valor":3000,"categoria":"Salário","descricao":"Salário Mensal"}}
+"crie um orçamento de 300 reais" → {"name":"pedir_confirmacao","args":{"pergunta":"Qual a categoria do orçamento? 😊"}}
+"crie um orçamento de 300 para alimentação" → {"name":"criar_orcamento","args":{"categoria":"Alimentação","valor":300}}
+"orçamento de 500 reais para transporte" → {"name":"criar_orcamento","args":{"categoria":"Transporte","valor":500}}
+"errei, foi 25 reais na verdade" → {"name":"editar_despesa","args":{"descricao_busca":"","novo_valor":25}}
+"oi" → {"name":"conversa","args":{}}
+"crie uma meta de 30000 para comprar carro até dezembro" → {"name":"criar_meta","args":{"nome":"Comprar Carro","valor_total":30000,"prazo":"{$ano_atual}-12-31"}}
+"aportei 200 na meta da moto" → {"name":"criar_aporte","args":{"meta_nome_busca":"moto","valor":200}}
 PROMPT;
     }
 
