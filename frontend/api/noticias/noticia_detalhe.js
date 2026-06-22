@@ -182,7 +182,7 @@ async function buscarExplicacao(n) {
             let msgErro = data.mensagem || 'Erro desconhecido.';
             let tituloErro = 'Não foi possível gerar a explicação';
             
-            // Tratativa amigável para erro de cota da API Gemini (429)
+            // Tratativa amigável para erro de indisponibilidade da IA local (429)
             if (msgErro.includes('429') || msgErro.includes('Quota') || msgErro.includes('exceeded')) {
                 tituloErro = 'Limite de análises da IA atingido';
                 msgErro = 'A cota gratuita da nossa inteligência artificial esgotou por enquanto. Por favor, tente novamente em alguns minutos.';

@@ -1,7 +1,7 @@
 ﻿<?php
 /**
  * Front/noticia_detalhe.php
- * Página de detalhe de notícia com explicação didática via Gemini AI.
+ * Página de detalhe de notícia com explicação didática via IA local.
  */
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
@@ -82,6 +82,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
 
     </div>
 
+    <script src="../../../api/utils/shared.js?v=<?= time() ?>"></script>
     <script src="../../../api/noticias/noticia_detalhe.js?v=<?= time() ?>"></script>
 
     <?php include '../../components/footer.php'; ?>

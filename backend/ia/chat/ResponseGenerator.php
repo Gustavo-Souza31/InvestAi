@@ -2,17 +2,17 @@
 /**
  * backend/ia/chat/ResponseGenerator.php
  *
- * Gera a resposta amigável (2ª chamada Gemini) a partir da mensagem original
- * e do resultado da tool executada. Fallback hardcoded se a Gemini falhar.
+ * Gera a resposta amigável (2ª chamada ao modelo local) a partir da mensagem original
+ * e do resultado da tool executada. Fallback hardcoded se o modelo falhar.
  */
 
 class ResponseGenerator {
 
-    public function __construct(private GeminiClient $gemini) {}
+    public function __construct(private OllamaClient $ollama) {}
 
     /**
      * Gera resposta amigável para o usuário.
-     * Tenta via Gemini; se falhar, usa template local.
+    * Tenta via Ollama; se falhar, usa template local.
      */
     public function generate(string $mensagemOriginal, string $toolName, array $resultado, string $nome_usuario = ''): string {
         $nome_ctx = $nome_usuario !== ''
@@ -38,7 +38,7 @@ Gere uma resposta amigável e curta (1-3 frases) informando o resultado. Use 1 e
 PROMPT;
         }
 
-        $resposta = $this->gemini->callForText($prompt, $nome_usuario);
+        $resposta = $this->ollama->callForText($prompt, $nome_usuario);
         return $resposta ?? $this->fallback($toolName, $resultado, $nome_usuario);
     }
 

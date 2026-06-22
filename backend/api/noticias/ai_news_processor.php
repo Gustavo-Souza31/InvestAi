@@ -1,7 +1,7 @@
 <?php
 /**
  * backend/api/noticias/ai_news_processor.php
- * Recebe notícias brutas do RSS, processa via Gemini AI
+ * Recebe notícias brutas do RSS, processa via Ollama local
  * e persiste os resultados na tabela noticias_financeiras.
  */
 
@@ -42,31 +42,6 @@ $root = dirname(dirname(dirname(dirname(__FILE__)))); // backend/api/noticias/ -
 require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/Logger.php';
 
-// ─── Chave Gemini ────────────────────────────────────────────────────────────
-function getGeminiKey(string $root): ?string
-{
-    $key = getenv('GEMINI_API_KEY');
-    if ($key) return trim($key);
-
-    $envPath = $root . '/.env';
-    if (file_exists($envPath)) {
-        foreach (file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            $line = trim($line);
-            if (strpos($line, 'GEMINI_API_KEY=') === 0) {
-                return trim(substr($line, strlen('GEMINI_API_KEY=')), " \"'");
-            }
-        }
-    }
-    return null;
-}
-
-$geminiKey = getGeminiKey($root);
-if (!$geminiKey) {
-    
-    ob_end_clean(); echo json_encode(['status' => 'sem_chave', 'message' => 'GEMINI_API_KEY não configurada.']);
-    exit;
-}
-
 // ─── Função: montar prompt para um lote ──────────────────────────────────────
 function montarPrompt(array $lote): string
 {
@@ -103,15 +78,23 @@ REGRAS: nivel_impacto = exatamente "alto", "medio" ou "baixo". acoes_praticas = 
 PROMPT;
 }
 
-// ─── Função: chamar Gemini API ────────────────────────────────────────────────
-function chamarGemini(string $prompt, string $apiUrl): ?array
+// ─── Função: chamar Ollama API ───────────────────────────────────────────────
+function chamarOllama(string $prompt): ?array
 {
+    $ollamaUrl = rtrim(getenv('OLLAMA_URL') ?: 'http://localhost:11434', '/');
+    $ollamaModel = getenv('OLLAMA_MODEL') ?: 'llama3.1:latest';
+
     $reqBody = json_encode([
-        'contents'         => [['parts' => [['text' => $prompt]]]],
-        'generationConfig' => ['temperature' => 0.4, 'maxOutputTokens' => 4000],
+        'model' => $ollamaModel,
+        'stream' => false,
+        'messages' => [
+            ['role' => 'system', 'content' => 'Você é um analista financeiro que responde apenas com JSON válido.'],
+            ['role' => 'user', 'content' => $prompt],
+        ],
+        'options' => ['temperature' => 0.4, 'num_predict' => 4000],
     ], JSON_UNESCAPED_UNICODE);
 
-    $ch = curl_init($apiUrl);
+    $ch = curl_init($ollamaUrl . '/api/chat');
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
@@ -125,8 +108,11 @@ function chamarGemini(string $prompt, string $apiUrl): ?array
 
     if (!$response || $httpCode !== 200) return null;
 
-    $geminiData = json_decode($response, true);
-    $raw = trim($geminiData['candidates'][0]['content']['parts'][0]['text'] ?? '');
+    $aiData = json_decode($response, true);
+    $raw = trim($aiData['message']['content'] ?? '');
+    if ($raw === '' && isset($aiData['response'])) {
+        $raw = trim((string) $aiData['response']);
+    }
 
     // Limpar markdown se presente
     if (preg_match('/```(?:json)?\s*([\s\S]+?)```/', $raw, $m)) {
@@ -138,14 +124,13 @@ function chamarGemini(string $prompt, string $apiUrl): ?array
 }
 
 // ─── Processar em lotes de 10 ─────────────────────────────────────────────────
-$apiUrl         = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=' . urlencode($geminiKey);
 $loteSize       = 10;
 $lotes          = array_chunk($noticias, $loteSize);
 $todasAnalises  = [];
 
 foreach ($lotes as $lote) {
     $prompt    = montarPrompt($lote);
-    $resultado = chamarGemini($prompt, $apiUrl);
+    $resultado = chamarOllama($prompt);
     if ($resultado && !empty($resultado['analises'])) {
         $todasAnalises = array_merge($todasAnalises, $resultado['analises']);
     }

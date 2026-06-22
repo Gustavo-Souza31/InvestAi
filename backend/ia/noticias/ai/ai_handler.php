@@ -1,81 +1,67 @@
 <?php
 /**
  * backend/ia/noticias/ai/ai_handler.php
- * Gerenciador central de IA: suporta Ollama (Local) com Fallback para Gemini API.
+ * Gerenciador central de IA com Ollama local.
  */
 
-function get_gemini_api_key() {
-    $key = getenv('GEMINI_API_KEY');
-    if ($key) return trim($key);
-    $env_path = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/.env';
-    if (file_exists($env_path)) {
-        foreach (file($env_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            $line = trim($line);
-            if (strpos($line, 'GEMINI_API_KEY=') === 0) {
-                return trim(substr($line, strlen('GEMINI_API_KEY=')), " \"'");
-            }
-        }
-    }
-    return null;
+function get_ollama_config(array $options = []): array {
+    return [
+        'url' => rtrim(getenv('OLLAMA_URL') ?: 'http://localhost:11434', '/'),
+        'model' => $options['ollama_model'] ?? getenv('OLLAMA_MODEL') ?? 'llama3.1:latest',
+        'timeout' => (int) ($options['timeout'] ?? getenv('OLLAMA_TIMEOUT') ?? 120),
+        'temperature' => (float) ($options['temperature'] ?? 0.7),
+        'max_tokens' => (int) ($options['max_tokens'] ?? 2000),
+    ];
 }
 
 /**
- * Chama a IA disponível (Ollama primeiro, depois Gemini).
+ * Chama a IA local via Ollama.
  */
 function call_ai_service($prompt, $options = []) {
-    $temperature  = $options['temperature']  ?? 0.7;
-    $max_tokens   = $options['max_tokens']   ?? 2000;
+    $config = get_ollama_config($options);
 
-    $gemini_key = get_gemini_api_key();
-
-    if ($gemini_key) {
-        $gemini_res = call_gemini_api($prompt, $gemini_key, $temperature, $max_tokens);
-        if ($gemini_res) {
-            return ['success' => true, 'source' => 'gemini', 'data' => $gemini_res];
-        }
-        return [
-            'success' => false,
-            'message' => 'Serviço de IA Indisponível (Gemini API falhou).'
-        ];
-    }
-
-    return [
-        'success' => false,
-        'message' => 'Chave GEMINI_API_KEY não configurada no .env.'
-    ];
-}
-
-
-
-/**
- * Comunicação com Gemini API
- */
-function call_gemini_api($prompt, $key, $temp, $tokens) {
-    $url  = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=" . urlencode($key);
-    $data = [
-        "contents"         => [["parts" => [["text" => $prompt]]]],
-        "generationConfig" => ["temperature" => $temp, "maxOutputTokens" => $tokens]
+    $payload = [
+        'model' => $config['model'],
+        'stream' => false,
+        'messages' => [
+            ['role' => 'system', 'content' => 'Você é um assistente financeiro que responde em português do Brasil e deve seguir exatamente o formato solicitado.'],
+            ['role' => 'user', 'content' => $prompt],
+        ],
+        'options' => [
+            'temperature' => $config['temperature'],
+            'num_predict' => $config['max_tokens'],
+        ],
     ];
 
-    $ch = curl_init($url);
+    $ch = curl_init($config['url'] . '/api/chat');
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => json_encode($data, JSON_UNESCAPED_UNICODE),
-        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-        CURLOPT_TIMEOUT        => 35,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+        CURLOPT_TIMEOUT => $config['timeout'],
         CURLOPT_SSL_VERIFYPEER => false,
     ]);
 
-    $response  = curl_exec($ch);
+    $response = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
     if ($http_code === 200 && $response) {
         $json = json_decode($response, true);
-        return $json['candidates'][0]['content']['parts'][0]['text'] ?? null;
+        $text = trim($json['message']['content'] ?? '');
+        if ($text === '' && isset($json['response'])) {
+            $text = trim((string) $json['response']);
+        }
+        if ($text !== '') {
+            return ['success' => true, 'source' => 'ollama', 'data' => $text];
+        }
     }
-    return null;
+
+    return [
+        'success' => false,
+        'message' => 'Serviço de IA local indisponível.'
+    ];
 }
 
 /**

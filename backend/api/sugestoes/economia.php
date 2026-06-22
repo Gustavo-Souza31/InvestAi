@@ -34,24 +34,9 @@ if ($mes < 1 || $mes > 12 || $ano < 2000 || $ano > 2100) {
 }
 
 
-// Carregar chave Gemini do .env
-$env_file = $root . '/.env';
-if (file_exists($env_file)) {
-    foreach (file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-        $line = trim($line);
-        if ($line === '' || $line[0] === '#' || !str_contains($line, '=')) continue;
-        [$k, $v] = explode('=', $line, 2);
-        putenv(trim($k) . '=' . trim($v));
-        $_ENV[trim($k)] = trim($v);
-    }
-}
-
-$gemini_key = getenv('GEMINI_API_KEY') ?: ($_ENV['GEMINI_API_KEY'] ?? '');
-
-
 // Gerar sugestões de economia
 try {
-    $generator = new EconomySuggestionGenerator($conexao, $gemini_key);
+    $generator = new EconomySuggestionGenerator($conexao);
     $sugestoes = $generator->analisarEGerarSugestoes($usuario_id, $mes, $ano);
 
     Logger::log('INFO', 'AI_SUGGESTION_GENERATED', ['mes' => $mes, 'ano' => $ano, 'total' => count($sugestoes)], 'sucesso', $usuario_id, $usuario_email);

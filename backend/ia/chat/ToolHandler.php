@@ -3,7 +3,7 @@
  * backend/ia/chat/ToolHandler.php
  *
  * Registry e dispatcher das tools de chat.
- * Coleta definições para a Gemini API e despacha a execução.
+ * Coleta definições para o modelo local e despacha a execução.
  */
 
 require_once __DIR__ . '/tools/despesas/ConsultarGastos.php';
@@ -71,7 +71,7 @@ class ToolHandler {
     ];
 
     /**
-     * Retorna o array de function_declarations para a Gemini API,
+    * Retorna o array de function_declarations para o modelo local,
      * coletado de getDefinition() de cada tool.
      */
     public function getAllDefinitions(mysqli $conexao, int $usuario_id, int $mes, int $ano): array {

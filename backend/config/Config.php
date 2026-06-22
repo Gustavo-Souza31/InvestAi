@@ -3,7 +3,7 @@
  * Config.php - Centraliza todas as constantes de configuração do projeto
  * 
  * Ponto único de verdade para:
- * - APIs (Gemini, Ollama)
+ * - APIs (Ollama)
  * - Modelos e timeouts
  * - Limites financeiros e alertas
  * - Paths de logs
@@ -23,17 +23,10 @@ class Config
     const DB_PASS = null;      // Lê de .env
     const DB_NAME = null;      // Lê de .env
 
-    // ==================== GEMINI API ====================
-    const GEMINI_API_KEY = null;                                                  // Lê de .env
-    const GEMINI_MODEL = 'gemini-2.0-flash';                                         // Modelo padrão (deve bater com .env)
-    const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
-    const GEMINI_TIMEOUT = 35;                                                    // Segundos
-    const GEMINI_MAX_RETRIES = 2;
-
     // ==================== OLLAMA (Local AI) ====================
     const OLLAMA_URL = 'http://localhost:11434';
     const OLLAMA_TIMEOUT = 120;                                                   // Segundos (para respostas longas)
-    const OLLAMA_MODEL = 'llama2';                                                // Fallback model
+    const OLLAMA_MODEL = 'llama3.1:latest';                                       // Modelo padrão local
     
     // ==================== FINANCIAL LIMITS & ALERTS ====================
     const BUDGET_ALERT_THRESHOLD = 80;                                            // % do orçamento para alertar

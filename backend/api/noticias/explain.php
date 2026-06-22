@@ -1,7 +1,7 @@
 <?php
 /**
  * backend/api/noticias/explain.php
- * Recebe uma notícia e retorna uma explicação didática via Gemini AI.
+ * Recebe uma notícia e retorna uma explicação didática via Ollama AI.
  */
 
 
@@ -25,31 +25,6 @@ try {
         http_response_code(400);
         ob_clean();
         echo json_encode(["status" => "error", "mensagem" => "Dados da notícia inválidos."]);
-        exit;
-    }
-
-    // ─── Chave Gemini ──────────────────────────────────────────────────────────
-    function get_gemini_key(): ?string
-    {
-        $key = getenv('GEMINI_API_KEY');
-        if ($key)
-            return trim($key);
-        $env_path = dirname(dirname(dirname(dirname(__FILE__)))) . '/.env';
-        if (file_exists($env_path)) {
-            foreach (file($env_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-                $line = trim($line);
-                if (strpos($line, 'GEMINI_API_KEY=') === 0) {
-                    return trim(substr($line, strlen('GEMINI_API_KEY=')), " \"'");
-                }
-            }
-        }
-        return null;
-    }
-
-    $gemini_key = get_gemini_key();
-    if (!$gemini_key) {
-        ob_clean();
-        echo json_encode(["status" => "sem_chave", "mensagem" => "Chave Gemini API não configurada."]);
         exit;
     }
 
@@ -169,7 +144,7 @@ PROMPT;
     $ai_res = call_ai_service($prompt, [
         'temperature' => 0.4, // Menor temperatura para JSON mais estável
         'max_tokens' => 1200,
-        'ollama_model' => 'llama3'
+        'ollama_model' => 'llama3.1:latest'
 
     ]);
 

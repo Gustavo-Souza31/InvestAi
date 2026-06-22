@@ -6,7 +6,7 @@
  * Instanciado por backend/api/chat/mensagem.php.
  */
 
-require_once __DIR__ . '/GeminiClient.php';
+require_once __DIR__ . '/OllamaClient.php';
 require_once __DIR__ . '/ToolHandler.php';
 require_once __DIR__ . '/ResponseGenerator.php';
 
@@ -14,7 +14,7 @@ class ChatAgent {
 
     public function __construct(
         private $conexao,
-        private string $gemini_key
+        private string $model = ''
     ) {}
 
     /**
@@ -22,9 +22,9 @@ class ChatAgent {
      * Retorna ['resposta' => string, 'acao' => string]
      */
     public function processar(string $mensagem, int $usuario_id, int $mes, int $ano, array $historico = []): array {
-        $gemini    = new GeminiClient($this->gemini_key);
+        $ollama    = new OllamaClient();
         $handler   = new ToolHandler();
-        $generator = new ResponseGenerator($gemini);
+        $generator = new ResponseGenerator($ollama);
 
         // Primeiro nome do usuário para personalizar respostas
         $nome_usuario = $this->buscarNomeUsuario($usuario_id);
@@ -32,17 +32,17 @@ class ChatAgent {
         // 1. Coletar definições de todas as tools
         $definitions = $handler->getAllDefinitions($this->conexao, $usuario_id, $mes, $ano);
 
-        // 2. Detectar confirmação de ação destrutiva pendente ANTES de chamar Gemini.
-        //    Isso evita dependência do Gemini para interpretar "sim"/"pode" após um pedido
+        // 2. Detectar confirmação de ação destrutiva pendente ANTES de chamar o modelo.
+        //    Isso evita depender do modelo para interpretar "sim"/"pode" após um pedido
         //    de confirmação, que é a causa dos bugs de fluxo pós-confirmação.
         $call = $this->detectarConfirmacaoPendente($mensagem, $historico);
 
         if ($call === null) {
-            // Classificar intenção via Gemini Function Calling
-            $call = $gemini->callWithFunctions($mensagem, $definitions, $historico, $nome_usuario);
+            // Classificar intenção via Ollama com saída estruturada
+            $call = $ollama->callWithFunctions($mensagem, $definitions, $historico, $nome_usuario);
 
             if ($call === null) {
-                $httpCode = $gemini->getLastHttpCode();
+                $httpCode = $ollama->getLastHttpCode();
 
                 if ($httpCode === 429) {
                     return ['resposta' => 'Minha cota de IA foi esgotada por hoje. Tente novamente amanhã! 🔌', 'acao' => 'conversa'];
@@ -51,7 +51,7 @@ class ChatAgent {
                     return ['resposta' => 'Estou com problema de acesso à IA. Avisa o suporte! 🔧', 'acao' => 'conversa'];
                 }
 
-                error_log("ChatAgent: Gemini indisponível (HTTP $httpCode), retornando conversa");
+                error_log("ChatAgent: Ollama indisponível (HTTP $httpCode), retornando conversa");
                 $call = ['name' => 'conversa', 'args' => []];
             }
         }
@@ -59,13 +59,13 @@ class ChatAgent {
         $toolName = $call['name'];
         $params   = $call['args'] ?? [];
 
-        // 3. Short-circuit: pedir_confirmacao não executa ação nem 2ª chamada Gemini
+        // 3. Short-circuit: pedir_confirmacao não executa ação nem 2ª chamada ao modelo
         if ($toolName === 'pedir_confirmacao') {
             $pergunta = $params['pergunta'] ?? 'Pode me dar mais detalhes? 🤔';
             return ['resposta' => $pergunta, 'acao' => 'pedir_confirmacao'];
         }
 
-        // Short-circuit: acao_indisponivel retorna mensagem fixa sem chamar Gemini
+        // Short-circuit: acao_indisponivel retorna mensagem fixa sem chamar o modelo
         if ($toolName === 'acao_indisponivel') {
             return [
                 'resposta' => 'Essa função ainda não está disponível. Posso ajudar com orçamentos, despesas, ganhos e consultas financeiras! 💬',
@@ -100,7 +100,7 @@ class ChatAgent {
 
     /**
      * Garante que ações destrutivas com confirmado=true só sejam executadas se houver
-     * confirmação real do usuário no histórico. Protege contra o Gemini passar confirmado=true
+    * confirmação real do usuário no histórico. Protege contra o modelo passar confirmado=true
      * diretamente na primeira mensagem.
      */
     private function validarConfirmacaoDestructiva(string $toolName, array &$params, string $mensagem, array $historico): void {
@@ -131,7 +131,7 @@ class ChatAgent {
      * Detecta se o usuário está respondendo com confirmação a uma ação destrutiva pendente.
      * Analisa a última mensagem do assistente no histórico: se era um pedido de confirmação
      * de deleção ("não pode ser desfeita"), e a mensagem atual é uma afirmação curta,
-     * retorna diretamente a chamada da tool com confirmado=true — sem precisar do Gemini.
+    * retorna diretamente a chamada da tool com confirmado=true — sem precisar do modelo.
      * Retorna null se não há confirmação pendente detectada.
      */
     private function detectarConfirmacaoPendente(string $mensagem, array $historico): ?array {

@@ -282,8 +282,8 @@ btnAnalisar.addEventListener('click', async () => {
 
 /* ─── Render painel IA ─────────────────────────────────────────────────────── */
 function renderAnaliseIA(data) {
-    if (data.status === 'sem_chave') {
-        iaConteudoEl.innerHTML = `<div class="sem-chave-card"><i class="bi bi-key-fill"></i><h3>Chave Gemini não configurada</h3><p>Adicione <code>GEMINI_API_KEY=sua_chave</code> no arquivo <code>.env</code>.</p></div>`;
+    if (data.status === 'sem_servico') {
+        iaConteudoEl.innerHTML = `<div class="sem-chave-card"><i class="bi bi-server"></i><h3>Serviço de IA local indisponível</h3><p>Verifique se o Ollama está ativo em <code>http://localhost:11434</code> e se o modelo configurado está disponível.</p></div>`;
         return;
     }
     if (data.status === 'error') {

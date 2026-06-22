@@ -1,7 +1,7 @@
 <?php
 /**
  * backend/api/noticias/analyze.php
- * Analisa notícias via Gemini com categorização obrigatória em 7 tags,
+ * Analisa notícias via Ollama com categorização obrigatória em 7 tags,
  * 3 ações práticas por notícia e cruzamento com despesas do usuário no banco.
  */
 
@@ -28,38 +28,6 @@ if (empty($noticias)) {
     http_response_code(400);
     ob_clean();
     echo json_encode(["status" => "error", "mensagem" => "Nenhuma notícia recebida para análise."]);
-    exit;
-}
-
-// ─── Chave Gemini ───────────────────────────────────────────────────────────
-function get_gemini_key(): ?string {
-    $key = getenv('GEMINI_API_KEY');
-    if ($key) return trim($key);
-
-    $env_path = dirname(dirname(dirname(dirname(__FILE__)))) . '/.env';
-    if (file_exists($env_path)) {
-        foreach (file($env_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            $line = trim($line);
-            if (strpos($line, 'GEMINI_API_KEY=') === 0) {
-                return trim(substr($line, strlen('GEMINI_API_KEY=')), " \"'");
-            }
-        }
-    }
-    return null;
-}
-
-$gemini_key = get_gemini_key();
-if (!$gemini_key) {
-    ob_clean();
-    echo json_encode([
-        "status"            => "sem_chave",
-        "message"          => "Chave Gemini API não configurada.",
-        "resumo_geral"      => "Configure a chave da API Gemini para ativar a análise de IA personalizada.",
-        "nivel_alerta"      => "baixo",
-        "analises"          => [],
-        "top_acao_da_semana" => "Configure sua chave Gemini API para receber recomendações personalizadas.",
-        "categorias_usuario" => []
-    ]);
     exit;
 }
 
@@ -248,7 +216,7 @@ PROMPT;
     $ai_res = call_ai_service($prompt, [
         'temperature' => 0.65,
         'max_tokens'  => 2500,
-        'ollama_model'=> 'llama3'
+        'ollama_model'=> 'llama3.1:latest'
     ]);
 
     if (!$ai_res['success']) {

@@ -54,30 +54,9 @@ foreach (array_slice((array) $historico_raw, -20) as $item) {
 }
 
 
-// Carregar chave Gemini do .env
-$env_file = $root . '/.env';
-if (file_exists($env_file)) {
-    foreach (file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-        $line = trim($line);
-        if ($line === '' || $line[0] === '#' || !str_contains($line, '=')) continue;
-        [$k, $v] = explode('=', $line, 2);
-        putenv(trim($k) . '=' . trim($v));
-        $_ENV[trim($k)] = trim($v);
-    }
-}
-
-$gemini_key = getenv('GEMINI_API_KEY') ?: ($_ENV['GEMINI_API_KEY'] ?? '');
-
-
-if (!$gemini_key) {
-    http_response_code(503);
-    echo json_encode(['status' => 'error', 'message' => 'Serviço de IA não configurado.']);
-    exit;
-}
-
 // Processar mensagem com o agente
 try {
-    $agent     = new ChatAgent($conexao, $gemini_key);
+    $agent     = new ChatAgent($conexao);
     $resultado = $agent->processar($mensagem, $usuario_id, $mes, $ano, $historico);
 
     Logger::log('INFO', 'CHAT_MESSAGE', ['tamanho' => mb_strlen($mensagem), 'acao' => $resultado['acao']], 'sucesso', $usuario_id, $usuario_email);
