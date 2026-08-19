@@ -1,4 +1,4 @@
-﻿async function criarDespesa() {
+async function criarDespesa() {
 
     // Coleta valores do formulário
     const descricao = document.getElementById('despesa-descricao').value.trim();
@@ -38,6 +38,7 @@
 
         // Sucesso: mostra alerta, limpa campos e recarrega lista
         showAlert(resultado.message || 'Despesa criada com sucesso!', 'success');
+        document.getElementById('despesa-descricao').value = '';
         document.getElementById('despesa-valor').value = '';
         document.getElementById('despesa-data').value = new Date().toISOString().split('T')[0];
         document.getElementById('despesa-fixo').checked = false;

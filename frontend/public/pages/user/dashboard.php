@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 
 // Redirecionar se não logado
@@ -96,10 +96,6 @@ if (isset($_SESSION['is_first_login']) && $_SESSION['is_first_login'] === true) 
                     <div class="value" id="objetivo">Não definido</div>
                 </div>
             </div>
-
-
-
-        </div>
 
         <!-- ===== SEÇÃO PLANEJAMENTO DE ORÇAMENTO ===== -->
         <div class="orcamento-section anim-on-scroll" id="orcamento-section">

@@ -66,7 +66,7 @@ while ($row2 = $result2->fetch_assoc()) {
         $gasto = floatval($row2['total_gasto']);
         $limite = $orcamentos[$cat_id]['limite'];
         $orcamentos[$cat_id]['gasto_atual'] = $gasto;
-        $orcamentos[$cat_id]['percentual']  = $limite > 0 ? min(round(($gasto / $limite) * 100, 1), 100) : 0;
+        $orcamentos[$cat_id]['percentual']  = $limite > 0 ? round(($gasto / $limite) * 100, 1) : 0;
     }
 }
 

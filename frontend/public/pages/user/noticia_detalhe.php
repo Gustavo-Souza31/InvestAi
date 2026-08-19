@@ -82,6 +82,7 @@ $nome = htmlspecialchars($_SESSION['usuario_nome']);
 
     </div>
 
+    <script src="../../../api/utils/shared.js?v=<?= time() ?>"></script>
     <script src="../../../api/noticias/noticia_detalhe.js?v=<?= time() ?>"></script>
 
     <?php include '../../components/footer.php'; ?>

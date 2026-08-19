@@ -37,9 +37,10 @@ if (file_exists($lockFile)) {
     }
 }
 
-// Executa em background de forma cross-platform (Windows usa start /B, Unix usa &)
+// Executa em background de forma cross-platform
+// Windows: cmd /c é obrigatório pois "start" é um built-in do CMD, não um executável
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-    $cmd = 'start /B "" ' . escapeshellarg($phpBin) . ' ' . escapeshellarg($cronFile) . ' >> ' . escapeshellarg($logFile) . ' 2>&1';
+    $cmd = 'cmd /c start /B "" ' . escapeshellarg($phpBin) . ' ' . escapeshellarg($cronFile);
 } else {
     $cmd = escapeshellarg($phpBin) . ' ' . escapeshellarg($cronFile) . ' >> ' . escapeshellarg($logFile) . ' 2>&1 &';
 }

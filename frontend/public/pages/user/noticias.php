@@ -237,6 +237,7 @@ $ultimaJson = json_encode($ultimaAtualiz);
     </div>
 
     <script src="../../../assets/js/scroll-animations.js?v=<?= time() ?>"></script>
+    <script src="../../../api/utils/shared.js?v=<?= time() ?>"></script>
     <script src="../../../api/noticias/noticias.js?v=<?= time() ?>"></script>
 
     <?php include '../../components/footer.php'; ?>
