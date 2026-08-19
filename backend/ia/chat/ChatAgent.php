@@ -7,6 +7,7 @@
  */
 
 require_once __DIR__ . '/GeminiClient.php';
+require_once __DIR__ . '/OllamaClient.php';
 require_once __DIR__ . '/ToolHandler.php';
 require_once __DIR__ . '/ResponseGenerator.php';
 
@@ -18,11 +19,23 @@ class ChatAgent {
     ) {}
 
     /**
+     * Escolhe o provedor de IA via variável de ambiente AI_PROVIDER.
+     * 'ollama' usa o modelo local (dev); qualquer outro valor (padrão) usa Gemini (produção).
+     */
+    private function criarClienteIA(): GeminiClient|OllamaClient {
+        $provider = strtolower(getenv('AI_PROVIDER') ?: 'gemini');
+        if ($provider === 'ollama') {
+            return new OllamaClient();
+        }
+        return new GeminiClient($this->gemini_key);
+    }
+
+    /**
      * Ponto de entrada principal.
      * Retorna ['resposta' => string, 'acao' => string]
      */
     public function processar(string $mensagem, int $usuario_id, int $mes, int $ano, array $historico = []): array {
-        $gemini    = new GeminiClient($this->gemini_key);
+        $gemini    = $this->criarClienteIA();
         $handler   = new ToolHandler();
         $generator = new ResponseGenerator($gemini);
 

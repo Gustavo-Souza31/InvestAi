@@ -66,10 +66,10 @@ if (file_exists($env_file)) {
     }
 }
 
-$gemini_key = getenv('GEMINI_API_KEY') ?: ($_ENV['GEMINI_API_KEY'] ?? '');
+$ai_provider = strtolower(getenv('AI_PROVIDER') ?: ($_ENV['AI_PROVIDER'] ?? 'gemini'));
+$gemini_key  = getenv('GEMINI_API_KEY') ?: ($_ENV['GEMINI_API_KEY'] ?? '');
 
-
-if (!$gemini_key) {
+if ($ai_provider !== 'ollama' && !$gemini_key) {
     http_response_code(503);
     echo json_encode(['status' => 'error', 'message' => 'Serviço de IA não configurado.']);
     exit;

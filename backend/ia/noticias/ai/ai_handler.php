@@ -20,11 +20,24 @@ function get_gemini_api_key() {
 }
 
 /**
- * Chama a IA disponível (Ollama primeiro, depois Gemini).
+ * Chama a IA disponível: Ollama local quando AI_PROVIDER=ollama (dev), Gemini caso contrário (produção).
  */
 function call_ai_service($prompt, $options = []) {
     $temperature  = $options['temperature']  ?? 0.7;
     $max_tokens   = $options['max_tokens']   ?? 2000;
+
+    $provider = strtolower(getenv('AI_PROVIDER') ?: 'gemini');
+
+    if ($provider === 'ollama') {
+        $ollama_res = call_ollama_api($prompt, $temperature, $max_tokens);
+        if ($ollama_res) {
+            return ['success' => true, 'source' => 'ollama', 'data' => $ollama_res];
+        }
+        return [
+            'success' => false,
+            'message' => 'Serviço de IA Indisponível (Ollama local falhou).'
+        ];
+    }
 
     $gemini_key = get_gemini_api_key();
 
@@ -43,6 +56,40 @@ function call_ai_service($prompt, $options = []) {
         'success' => false,
         'message' => 'Chave GEMINI_API_KEY não configurada no .env.'
     ];
+}
+
+/**
+ * Comunicação com Ollama local (mesmo endpoint/modelo usado pelo chat).
+ */
+function call_ollama_api($prompt, $temp, $tokens) {
+    $base_url = rtrim(getenv('OLLAMA_URL') ?: 'http://localhost:11434', '/');
+    $model    = getenv('OLLAMA_MODEL') ?: 'llama3.1:latest';
+
+    $data = [
+        'model'    => $model,
+        'stream'   => false,
+        'messages' => [['role' => 'user', 'content' => $prompt]],
+        'options'  => ['temperature' => $temp, 'num_predict' => $tokens],
+    ];
+
+    $ch = curl_init($base_url . '/api/chat');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode($data, JSON_UNESCAPED_UNICODE),
+        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+        CURLOPT_TIMEOUT        => (int) (getenv('OLLAMA_TIMEOUT') ?: 120),
+    ]);
+
+    $response  = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($http_code === 200 && $response) {
+        $json = json_decode($response, true);
+        return trim($json['message']['content'] ?? '') ?: null;
+    }
+    return null;
 }
 
 

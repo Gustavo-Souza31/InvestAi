@@ -8,7 +8,7 @@
 
 class ResponseGenerator {
 
-    public function __construct(private GeminiClient $gemini) {}
+    public function __construct(private GeminiClient|OllamaClient $gemini) {}
 
     /**
      * Gera resposta amigável para o usuário.
