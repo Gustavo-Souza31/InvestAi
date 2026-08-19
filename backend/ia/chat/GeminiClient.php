@@ -15,7 +15,7 @@ class GeminiClient {
 
     public function __construct(private string $apiKey) {
         $baseUrl = rtrim(getenv('GEMINI_API_URL') ?: 'https://generativelanguage.googleapis.com/v1beta/models', '/');
-        $model   = getenv('GEMINI_MODEL') ?: 'gemini-2.0-flash-lite';
+        $model   = getenv('GEMINI_MODEL') ?: 'gemini-3.5-flash-lite';
         $this->endpoint = "$baseUrl/$model:generateContent";
     }
 

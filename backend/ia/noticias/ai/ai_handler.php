@@ -98,7 +98,7 @@ function call_ollama_api($prompt, $temp, $tokens) {
  * Comunicação com Gemini API
  */
 function call_gemini_api($prompt, $key, $temp, $tokens) {
-    $url  = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=" . urlencode($key);
+    $url  = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=" . urlencode($key);
     $data = [
         "contents"         => [["parts" => [["text" => $prompt]]]],
         "generationConfig" => ["temperature" => $temp, "maxOutputTokens" => $tokens]

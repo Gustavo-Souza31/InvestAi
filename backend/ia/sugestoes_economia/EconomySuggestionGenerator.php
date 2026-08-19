@@ -418,7 +418,7 @@ PROMPT;
             return null;
         }
 
-        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key='
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key='
             . urlencode($this->gemini_key);
 
         $body = json_encode([
