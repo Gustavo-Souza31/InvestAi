@@ -5,13 +5,29 @@
 require_once __DIR__ . '/../config/ConfigHelper.php';
 ConfigHelper::load();
 
-// Em produção (ex: Railway), o plugin de MySQL injeta MYSQL* em vez de DB_*.
-// Usamos DB_* como principal e caímos para as variáveis do Railway se ausentes.
-$servername = ConfigHelper::get('DB_HOST', ConfigHelper::get('MYSQLHOST', '127.0.0.1'));
-$usuario_db = ConfigHelper::get('DB_USER', ConfigHelper::get('MYSQLUSER', 'root'));
-$senha_db = ConfigHelper::get('DB_PASS', ConfigHelper::get('MYSQLPASSWORD', ''));
-$banco = ConfigHelper::get('DB_NAME', ConfigHelper::get('MYSQLDATABASE', 'investai'));
-$porta = ConfigHelper::get('DB_PORT', ConfigHelper::get('MYSQLPORT', 3306));
+// Em produção (ex: Railway), o plugin de MySQL injeta MYSQL* em vez de DB_*,
+// e opcionalmente uma única string de conexão (DATABASE_URL/MYSQL_URL) no
+// formato mysql://usuario:senha@host:porta/banco. Prioridade: DB_* > URL > MYSQL*.
+$dbUrl = ConfigHelper::get('DATABASE_URL', ConfigHelper::get('MYSQL_URL'));
+$fromUrl = [];
+if ($dbUrl) {
+    $parts = parse_url($dbUrl);
+    if ($parts !== false) {
+        $fromUrl = [
+            'host' => $parts['host'] ?? null,
+            'user' => $parts['user'] ?? null,
+            'pass' => $parts['pass'] ?? null,
+            'db'   => isset($parts['path']) ? ltrim($parts['path'], '/') : null,
+            'port' => $parts['port'] ?? null,
+        ];
+    }
+}
+
+$servername = ConfigHelper::get('DB_HOST', $fromUrl['host'] ?? ConfigHelper::get('MYSQLHOST', '127.0.0.1'));
+$usuario_db = ConfigHelper::get('DB_USER', $fromUrl['user'] ?? ConfigHelper::get('MYSQLUSER', 'root'));
+$senha_db = ConfigHelper::get('DB_PASS', $fromUrl['pass'] ?? ConfigHelper::get('MYSQLPASSWORD', ''));
+$banco = ConfigHelper::get('DB_NAME', $fromUrl['db'] ?? ConfigHelper::get('MYSQLDATABASE', 'investai'));
+$porta = ConfigHelper::get('DB_PORT', $fromUrl['port'] ?? ConfigHelper::get('MYSQLPORT', 3306));
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
