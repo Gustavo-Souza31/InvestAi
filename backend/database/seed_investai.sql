@@ -79,7 +79,7 @@ INSERT INTO noticias_financeiras (
 );
 
 -- =========================
--- SUGESTÃO DE ECONOMIA
+-- SUGESTÃO DE ECONOMIAS
 -- =========================
 INSERT INTO sugestoes_economia (
     usuario_id,
