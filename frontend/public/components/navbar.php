@@ -14,7 +14,12 @@ $nome_nav = isset($nome) ? $nome : htmlspecialchars($_SESSION['usuario_nome'] ??
             </svg>
             Invest<span>AI</span>
         </a>
-        <div class="d-flex align-items-center gap-4">
+
+        <button type="button" class="navbar-toggle" id="navbarToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navbarLinks">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <div class="navbar-links d-flex align-items-center gap-4" id="navbarLinks">
             <a href="dashboard.php" class="nav-link-custom <?= $nav === 'dashboard' ? 'active' : '' ?>">Dashboard</a>
             <a href="resumo.php"    class="nav-link-custom nav-resumo   <?= $nav === 'resumo'    ? 'active' : '' ?>">Resumo Financeiro</a>
             <a href="ganhos.php"    class="nav-link-custom nav-ganhos   <?= $nav === 'ganhos'    ? 'active' : '' ?>">Ganhos</a>
