@@ -12,8 +12,16 @@ RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && sed -i 's/^display_errors = .*/display_errors = Off/' "$PHP_INI_DIR/php.ini" \
     && sed -i 's/^log_errors = .*/log_errors = On/' "$PHP_INI_DIR/php.ini"
 
-# Garantir que apenas um MPM esteja carregado (evita "More than one MPM loaded")
-RUN a2dismod mpm_event mpm_worker 2>/dev/null; a2enmod mpm_prefork
+# Garantir que apenas um MPM esteja carregado (evita "More than one MPM loaded").
+# Mexe direto nos symlinks de mods-enabled em vez de a2dismod/a2enmod, que podem
+# não reverter um estado inconsistente deixado por triggers do dpkg (ex: apt
+# reconfigurando o apache2 durante o docker-php-ext-install). O apache2ctl -M no
+# final falha o BUILD (não o deploy) se sobrar mais de um MPM ativo.
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf \
+          /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf \
+    && ln -sf ../mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
+    && ln -sf ../mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf \
+    && test "$(apache2ctl -M 2>/dev/null | grep -c mpm_)" -eq 1
 
 # Copiar os arquivos do projeto para o diretório raiz do servidor web
 COPY . /var/www/html/
