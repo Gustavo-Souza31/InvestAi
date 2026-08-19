@@ -106,7 +106,7 @@ PROMPT;
             case 'consultar_aportes':
                 return 'Aqui estão seus aportes! 💰';
             default:
-                return 'Posso ajudar com orçamentos, despesas, ganhos, metas e consultas financeiras! 💬';
+                return 'Chat bot em manutenção no momento. Volta já já! 🔧';
         }
     }
 }
