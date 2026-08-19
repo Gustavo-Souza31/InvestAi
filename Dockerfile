@@ -3,8 +3,9 @@ FROM php:8.2-apache
 # Habilitar extensões do MySQL necessárias para o PHP
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Habilitar mod_rewrite e permitir .htaccess (bloqueia .env, .sql, .log em produção)
-RUN a2enmod rewrite \
+# Habilitar mod_rewrite (URLs) e mod_headers (usado no .htaccess para
+# remover headers de CSP) e permitir .htaccess (bloqueia .env, .sql, .log em produção)
+RUN a2enmod rewrite headers \
     && sed -ri 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 # php.ini de produção: nunca exibir erros/stack traces ao usuário final
