@@ -40,13 +40,11 @@ if (isset($_SESSION['usuario_id'])) {
         <!-- Logo -->
         <div class="text-center mb-5">
             <a href="index.php" class="logo">
-                <svg class="neural-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" />
-                    <circle cx="4" cy="18" r="2" fill="currentColor" />
-                    <circle cx="9" cy="13" r="2" fill="currentColor" />
-                    <circle cx="15" cy="15" r="2" fill="currentColor" />
-                    <circle cx="20" cy="6" r="3" fill="var(--brand-accent)" />
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M20 6L14 6.5M20 6L19.3 11.7" stroke="var(--brand-accent)" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 Invest<span>AI</span>
             </a>
@@ -80,14 +78,14 @@ if (isset($_SESSION['usuario_id'])) {
                     <input type="password" id="login-senha" class="form-control" placeholder="••••••••" required>
                     <i class="bi bi-lock"></i>
                 </div>
-                <a href="#" id="link-recuperar" style="font-size:0.85rem; color:#6366f1; text-decoration:none;">Esqueci
+                <a href="#" id="link-recuperar" style="font-size:0.85rem; color:var(--brand-accent); text-decoration:none;">Esqueci
                     minha senha</a>
             </div>
             <button type="submit" class="btn-auth">
                 <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
             </button>
             <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
-                Não tem conta? <a href="#" id="link-to-cadastro" style="color:#6366f1;">Cadastre-se aqui</a>
+                Não tem conta? <a href="#" id="link-to-cadastro" style="color:var(--brand-accent);">Cadastre-se aqui</a>
             </p>
         </form>
 
@@ -145,7 +143,7 @@ if (isset($_SESSION['usuario_id'])) {
                 <i class="bi bi-plus-circle me-2"></i>Criar Conta
             </button>
             <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
-                Já tem conta? <a href="#" id="link-to-login" style="color:#6366f1;">Faça login</a>
+                Já tem conta? <a href="#" id="link-to-login" style="color:var(--brand-accent);">Faça login</a>
             </p>
         </form>
 
@@ -180,7 +178,7 @@ if (isset($_SESSION['usuario_id'])) {
                 <i class="bi bi-key me-2"></i><span id="btn-recuperar-label">Enviar Link de Recuperação</span>
             </button>
             <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
-                Lembrou a senha? <a href="#" id="link-voltar-login" style="color:#6366f1;">Voltar ao login</a>
+                Lembrou a senha? <a href="#" id="link-voltar-login" style="color:var(--brand-accent);">Voltar ao login</a>
             </p>
         </form>
     </div>

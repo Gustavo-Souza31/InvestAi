@@ -9,10 +9,9 @@
     gap: 24px;
     margin-bottom: 36px;
     padding: 32px 28px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 20px;
-    backdrop-filter: blur(14px);
     position: relative;
     overflow: hidden;
 }
@@ -24,7 +23,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--success-color), var(--cyan-color));
+    background: linear-gradient(90deg, var(--brand-accent), var(--primary-hover));
     border-radius: 20px 20px 0 0;
 }
 
@@ -32,22 +31,22 @@
     width: 90px;
     height: 90px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-color), var(--success-color));
+    background: linear-gradient(135deg, var(--brand-accent), var(--primary-hover));
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 2.2rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--bg-dark);
     flex-shrink: 0;
     position: relative;
-    box-shadow: 0 0 30px rgba(99, 102, 241, 0.25);
+    box-shadow: 0 0 30px color-mix(in srgb, var(--brand-accent) 25%, transparent);
     animation: avatarPulse 3s ease-in-out infinite;
 }
 
 @keyframes avatarPulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
-    50% { box-shadow: 0 0 35px rgba(99, 102, 241, 0.4); }
+    0%, 100% { box-shadow: 0 0 20px color-mix(in srgb, var(--brand-accent) 20%, transparent); }
+    50% { box-shadow: 0 0 35px color-mix(in srgb, var(--brand-accent) 40%, transparent); }
 }
 
 .profile-avatar .status-dot {
@@ -115,10 +114,9 @@
 }
 
 .profile-section {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 18px;
-    backdrop-filter: blur(12px);
     overflow: hidden;
     animation: fadeInUp 0.5s ease-out both;
 }
@@ -154,18 +152,18 @@
 }
 
 .section-icon.personal {
-    background: rgba(99, 102, 241, 0.12);
-    color: #818cf8;
+    background: color-mix(in srgb, var(--brand-accent) 12%, transparent);
+    color: var(--brand-accent);
 }
 
 .section-icon.financial {
-    background: rgba(34, 197, 94, 0.12);
-    color: #4ade80;
+    background: color-mix(in srgb, var(--color-gain) 12%, transparent);
+    color: var(--color-gain);
 }
 
 .section-icon.security {
-    background: rgba(239, 68, 68, 0.12);
-    color: #f87171;
+    background: color-mix(in srgb, var(--color-expense) 12%, transparent);
+    color: var(--color-expense);
 }
 
 .section-header h3 {
@@ -277,13 +275,13 @@
 }
 
 .form-control-select:focus {
-    border-color: var(--success-color) !important;
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15) !important;
+    border-color: var(--brand-accent) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-accent) 15%, transparent) !important;
     outline: none;
 }
 
 .form-control-select option {
-    background: #1a1d28;
+    background: var(--bg-card);
     color: var(--text-main);
 }
 
@@ -312,8 +310,8 @@
 }
 
 .behavior-pill.active {
-    border-color: rgba(99, 102, 241, 0.5);
-    background: rgba(99, 102, 241, 0.08);
+    border-color: color-mix(in srgb, var(--brand-accent) 50%, transparent);
+    background: color-mix(in srgb, var(--brand-accent) 8%, transparent);
 }
 
 .behavior-pill .pill-icon {
@@ -337,18 +335,18 @@
 }
 
 .behavior-pill.conservador.active {
-    border-color: rgba(34, 197, 94, 0.5);
-    background: rgba(34, 197, 94, 0.08);
+    border-color: color-mix(in srgb, var(--color-gain) 50%, transparent);
+    background: color-mix(in srgb, var(--color-gain) 8%, transparent);
 }
 
 .behavior-pill.moderado.active {
-    border-color: rgba(99, 102, 241, 0.5);
-    background: rgba(99, 102, 241, 0.08);
+    border-color: color-mix(in srgb, var(--brand-accent) 50%, transparent);
+    background: color-mix(in srgb, var(--brand-accent) 8%, transparent);
 }
 
 .behavior-pill.gastador.active {
-    border-color: rgba(239, 68, 68, 0.5);
-    background: rgba(239, 68, 68, 0.08);
+    border-color: color-mix(in srgb, var(--color-expense) 50%, transparent);
+    background: color-mix(in srgb, var(--color-expense) 8%, transparent);
 }
 
 /* ===== PASSWORD STRENGTH ===== */
@@ -390,10 +388,10 @@
 }
 
 .btn-save {
-    background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+    background: linear-gradient(135deg, var(--brand-accent), var(--primary-hover));
     border: none;
     border-radius: 12px;
-    color: #fff;
+    color: var(--bg-dark);
     font-weight: 700;
     font-size: 0.92rem;
     font-family: 'Outfit', sans-serif;
@@ -403,12 +401,12 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--brand-accent) 30%, transparent);
 }
 
 .btn-save:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(99, 102, 241, 0.45);
+    box-shadow: 0 6px 24px color-mix(in srgb, var(--brand-accent) 45%, transparent);
 }
 
 .btn-save:active {
@@ -543,8 +541,8 @@
 
 /* Card principal */
 .quiz-modal {
-    background: linear-gradient(145deg, #13151f, #1a1d2e);
-    border: 1px solid rgba(179, 157, 219, 0.2);
+    background: var(--bg-card);
+    border: 1px solid color-mix(in srgb, var(--brand-accent) 20%, transparent);
     border-radius: 24px;
     width: 100%;
     max-width: 560px;
@@ -562,7 +560,7 @@
 .quiz-header {
     padding: 22px 26px 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(179, 157, 219, 0.05);
+    background: color-mix(in srgb, var(--brand-accent) 5%, transparent);
 }
 
 .quiz-header-top {
@@ -578,7 +576,7 @@
     gap: 10px;
     font-weight: 700;
     font-size: 1rem;
-    color: #c4b5fd;
+    color: var(--brand-accent);
 }
 
 .quiz-title-group i {
@@ -618,7 +616,7 @@
 
 .quiz-progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #7c3aed, #a78bfa);
+    background: linear-gradient(90deg, var(--primary-hover), var(--brand-accent));
     border-radius: 99px;
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     width: 0%;
@@ -648,7 +646,7 @@
 .quiz-pergunta h4 {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #e0e7ff;
+    color: var(--text-main);
     margin-bottom: 20px;
     line-height: 1.4;
 }
@@ -668,7 +666,7 @@
     cursor: pointer;
     transition: all 0.2s;
     font-size: 0.9rem;
-    color: #b0b8cc;
+    color: var(--text-muted);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -679,27 +677,27 @@
     width: 28px;
     height: 28px;
     border-radius: 8px;
-    background: rgba(179, 157, 219, 0.1);
-    border: 1px solid rgba(179, 157, 219, 0.2);
+    background: color-mix(in srgb, var(--brand-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand-accent) 20%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.8rem;
     font-weight: 700;
-    color: #a78bfa;
+    color: var(--brand-accent);
     flex-shrink: 0;
     transition: all 0.2s;
 }
 
 .quiz-opcao:hover {
-    border-color: rgba(167, 139, 250, 0.4);
-    background: rgba(167, 139, 250, 0.07);
-    color: #e0e7ff;
+    border-color: color-mix(in srgb, var(--brand-accent) 40%, transparent);
+    background: color-mix(in srgb, var(--brand-accent) 7%, transparent);
+    color: var(--text-main);
     transform: translateX(4px);
 }
 
 .quiz-opcao:hover .opcao-letra {
-    background: rgba(167, 139, 250, 0.2);
+    background: color-mix(in srgb, var(--brand-accent) 20%, transparent);
 }
 
 /* Tela de resultado */
@@ -724,7 +722,7 @@
 
 .quiz-resultado p {
     font-size: 0.9rem;
-    color: #9ca3af;
+    color: var(--text-muted);
     line-height: 1.6;
     max-width: 400px;
     margin: 0 auto 28px;
@@ -738,9 +736,9 @@
 }
 
 .quiz-btn-primario {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    background: linear-gradient(135deg, var(--brand-accent), var(--primary-hover));
     border: none;
-    color: #fff;
+    color: var(--bg-dark);
     padding: 12px 26px;
     border-radius: 12px;
     font-weight: 700;
@@ -748,7 +746,7 @@
     cursor: pointer;
     font-family: 'Outfit', sans-serif;
     transition: all 0.2s;
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--brand-accent) 35%, transparent);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -756,7 +754,7 @@
 
 .quiz-btn-primario:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 6px 24px color-mix(in srgb, var(--brand-accent) 50%, transparent);
 }
 
 .quiz-btn-secundario {
@@ -783,8 +781,8 @@
 /* Cores de resultado por perfil */
 .resultado-conservador h3 { color: #4ade80; }
 .resultado-conservador .resultado-icon { color: #4ade80; }
-.resultado-moderado h3 { color: #a78bfa; }
-.resultado-moderado .resultado-icon { color: #a78bfa; }
+.resultado-moderado h3 { color: var(--brand-accent); }
+.resultado-moderado .resultado-icon { color: var(--brand-accent); }
 .resultado-gastador h3 { color: #f87171; }
 .resultado-gastador .resultado-icon { color: #f87171; }
 
