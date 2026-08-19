@@ -14,10 +14,12 @@ set_time_limit(0);           // Sem timeout — processamento em lotes pode demo
 header('Content-Type: application/json; charset=utf-8');
 
 // ─── Autenticação interna por token ou IP ────────────────────────────────────
-// Aceita chamadas de localhost (cron) ou com header X-Cron-Token
-$cronToken = 'investai_cron_2025';
+// Aceita chamadas de localhost (cron) ou com header X-Cron-Token (definido em .env)
+require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/backend/config/ConfigHelper.php';
+ConfigHelper::load();
+$cronToken  = ConfigHelper::get('CRON_TOKEN', '');
 $fromLocal  = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1', 'localhost']);
-$tokenOk    = (($_SERVER['HTTP_X_CRON_TOKEN'] ?? '') === $cronToken);
+$tokenOk    = $cronToken !== '' && hash_equals($cronToken, $_SERVER['HTTP_X_CRON_TOKEN'] ?? '');
 
 if (!$fromLocal && !$tokenOk) {
     http_response_code(403);

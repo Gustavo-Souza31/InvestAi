@@ -212,7 +212,21 @@ CREATE TABLE IF NOT EXISTS aportes (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- =========================
--- 13. LOGS DE AUDITORIA
+-- 13. TOKENS DE RECUPERAÇÃO DE SENHA
+-- =========================
+CREATE TABLE IF NOT EXISTS password_resets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    token_hash CHAR(64) NOT NULL,
+    expira_em DATETIME NOT NULL,
+    usado TINYINT(1) NOT NULL DEFAULT 0,
+    criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_password_reset_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    INDEX idx_token_hash (token_hash)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================
+-- 14. LOGS DE AUDITORIA
 -- =========================
 CREATE TABLE IF NOT EXISTS logs (
     id            INT AUTO_INCREMENT PRIMARY KEY,

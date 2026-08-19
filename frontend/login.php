@@ -151,23 +151,33 @@ if (isset($_SESSION['usuario_id'])) {
 
         <!-- ===== FORM RECUPERAR SENHA ===== -->
         <form id="form-recuperar" style="display:none;">
-            <div class="mb-3">
-                <label class="form-label">E-MAIL CADASTRADO</label>
-                <div class="input-icon">
-                    <input type="email" id="recuperar-email" class="form-control" placeholder="seu@email.com" required>
-                    <i class="bi bi-envelope"></i>
+            <input type="hidden" id="recuperar-token" value="<?= htmlspecialchars($_GET['reset_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
+            <!-- Etapa 1: solicitar o link por e-mail -->
+            <div id="recuperar-step-email">
+                <p class="text-secondary mb-3" style="font-size:0.85rem;">Informe seu e-mail cadastrado e enviaremos um link para você criar uma nova senha.</p>
+                <div class="mb-4">
+                    <label class="form-label">E-MAIL CADASTRADO</label>
+                    <div class="input-icon">
+                        <input type="email" id="recuperar-email" class="form-control" placeholder="seu@email.com">
+                        <i class="bi bi-envelope"></i>
+                    </div>
                 </div>
             </div>
-            <div class="mb-4">
-                <label class="form-label">NOVA SENHA</label>
-                <div class="input-icon">
-                    <input type="password" id="recuperar-nova-senha" class="form-control" placeholder="••••••••"
-                        required>
-                    <i class="bi bi-lock"></i>
+
+            <!-- Etapa 2: definir nova senha (após clicar no link do e-mail) -->
+            <div id="recuperar-step-senha" style="display:none;">
+                <div class="mb-4">
+                    <label class="form-label">NOVA SENHA</label>
+                    <div class="input-icon">
+                        <input type="password" id="recuperar-nova-senha" class="form-control" placeholder="••••••••">
+                        <i class="bi bi-lock"></i>
+                    </div>
                 </div>
             </div>
-            <button type="submit" class="btn-auth">
-                <i class="bi bi-key me-2"></i>Alterar Senha
+
+            <button type="submit" class="btn-auth" id="btn-recuperar-submit">
+                <i class="bi bi-key me-2"></i><span id="btn-recuperar-label">Enviar Link de Recuperação</span>
             </button>
             <p class="text-center mt-4 mb-0" style="font-size:0.85rem; color:#666;">
                 Lembrou a senha? <a href="#" id="link-voltar-login" style="color:#6366f1;">Voltar ao login</a>

@@ -83,7 +83,14 @@ try {
     // ─── Buscar contexto de gastos do usuário ─────────────────────────────────
     $contexto_gastos = "Sem gastos registrados";
     try {
-        $stmt_gastos = $conexao->prepare("SELECT categoria, SUM(valor) as total FROM despesas WHERE usuario_id = ? GROUP BY categoria ORDER BY total DESC LIMIT 3");
+        $stmt_gastos = $conexao->prepare(
+            "SELECT c.nome as categoria, SUM(d.valor) as total
+             FROM despesas d
+             JOIN categorias c ON d.categoria_id = c.id
+             WHERE d.usuario_id = ?
+             GROUP BY c.id, c.nome
+             ORDER BY total DESC LIMIT 3"
+        );
         if ($stmt_gastos) {
             $stmt_gastos->bind_param("i", $usuario_id);
             $stmt_gastos->execute();

@@ -9,11 +9,11 @@ class Logger
     {
         ConfigHelper::load();
         $conn = @new mysqli(
-            ConfigHelper::get('DB_HOST', '127.0.0.1'),
-            ConfigHelper::get('DB_USER', 'root'),
-            ConfigHelper::get('DB_PASS', ''),
-            ConfigHelper::get('DB_NAME', 'investai'),
-            (int) ConfigHelper::get('DB_PORT', 3306)
+            ConfigHelper::get('DB_HOST', ConfigHelper::get('MYSQLHOST', '127.0.0.1')),
+            ConfigHelper::get('DB_USER', ConfigHelper::get('MYSQLUSER', 'root')),
+            ConfigHelper::get('DB_PASS', ConfigHelper::get('MYSQLPASSWORD', '')),
+            ConfigHelper::get('DB_NAME', ConfigHelper::get('MYSQLDATABASE', 'investai')),
+            (int) ConfigHelper::get('DB_PORT', ConfigHelper::get('MYSQLPORT', 3306))
         );
         if ($conn->connect_error) {
             return null;

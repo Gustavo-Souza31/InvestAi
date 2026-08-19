@@ -18,6 +18,10 @@ const ORC_ICONS = {
 // Modo atual do modal: 'create' para novo, 'edit' para edição
 let _orcModo = 'create';
 
+function escapeHtmlAttr(str) {
+    return escapeHtml(str).replace(/'/g, "\\'");
+}
+
 // ===== RENDER =====
 
 function renderizarOrcamentos(orcamentos) {
@@ -47,14 +51,14 @@ function renderizarOrcamentos(orcamentos) {
             <div class="orc-card-top">
                 <span class="orc-card-icon">${icone}</span>
                 <div class="orc-card-info">
-                    <span class="orc-card-nome">${orc.categoria}</span>
+                    <span class="orc-card-nome">${escapeHtml(orc.categoria)}</span>
                     <span class="orc-card-status" style="color:${cor}">${status}</span>
                 </div>
                 <div class="orc-card-buttons">
-                    <button class="orc-edit-btn" onclick="abrirModalOrcamentoEdicao(${orc.categoria_id}, '${orc.categoria}', ${orc.limite})" title="Editar limite">
+                    <button class="orc-edit-btn" onclick="abrirModalOrcamentoEdicao(${orc.categoria_id}, '${escapeHtmlAttr(orc.categoria)}', ${orc.limite})" title="Editar limite">
                         <i class="bi bi-pencil-fill"></i>
                     </button>
-                    <button class="orc-delete-btn" onclick="abrirExclusaoOrcamento(${orc.categoria_id}, '${orc.categoria}')" title="Excluir orçamento">
+                    <button class="orc-delete-btn" onclick="abrirExclusaoOrcamento(${orc.categoria_id}, '${escapeHtmlAttr(orc.categoria)}')" title="Excluir orçamento">
                         <i class="bi bi-trash3"></i>
                     </button>
                 </div>

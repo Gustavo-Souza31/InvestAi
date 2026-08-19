@@ -455,6 +455,11 @@ PROMPT;
         $data = json_decode($response, true);
         $raw_text = trim($data['candidates'][0]['content']['parts'][0]['text'] ?? '');
 
+        // Gemini às vezes envolve o JSON em markdown mesmo quando instruído a não fazer isso
+        if (preg_match('/```(?:json)?\s*([\s\S]+?)```/', $raw_text, $m)) {
+            $raw_text = trim($m[1]);
+        }
+
         // Parsear JSON da resposta
         $sugestao = json_decode($raw_text, true);
 

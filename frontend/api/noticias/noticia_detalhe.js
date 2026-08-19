@@ -14,6 +14,12 @@ const iaLoadingEl       = document.getElementById('ia-loading');
 const iaConteudoEl      = document.getElementById('ia-conteudo');
 
 /* ─── Helpers ──────────────────────────────────────────────────────────────── */
+function escapeHtml(texto) {
+    const div = document.createElement('div');
+    div.textContent = texto ?? '';
+    return div.innerHTML;
+}
+
 function impactoClass(nivel) {
     const map = { alto: 'impacto-alto', medio: 'impacto-medio', baixo: 'impacto-baixo' };
     return map[nivel] || 'impacto-baixo';
@@ -35,9 +41,9 @@ function preencherHeader(n) {
 
     metaEl.innerHTML = `
         <span class="fonte-tag ${fonteClass}">
-            <i class="bi ${n.icone_fonte}"></i>${n.fonte}
+            <i class="bi ${n.icone_fonte}"></i>${escapeHtml(n.fonte)}
         </span>
-        <span class="detalhe-data"><i class="bi bi-clock me-1"></i>${n.data}</span>`;
+        <span class="detalhe-data"><i class="bi bi-clock me-1"></i>${escapeHtml(n.data)}</span>`;
 
     tituloEl.textContent = n.titulo;
     resumoOriginalEl.textContent = n.resumo;
@@ -54,13 +60,17 @@ function preencherHeader(n) {
 function renderExplicacao(data) {
     // Função auxiliar para extrair texto de objetos da IA
     const extrairTexto = (item) => {
-        if (typeof item === 'string') return item;
-        if (typeof item === 'object' && item !== null) {
+        let texto;
+        if (typeof item === 'string') {
+            texto = item;
+        } else if (typeof item === 'object' && item !== null) {
             // Tenta pegar o valor de qualquer chave (Indicador, Ação, Termo, etc)
             const valores = Object.values(item);
-            return valores.length > 0 ? valores.join(': ') : JSON.stringify(item);
+            texto = valores.length > 0 ? valores.join(': ') : JSON.stringify(item);
+        } else {
+            texto = String(item);
         }
-        return String(item);
+        return escapeHtml(texto);
     };
 
     // Preparar lista de ações (Plano de Ação)
@@ -93,7 +103,7 @@ function renderExplicacao(data) {
         <!-- Manchete Premium -->
         <div class="explicacao-tweet">
             <i class="bi bi-lightning-charge-fill"></i>
-            <span>${data.manchete || ''}</span>
+            <span>${escapeHtml(data.manchete || '')}</span>
         </div>
 
         <!-- Nível de impacto e Indicadores -->
@@ -112,7 +122,7 @@ function renderExplicacao(data) {
                 <div class="explicacao-card-label">
                     <i class="bi bi-journal-text"></i> Resumo Executivo
                 </div>
-                <p>${data.resumo_executivo || ''}</p>
+                <p>${escapeHtml(data.resumo_executivo || '')}</p>
             </div>
 
             <!-- Análise de Cenário -->
@@ -120,7 +130,7 @@ function renderExplicacao(data) {
                 <div class="explicacao-card-label">
                     <i class="bi bi-eye"></i> Análise de Cenário
                 </div>
-                <p>${data.analise_de_cenario || ''}</p>
+                <p>${escapeHtml(data.analise_de_cenario || '')}</p>
             </div>
 
             <!-- Impacto no Bolso e Metas -->
@@ -128,7 +138,7 @@ function renderExplicacao(data) {
                 <div class="explicacao-card-label">
                     <i class="bi bi-bullseye"></i> Impacto no Bolso e Metas
                 </div>
-                <p>${data.impacto_bolso_e_metas || ''}</p>
+                <p>${escapeHtml(data.impacto_bolso_e_metas || '')}</p>
             </div>
 
             <!-- Plano de Ação Tático -->
@@ -152,11 +162,11 @@ function renderExplicacao(data) {
         </div>` : ''}
 
         <!-- Botão notícia original (rodapé) -->
-        ${noticia && noticia.url && noticia.url !== '#' ? `
+        ${noticia && noticia.url && noticia.url !== '#' && /^https?:\/\//i.test(noticia.url) ? `
         <div class="detalhe-footer-btn">
-            <a href="${noticia.url}" target="_blank" rel="noopener" class="btn-original large">
+            <a href="${escapeHtml(noticia.url)}" target="_blank" rel="noopener" class="btn-original large">
                 <i class="bi bi-box-arrow-up-right"></i>
-                Ler a notícia completa no ${noticia.fonte}
+                Ler a notícia completa no ${escapeHtml(noticia.fonte)}
             </a>
         </div>` : ''}
     `;
@@ -191,8 +201,8 @@ async function buscarExplicacao(n) {
             iaConteudoEl.innerHTML = `
                 <div class="detalhe-error">
                     <i class="bi bi-exclamation-triangle-fill" style="color: #fb923c;"></i>
-                    <h3>${tituloErro}</h3>
-                    <p>${msgErro}</p>
+                    <h3>${escapeHtml(tituloErro)}</h3>
+                    <p>${escapeHtml(msgErro)}</p>
                 </div>`;
             iaConteudoEl.style.display = 'block';
         }
@@ -210,8 +220,8 @@ async function buscarExplicacao(n) {
         iaConteudoEl.innerHTML = `
             <div class="detalhe-error">
                 <i class="bi bi-wifi-off" style="color: #ef4444;"></i>
-                <h3>${tituloErro}</h3>
-                <p>${msgErro}</p>
+                <h3>${escapeHtml(tituloErro)}</h3>
+                <p>${escapeHtml(msgErro)}</p>
             </div>`;
         iaConteudoEl.style.display = 'block';
     }
