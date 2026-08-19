@@ -157,7 +157,7 @@ $ultimaJson = json_encode($ultimaAtualiz);
         <!-- ===== HERO ===== -->
         <div class="hero-ia fade-in-up delay-1">
             <div class="hero-ia-content">
-                <div class="hero-badge"><i class="bi bi-stars"></i>Powered by Ollama Local AI</div>
+                <div class="hero-badge"><i class="bi bi-stars"></i>Powered by Gemini AI</div>
                 <h2>Radar Econômico Personalizado</h2>
                 <p>
                     Notícias de G1 Economia, InfoMoney e Investing.com — filtradas e categorizadas.

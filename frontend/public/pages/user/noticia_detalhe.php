@@ -1,7 +1,7 @@
 ﻿<?php
 /**
  * Front/noticia_detalhe.php
- * Página de detalhe de notícia com explicação didática via IA local.
+ * Página de detalhe de notícia com explicação didática via Gemini AI.
  */
 session_start();
 if (!isset($_SESSION['usuario_id'])) {

@@ -77,13 +77,20 @@ if (empty($noticias)) {
     exit;
 }
 
-// ─── Passo 2: Processar com Ollama AI (direto, sem HTTP) ─────────────────────
-cronLog('Passo 2/3: Processando com Ollama AI...');
+// ─── Passo 2: Processar com Gemini AI (direto, sem HTTP) ─────────────────────
+cronLog('Passo 2/3: Processando com Gemini AI...');
+
+$geminiKey = getenv('GEMINI_API_KEY') ?: ($_ENV['GEMINI_API_KEY'] ?? '');
+if (empty($geminiKey)) {
+    cronLog('ERRO: GEMINI_API_KEY não configurada no .env');
+    exit(1);
+}
 
 // Conexão com banco
 require_once $backendRoot . '/database/conexao.php';
 
 $categoriasValidas = ['Transporte','Alimentação','Moradia','Lazer','Tecnologia','Saúde','Finanças Gerais'];
+$apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=' . urlencode($geminiKey);
 
 // ─── Prompt com exemplos detalhados ──────────────────────────────────────────
 function montarPromptCron(array $lote): string {
@@ -118,22 +125,14 @@ Retorne APENAS JSON puro, sem markdown, sem texto extra, exatamente neste format
 PROMPT;
 }
 
-// ─── Função: chamar Ollama ────────────────────────────────────────────────────
-function chamarOllamaCron(string $prompt): ?array {
-    $ollamaUrl = rtrim(getenv('OLLAMA_URL') ?: 'http://localhost:11434', '/');
-    $ollamaModel = getenv('OLLAMA_MODEL') ?: 'llama3.1:latest';
-
+// ─── Função: chamar Gemini ────────────────────────────────────────────────────
+function chamarGeminiCron(string $prompt, string $apiUrl): ?array {
     $body = json_encode([
-        'model' => $ollamaModel,
-        'stream' => false,
-        'messages' => [
-            ['role' => 'system', 'content' => 'Você responde apenas com JSON válido.'],
-            ['role' => 'user', 'content' => $prompt],
-        ],
-        'options' => ['temperature' => 0.3, 'num_predict' => 8192],
+        'contents'         => [['parts' => [['text' => $prompt]]]],
+        'generationConfig' => ['temperature' => 0.3, 'maxOutputTokens' => 8192],
     ], JSON_UNESCAPED_UNICODE);
 
-    $ch = curl_init($ollamaUrl . '/api/chat');
+    $ch = curl_init($apiUrl);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
@@ -146,15 +145,12 @@ function chamarOllamaCron(string $prompt): ?array {
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if (!$resp || $httpCode !== 200) {
-        cronLog("  → Ollama HTTP {$httpCode}: " . mb_substr($resp ?? '', 0, 200));
+        cronLog("  → Gemini HTTP {$httpCode}: " . mb_substr($resp ?? '', 0, 200));
         return null;
     }
 
     $data = json_decode($resp, true);
-    $raw  = trim($data['message']['content'] ?? '');
-    if ($raw === '' && isset($data['response'])) {
-        $raw = trim((string) $data['response']);
-    }
+    $raw  = trim($data['candidates'][0]['content']['parts'][0]['text'] ?? '');
 
     // Limpar markdown
     if (preg_match('/```(?:json)?\s*([\s\S]+?)```/', $raw, $m)) $raw = trim($m[1]);
@@ -172,7 +168,7 @@ $loteErros     = 0;
 foreach ($lotes as $idxLote => $lote) {
     cronLog("  → Lote " . ($idxLote + 1) . "/" . count($lotes) . " (" . count($lote) . " notícias)...");
     $prompt    = montarPromptCron($lote);
-    $resultado = chamarOllamaCron($prompt);
+    $resultado = chamarGeminiCron($prompt, $apiUrl);
 
     if ($resultado && !empty($resultado['analises'])) {
         $todasAnalises = array_merge($todasAnalises, $resultado['analises']);

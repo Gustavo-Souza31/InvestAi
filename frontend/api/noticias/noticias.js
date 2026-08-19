@@ -38,6 +38,12 @@ const CATEGORIA_MAP = {
 };
 
 /* ─── Helpers ──────────────────────────────────────────────────────────────── */
+function escapeHtml(texto) {
+    const div = document.createElement('div');
+    div.textContent = texto ?? '';
+    return div.innerHTML;
+}
+
 function badgeCategoria(categoria) {
     if (!categoria) return '';
     const m = CATEGORIA_MAP[categoria] || CATEGORIA_MAP['Finanças Gerais'];
@@ -108,8 +114,8 @@ function renderNoticias(lista) {
             const destaqueClass = n.impacto_pessoal ? 'destaque' : '';
             const badgePessoal  = n.impacto_pessoal
                 ? `<div class="badge-destaque-usuario"><i class="bi bi-bell-fill"></i>Afeta suas despesas</div>` : '';
-            const btnOriginal   = n.url && n.url !== '#'
-                ? `<a href="${n.url}" target="_blank" rel="noopener" class="btn-card-original" onclick="event.stopPropagation()">
+            const btnOriginal   = n.url && n.url !== '#' && /^https?:\/\//i.test(n.url)
+                ? `<a href="${escapeHtml(n.url)}" target="_blank" rel="noopener" class="btn-card-original" onclick="event.stopPropagation()">
                        <i class="bi bi-box-arrow-up-right"></i>Original
                    </a>`
                 : `<span class="link-btn"><i class="bi bi-stars me-1"></i>Entender com IA</span>`;
@@ -126,18 +132,18 @@ function renderNoticias(lista) {
 
             return `
             <div class="noticia-card ${destaqueClass}"
-                 data-noticia-id="${safeId}" data-fonte="${n.fonte}" data-categoria="${n.categoria || ''}">
+                 data-noticia-id="${safeId}" data-fonte="${escapeHtml(n.fonte)}" data-categoria="${escapeHtml(n.categoria || '')}">
                 <div class="card-header-row">
                     <span class="fonte-tag ${fonteClass}">
-                        <i class="bi ${n.icone_fonte}"></i>${n.fonte}
+                        <i class="bi ${n.icone_fonte}"></i>${escapeHtml(n.fonte)}
                     </span>
                     ${badgeImpacto(n.nivel_impacto)}
                 </div>
-                <div class="titulo">${n.titulo}</div>
-                <div class="resumo">${n.resumo}</div>
+                <div class="titulo">${escapeHtml(n.titulo)}</div>
+                <div class="resumo">${escapeHtml(n.resumo)}</div>
                 ${badgePessoal}
                 <div class="card-footer-row">
-                    <span class="data"><i class="bi bi-clock me-1"></i>${n.data}</span>
+                    <span class="data"><i class="bi bi-clock me-1"></i>${escapeHtml(n.data)}</span>
                     ${btnOriginal}
                 </div>
             </div>`;
@@ -282,12 +288,12 @@ btnAnalisar.addEventListener('click', async () => {
 
 /* ─── Render painel IA ─────────────────────────────────────────────────────── */
 function renderAnaliseIA(data) {
-    if (data.status === 'sem_servico') {
-        iaConteudoEl.innerHTML = `<div class="sem-chave-card"><i class="bi bi-server"></i><h3>Serviço de IA local indisponível</h3><p>Verifique se o Ollama está ativo em <code>http://localhost:11434</code> e se o modelo configurado está disponível.</p></div>`;
+    if (data.status === 'sem_chave') {
+        iaConteudoEl.innerHTML = `<div class="sem-chave-card"><i class="bi bi-key-fill"></i><h3>Chave Gemini não configurada</h3><p>Adicione <code>GEMINI_API_KEY=sua_chave</code> no arquivo <code>.env</code>.</p></div>`;
         return;
     }
     if (data.status === 'error') {
-        iaConteudoEl.innerHTML = `<div class="sem-chave-card"><i class="bi bi-exclamation-triangle-fill" style="color:#f87171;"></i><h3>Erro na análise</h3><p>${data.mensagem || 'Erro desconhecido.'}</p></div>`;
+        iaConteudoEl.innerHTML = `<div class="sem-chave-card"><i class="bi bi-exclamation-triangle-fill" style="color:#f87171;"></i><h3>Erro na análise</h3><p>${escapeHtml(data.mensagem || 'Erro desconhecido.')}</p></div>`;
         return;
     }
 
@@ -297,7 +303,7 @@ function renderAnaliseIA(data) {
 
     const analisesHTML = (data.analises || []).map((a, idx) => {
         const acoes = (a.acoes_praticas || []).map(ac =>
-            `<div class="ia-acao-item"><i class="bi bi-check2-circle"></i><span>${ac}</span></div>`
+            `<div class="ia-acao-item"><i class="bi bi-check2-circle"></i><span>${escapeHtml(ac)}</span></div>`
         ).join('');
 
         return `
@@ -307,16 +313,16 @@ function renderAnaliseIA(data) {
                     ${badgeImpacto(a.impacto)}${badgeCategoria(a.categoria)}
                     ${a.relevante_para_usuario ? `<div class="badge-destaque-usuario" style="width:auto;margin-left:4px;"><i class="bi bi-bell-fill"></i>Afeta você</div>` : ''}
                 </div>
-                <span class="titulo-noticia">${a.titulo_noticia}</span>
+                <span class="titulo-noticia">${escapeHtml(a.titulo_noticia)}</span>
                 <i class="bi bi-chevron-down chevron"></i>
             </button>
             <div class="ia-analise-body">
-                ${a.cenario_hipotetico ? `<div class="ia-cenario-hipotetico"><i class="bi bi-eye me-1"></i>${a.cenario_hipotetico}</div>` : ''}
-                <p class="ia-como-afeta">${a.como_afeta || ''}</p>
+                ${a.cenario_hipotetico ? `<div class="ia-cenario-hipotetico"><i class="bi bi-eye me-1"></i>${escapeHtml(a.cenario_hipotetico)}</div>` : ''}
+                <p class="ia-como-afeta">${escapeHtml(a.como_afeta || '')}</p>
                 ${acoes ? `<div class="ia-acoes-praticas">${acoes}</div>` : ''}
                 <div class="ia-detail-row" style="margin-top:12px;">
-                    <div class="ia-detail-box investimento"><div class="label"><i class="bi bi-graph-up-arrow"></i>Sugestão</div><div class="text">${a.sugestao_investimento || ''}</div></div>
-                    <div class="ia-detail-box economia"><div class="label"><i class="bi bi-piggy-bank"></i>Dica</div><div class="text">${a.dica_economia || ''}</div></div>
+                    <div class="ia-detail-box investimento"><div class="label"><i class="bi bi-graph-up-arrow"></i>Sugestão</div><div class="text">${escapeHtml(a.sugestao_investimento || '')}</div></div>
+                    <div class="ia-detail-box economia"><div class="label"><i class="bi bi-piggy-bank"></i>Dica</div><div class="text">${escapeHtml(a.dica_economia || '')}</div></div>
                 </div>
             </div>
         </div>`;
@@ -328,9 +334,9 @@ function renderAnaliseIA(data) {
             <span class="alerta-nivel ${nivel}">${nivelLabels[nivel] || nivel}</span>
         </div>
         ${qtdRel > 0 ? `<div style="padding:0 26px;"><div class="destaque-info-bar"><i class="bi bi-bell-fill"></i><span><strong>${qtdRel} notícia${qtdRel > 1 ? 's' : ''}</strong> afeta${qtdRel > 1 ? 'm' : ''} suas despesas!</span></div></div>` : ''}
-        <div class="ia-resumo-geral">${data.resumo_geral || ''}</div>
+        <div class="ia-resumo-geral">${escapeHtml(data.resumo_geral || '')}</div>
         ${analisesHTML}
-        ${data.top_acao_da_semana ? `<div class="top-acao"><strong><i class="bi bi-lightning-charge-fill me-1"></i>Ação Prioritária</strong>${data.top_acao_da_semana}</div>` : ''}`;
+        ${data.top_acao_da_semana ? `<div class="top-acao"><strong><i class="bi bi-lightning-charge-fill me-1"></i>Ação Prioritária</strong>${escapeHtml(data.top_acao_da_semana)}</div>` : ''}`;
 }
 
 function toggleAnalise(idx) {

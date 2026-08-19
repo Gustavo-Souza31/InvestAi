@@ -8,12 +8,9 @@ $nome_nav = isset($nome) ? $nome : htmlspecialchars($_SESSION['usuario_nome'] ??
 <nav class="navbar-custom">
     <div class="container d-flex align-items-center justify-content-between" style="max-width:1200px;">
         <a href="dashboard.php" class="logo">
-            <svg class="neural-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="4" cy="18" r="2" fill="currentColor"/>
-                <circle cx="9" cy="13" r="2" fill="currentColor"/>
-                <circle cx="15" cy="15" r="2" fill="currentColor"/>
-                <circle cx="20" cy="6" r="3" fill="var(--brand-accent)"/>
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 18L9 13M9 13L15 15M15 15L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20 6L14 6.5M20 6L19.3 11.7" stroke="var(--brand-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             Invest<span>AI</span>
         </a>

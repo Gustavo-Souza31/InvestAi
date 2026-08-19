@@ -33,13 +33,13 @@
 
 /* Badge colors */
 .badge-count {
-    background: rgba(179, 157, 219, 0.15);
+    background: color-mix(in srgb, var(--brand-accent) 15%, transparent);
     color: var(--brand-accent);
 }
 
 /* Item icon background */
 .item-icon {
-    background: rgba(179, 157, 219, 0.12);
+    background: color-mix(in srgb, var(--brand-accent) 12%, transparent);
 }
 
 .item-icon i {

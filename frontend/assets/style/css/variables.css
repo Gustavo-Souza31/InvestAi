@@ -19,6 +19,7 @@
 
     /* Legado - mapeado para o novo sistema para evitar quebra imediata */
     --primary-color: var(--brand-accent);
+    --primary-hover: color-mix(in srgb, var(--brand-accent) 75%, black);
     --success-color: var(--color-gain);
     --danger-color: var(--color-expense);
 }

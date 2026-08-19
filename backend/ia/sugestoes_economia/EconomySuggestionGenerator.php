@@ -2,7 +2,7 @@
 /**
  * backend/ia/sugestoes_economia/EconomySuggestionGenerator.php
  *
- * Serviço para gerar sugestões de economia via Ollama local
+ * Serviço para gerar sugestões de economia via Google Gemini API
  * Detecta categorias em alerta (80%+ do limite) ou comportamento absurdo
  * Gera sugestões apenas 1x por categoria/mês e salva no banco
  */
@@ -35,13 +35,11 @@ class EconomySuggestionGenerator {
     ];
 
     private $conexao;
-    private $ollama_url;
-    private $ollama_model;
+    private $gemini_key;
 
-    public function __construct($conexao, $ollama_url = null, $ollama_model = null) {
+    public function __construct($conexao, $gemini_key) {
         $this->conexao = $conexao;
-        $this->ollama_url = rtrim($ollama_url ?: getenv('OLLAMA_URL') ?: 'http://localhost:11434', '/');
-        $this->ollama_model = $ollama_model ?: getenv('OLLAMA_MODEL') ?: 'llama3.1:latest';
+        $this->gemini_key = $gemini_key;
     }
 
     /**
@@ -80,8 +78,8 @@ class EconomySuggestionGenerator {
                 continue;
             }
 
-            // 3. Gerar nova sugestão via Ollama
-            $sugestao = $this->gerarSugestaoOllama(
+            // 3. Gerar nova sugestão via Gemini
+            $sugestao = $this->gerarSugestaoGemini(
                 $usuario_id,
                 $categoria_nome,
                 $alerta['gasto'],
@@ -90,7 +88,7 @@ class EconomySuggestionGenerator {
                 $alerta['tipo']
             );
 
-            // Se o modelo falhou, usar sugestão estática para não sumir o alerta
+            // Se Gemini falhou, usar sugestão estática para não sumir o alerta
             if (!$sugestao) {
                 $sugestao = $this->gerarSugestaoFallback($categoria_nome, $alerta['tipo']);
             }
@@ -325,9 +323,9 @@ class EconomySuggestionGenerator {
     }
 
     /**
-    * Gerar sugestão via Ollama local
+     * Gerar sugestão via Google Gemini API
      */
-    private function gerarSugestaoOllama(
+    private function gerarSugestaoGemini(
         int $usuario_id,
         string $categoria,
         float $gasto,
@@ -337,7 +335,7 @@ class EconomySuggestionGenerator {
     ): ?array {
         $prompt = $this->montarPromptSugestao($categoria, $gasto, $limite, $percentual, $tipo_alerta);
 
-        $response = $this->chamarOllamaAPI($prompt);
+        $response = $this->chamarGeminiAPI($prompt);
 
         if (!$response) {
             return null;
@@ -347,7 +345,7 @@ class EconomySuggestionGenerator {
     }
 
     /**
-    * Montar prompt para o modelo local
+     * Montar prompt para Gemini
      */
     private function montarPromptSugestao(
         string $categoria,
@@ -412,23 +410,28 @@ PROMPT;
     }
 
     /**
-     * Chamar API local do Ollama
+     * Chamar Google Gemini API
      */
-    private function chamarOllamaAPI(string $prompt): ?array {
+    private function chamarGeminiAPI(string $prompt): ?array {
+        if (!$this->gemini_key) {
+            error_log("Gemini API Key não configurada");
+            return null;
+        }
+
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key='
+            . urlencode($this->gemini_key);
+
         $body = json_encode([
-            'model' => $this->ollama_model,
-            'stream' => false,
-            'messages' => [
-                ['role' => 'system', 'content' => 'Você é um assistente financeiro descontraído do InvestAI. Responda apenas com JSON válido.'],
-                ['role' => 'user', 'content' => $prompt],
+            'contents' => [
+                ['parts' => [['text' => $prompt]]]
             ],
-            'options' => [
+            'generationConfig' => [
                 'temperature' => 0.3,
-                'num_predict' => 1024,
+                'maxOutputTokens' => 1024,
             ],
         ], JSON_UNESCAPED_UNICODE);
 
-        $ch = curl_init($this->ollama_url . '/api/chat');
+        $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
@@ -442,7 +445,7 @@ PROMPT;
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if (!$response || $http_code !== 200) {
-            error_log("Ollama API Error ($http_code): " . mb_substr($response ?? '', 0, 200));
+            error_log("Gemini API Error ($http_code): " . mb_substr($response ?? '', 0, 200));
             curl_close($ch);
             return null;
         }
@@ -450,16 +453,18 @@ PROMPT;
         curl_close($ch);
 
         $data = json_decode($response, true);
-        $raw_text = trim($data['message']['content'] ?? '');
-        if ($raw_text === '' && isset($data['response'])) {
-            $raw_text = trim((string) $data['response']);
+        $raw_text = trim($data['candidates'][0]['content']['parts'][0]['text'] ?? '');
+
+        // Gemini às vezes envolve o JSON em markdown mesmo quando instruído a não fazer isso
+        if (preg_match('/```(?:json)?\s*([\s\S]+?)```/', $raw_text, $m)) {
+            $raw_text = trim($m[1]);
         }
 
         // Parsear JSON da resposta
         $sugestao = json_decode($raw_text, true);
 
         if (!$sugestao || !isset($sugestao['titulo'], $sugestao['mensagem'], $sugestao['acoes'])) {
-            error_log("Resposta Ollama inválida: " . $raw_text);
+            error_log("Resposta Gemini inválida: " . $raw_text);
             return null;
         }
 

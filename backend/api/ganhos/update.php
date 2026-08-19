@@ -49,11 +49,21 @@ $categoria_input = $validation['data']['categoria_id'];
 $categoria_id    = !empty($categoria_input) ? intval($categoria_input) : null;
 
 
-// Atualizar ganho no banco de dados
+// Verificar se ganho existe e pertence ao usuário
+$check_stmt = $conexao->prepare('SELECT id FROM ganhos WHERE id = ? AND usuario_id = ?');
+$check_stmt->bind_param('ii', $id, $usuario_id);
+$check_stmt->execute();
+if ($check_stmt->get_result()->num_rows === 0) {
+    echo json_encode(['status' => 'error', 'message' => 'Ganho não encontrado.']);
+    exit;
+}
+
+
+// Atualizar ganho no banco de dados (restrito ao dono do recurso)
 $stmt = $conexao->prepare(
-    'UPDATE ganhos SET descricao = ?, valor = ?, data_ganho = ?, fixo = ?, categoria_id = ? WHERE id = ?'
+    'UPDATE ganhos SET descricao = ?, valor = ?, data_ganho = ?, fixo = ?, categoria_id = ? WHERE id = ? AND usuario_id = ?'
 );
-$stmt->bind_param('sdsiii', $descricao, $valor, $data_ganho, $fixo, $categoria_id, $id);
+$stmt->bind_param('sdsiiii', $descricao, $valor, $data_ganho, $fixo, $categoria_id, $id, $usuario_id);
 
 
 // Executar e verificar atualização

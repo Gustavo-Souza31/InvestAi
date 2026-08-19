@@ -2,31 +2,6 @@
  * Estilos compartilhados para páginas internas (Despesas, Ganhos, Dashboard)
  */
 
-/* Background gradients */
-body::before {
-    content: '';
-    position: fixed;
-    top: -300px;
-    right: -300px;
-    width: 800px;
-    height: 800px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.20) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-body::after {
-    content: '';
-    position: fixed;
-    bottom: -300px;
-    left: -300px;
-    width: 800px;
-    height: 800px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.20) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
-}
-
 /* Container principal */
 .main-container {
     max-width: 1200px;
@@ -67,18 +42,17 @@ body::after {
 }
 
 .summary-card {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--bg-card);
     border: 1px solid var(--border-light);
     border-radius: 16px;
     padding: 22px 20px;
-    backdrop-filter: blur(10px);
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .summary-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(179, 157, 219, 0.25);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(179, 157, 219, 0.08);
+    border-color: color-mix(in srgb, var(--brand-accent) 25%, transparent);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px color-mix(in srgb, var(--brand-accent) 8%, transparent);
 }
 
 .summary-card .label {
@@ -105,18 +79,17 @@ body::after {
 
 /* Formulário */
 .form-card {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 18px;
     padding: 28px 26px;
-    backdrop-filter: blur(12px);
     margin-bottom: 30px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-card:focus-within {
-    border-color: rgba(179, 157, 219, 0.2);
-    box-shadow: 0 4px 20px rgba(179, 157, 219, 0.06);
+    border-color: color-mix(in srgb, var(--brand-accent) 20%, transparent);
+    box-shadow: 0 4px 20px color-mix(in srgb, var(--brand-accent) 6%, transparent);
 }
 
 .form-card h2 {
@@ -144,14 +117,14 @@ body::after {
 }
 
 .form-select option {
-    background: #14161d;
+    background: var(--bg-card);
     color: var(--text-main);
 }
 
 .form-control:focus, .form-select:focus {
     border-color: var(--brand-accent) !important;
-    box-shadow: 0 0 0 2px rgba(179, 157, 219, 0.2) !important;
-    background: rgba(179, 157, 219, 0.04) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand-accent) 20%, transparent) !important;
+    background: color-mix(in srgb, var(--brand-accent) 4%, transparent) !important;
 }
 
 .form-control::placeholder {
@@ -186,7 +159,7 @@ body::after {
     background: var(--brand-accent);
     border: none;
     border-radius: 10px;
-    color: #0b0d11;
+    color: var(--bg-dark);
     font-weight: 700;
     font-size: 0.95rem;
     font-family: 'Outfit', sans-serif;
@@ -201,7 +174,7 @@ body::after {
 .btn-submit:hover {
     opacity: 0.9;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(179, 157, 219, 0.3);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--brand-accent) 30%, transparent);
 }
 
 .btn-submit:active {
@@ -253,7 +226,7 @@ body::after {
 }
 
 .btn-save {
-    background: linear-gradient(135deg, var(--brand-accent), var(--brand-dark, #7c5cbf));
+    background: linear-gradient(135deg, var(--brand-accent), var(--primary-hover));
     border: none;
     border-radius: 10px;
     color: #fff;
@@ -302,7 +275,7 @@ body::after {
     transition: border-color 0.2s;
 }
 
-.cat-item:hover { border-color: rgba(179, 157, 219, 0.2); }
+.cat-item:hover { border-color: color-mix(in srgb, var(--brand-accent) 20%, transparent); }
 
 .cat-item-icon {
     color: var(--brand-accent);
@@ -340,8 +313,8 @@ body::after {
 }
 
 .cat-edit-btn:hover {
-    background: rgba(179, 157, 219, 0.15);
-    border-color: rgba(179, 157, 219, 0.3);
+    background: color-mix(in srgb, var(--brand-accent) 15%, transparent);
+    border-color: color-mix(in srgb, var(--brand-accent) 30%, transparent);
     color: var(--brand-accent);
 }
 
@@ -419,14 +392,14 @@ body::after {
 }
 
 .modal-card {
-    background: #14161d;
+    background: var(--bg-card);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 18px;
     padding: 30px 28px;
     width: 100%;
     max-width: 460px;
     animation: modalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(179, 157, 219, 0.06);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px color-mix(in srgb, var(--brand-accent) 6%, transparent);
 }
 
 .modal-card h2 {
@@ -444,7 +417,7 @@ body::after {
 
 /* Modal confirmação */
 .confirm-card {
-    background: #14161d;
+    background: var(--bg-card);
     border: 1px solid rgba(239, 68, 68, 0.2);
     border-radius: 18px;
     padding: 30px 28px;
@@ -486,10 +459,9 @@ body::after {
 
 /* Container da lista */
 .list-container {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 18px;
-    backdrop-filter: blur(12px);
     overflow: hidden;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
 }
@@ -612,8 +584,8 @@ body::after {
 }
 
 .item-actions .btn-edit:hover {
-    border-color: rgba(99, 102, 241, 0.4);
-    color: #818cf8;
+    border-color: color-mix(in srgb, var(--brand-accent) 40%, transparent);
+    color: var(--brand-accent);
 }
 
 .item-actions .btn-delete:hover {

@@ -6,10 +6,9 @@
 #sugestoes-container {
     margin-top: 40px;
     padding: 28px;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--bg-card);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 20px;
-    backdrop-filter: blur(12px);
 }
 
 /* Cabeçalho do container */
@@ -35,7 +34,7 @@
 .sugestoes-header h2 i {
     color: var(--brand-accent);
     font-size: 1.2rem;
-    background: rgba(179, 157, 219, 0.1);
+    background: color-mix(in srgb, var(--brand-accent) 10%, transparent);
     padding: 6px;
     border-radius: 8px;
 }
@@ -63,7 +62,7 @@
 }
 
 .sugestao-card:hover {
-    border-color: rgba(179, 157, 219, 0.25);
+    border-color: color-mix(in srgb, var(--brand-accent) 25%, transparent);
     transform: translateY(-2px);
 }
 
@@ -133,7 +132,7 @@
 .sugestao-titulo {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #e0e7ff;
+    color: var(--text-main);
     white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -177,26 +176,19 @@
     color: #fca5a5;
 }
 
-.sugestao-titulo {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 0;
-}
-
 /* Categoria + Gasto */
 .sugestao-info-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.9rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     margin-bottom: 0.5rem;
 }
 
 .sugestao-categoria {
     font-weight: 500;
-    color: var(--text-primary);
+    color: var(--text-main);
 }
 
 .sugestao-gasto {
@@ -205,11 +197,11 @@
 
 .sugestao-gasto-valor {
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-main);
 }
 
 .sugestao-gasto-limite {
-    color: var(--text-secondary);
+    color: var(--text-muted);
 }
 
 /* Mensagem principal */

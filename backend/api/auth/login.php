@@ -77,7 +77,9 @@ try {
     $stmt->execute();
     $result = $stmt->get_result();
 } catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => 'Erro no Banco: ' . $e->getMessage()]);
+    error_log('[login.php] Erro no banco: ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['status' => 'error', 'message' => 'Erro ao processar login. Tente novamente mais tarde.']);
     exit;
 }
 

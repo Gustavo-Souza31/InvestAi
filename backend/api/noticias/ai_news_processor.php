@@ -1,7 +1,7 @@
 <?php
 /**
  * backend/api/noticias/ai_news_processor.php
- * Recebe notícias brutas do RSS, processa via Ollama local
+ * Recebe notícias brutas do RSS, processa via Gemini AI
  * e persiste os resultados na tabela noticias_financeiras.
  */
 
@@ -14,10 +14,12 @@ set_time_limit(0);           // Sem timeout — processamento em lotes pode demo
 header('Content-Type: application/json; charset=utf-8');
 
 // ─── Autenticação interna por token ou IP ────────────────────────────────────
-// Aceita chamadas de localhost (cron) ou com header X-Cron-Token
-$cronToken = 'investai_cron_2025';
+// Aceita chamadas de localhost (cron) ou com header X-Cron-Token (definido em .env)
+require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/backend/config/ConfigHelper.php';
+ConfigHelper::load();
+$cronToken  = ConfigHelper::get('CRON_TOKEN', '');
 $fromLocal  = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1', 'localhost']);
-$tokenOk    = (($_SERVER['HTTP_X_CRON_TOKEN'] ?? '') === $cronToken);
+$tokenOk    = $cronToken !== '' && hash_equals($cronToken, $_SERVER['HTTP_X_CRON_TOKEN'] ?? '');
 
 if (!$fromLocal && !$tokenOk) {
     http_response_code(403);
@@ -41,6 +43,31 @@ if (empty($noticias)) {
 $root = dirname(dirname(dirname(dirname(__FILE__)))); // backend/api/noticias/ -> raiz do projeto
 require_once $root . '/backend/database/conexao.php';
 require_once $root . '/backend/includes/Logger.php';
+
+// ─── Chave Gemini ────────────────────────────────────────────────────────────
+function getGeminiKey(string $root): ?string
+{
+    $key = getenv('GEMINI_API_KEY');
+    if ($key) return trim($key);
+
+    $envPath = $root . '/.env';
+    if (file_exists($envPath)) {
+        foreach (file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+            $line = trim($line);
+            if (strpos($line, 'GEMINI_API_KEY=') === 0) {
+                return trim(substr($line, strlen('GEMINI_API_KEY=')), " \"'");
+            }
+        }
+    }
+    return null;
+}
+
+$geminiKey = getGeminiKey($root);
+if (!$geminiKey) {
+    
+    ob_end_clean(); echo json_encode(['status' => 'sem_chave', 'message' => 'GEMINI_API_KEY não configurada.']);
+    exit;
+}
 
 // ─── Função: montar prompt para um lote ──────────────────────────────────────
 function montarPrompt(array $lote): string
@@ -78,23 +105,15 @@ REGRAS: nivel_impacto = exatamente "alto", "medio" ou "baixo". acoes_praticas = 
 PROMPT;
 }
 
-// ─── Função: chamar Ollama API ───────────────────────────────────────────────
-function chamarOllama(string $prompt): ?array
+// ─── Função: chamar Gemini API ────────────────────────────────────────────────
+function chamarGemini(string $prompt, string $apiUrl): ?array
 {
-    $ollamaUrl = rtrim(getenv('OLLAMA_URL') ?: 'http://localhost:11434', '/');
-    $ollamaModel = getenv('OLLAMA_MODEL') ?: 'llama3.1:latest';
-
     $reqBody = json_encode([
-        'model' => $ollamaModel,
-        'stream' => false,
-        'messages' => [
-            ['role' => 'system', 'content' => 'Você é um analista financeiro que responde apenas com JSON válido.'],
-            ['role' => 'user', 'content' => $prompt],
-        ],
-        'options' => ['temperature' => 0.4, 'num_predict' => 4000],
+        'contents'         => [['parts' => [['text' => $prompt]]]],
+        'generationConfig' => ['temperature' => 0.4, 'maxOutputTokens' => 4000],
     ], JSON_UNESCAPED_UNICODE);
 
-    $ch = curl_init($ollamaUrl . '/api/chat');
+    $ch = curl_init($apiUrl);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
@@ -108,11 +127,8 @@ function chamarOllama(string $prompt): ?array
 
     if (!$response || $httpCode !== 200) return null;
 
-    $aiData = json_decode($response, true);
-    $raw = trim($aiData['message']['content'] ?? '');
-    if ($raw === '' && isset($aiData['response'])) {
-        $raw = trim((string) $aiData['response']);
-    }
+    $geminiData = json_decode($response, true);
+    $raw = trim($geminiData['candidates'][0]['content']['parts'][0]['text'] ?? '');
 
     // Limpar markdown se presente
     if (preg_match('/```(?:json)?\s*([\s\S]+?)```/', $raw, $m)) {
@@ -124,13 +140,14 @@ function chamarOllama(string $prompt): ?array
 }
 
 // ─── Processar em lotes de 10 ─────────────────────────────────────────────────
+$apiUrl         = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=' . urlencode($geminiKey);
 $loteSize       = 10;
 $lotes          = array_chunk($noticias, $loteSize);
 $todasAnalises  = [];
 
 foreach ($lotes as $lote) {
     $prompt    = montarPrompt($lote);
-    $resultado = chamarOllama($prompt);
+    $resultado = chamarGemini($prompt, $apiUrl);
     if ($resultado && !empty($resultado['analises'])) {
         $todasAnalises = array_merge($todasAnalises, $resultado['analises']);
     }

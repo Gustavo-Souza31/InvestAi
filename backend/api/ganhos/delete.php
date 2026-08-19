@@ -25,9 +25,9 @@ if (!$validation['valid']) {
 }
 
 
-// Verificar se ganho existe
-$stmt = $conexao->prepare('SELECT id FROM ganhos WHERE id = ?');
-$stmt->bind_param('i', $id);
+// Verificar se ganho existe e pertence ao usuário
+$stmt = $conexao->prepare('SELECT id FROM ganhos WHERE id = ? AND usuario_id = ?');
+$stmt->bind_param('ii', $id, $usuario_id);
 $stmt->execute();
 if ($stmt->get_result()->num_rows === 0) {
     echo json_encode(['status' => 'error', 'message' => 'Ganho não encontrado.']);
@@ -35,9 +35,9 @@ if ($stmt->get_result()->num_rows === 0) {
 }
 
 
-// Deletar ganho do banco de dados
-$stmt = $conexao->prepare('DELETE FROM ganhos WHERE id = ?');
-$stmt->bind_param('i', $id);
+// Deletar ganho do banco de dados (restrito ao dono do recurso)
+$stmt = $conexao->prepare('DELETE FROM ganhos WHERE id = ? AND usuario_id = ?');
+$stmt->bind_param('ii', $id, $usuario_id);
 
 
 // Executar e verificar deleção

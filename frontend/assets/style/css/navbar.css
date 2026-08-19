@@ -32,11 +32,11 @@
     margin-left: 1px;
 }
 
-/* Custom Neural Icon */
-.neural-icon {
-    width: 24px;
-    height: 24px;
-    position: relative;
+/* Logo icon */
+.logo-icon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
 }
 
 .nav-link-custom {
@@ -59,8 +59,8 @@
 }
 
 .user-badge {
-    background: rgba(179, 157, 219, 0.12);
-    border: 1px solid rgba(179, 157, 219, 0.25);
+    background: color-mix(in srgb, var(--brand-accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand-accent) 25%, transparent);
     color: var(--brand-accent);
     padding: 6px 16px;
     border-radius: 20px;
@@ -75,23 +75,23 @@
 }
 
 .user-badge:hover {
-    background: rgba(179, 157, 219, 0.2);
-    border-color: rgba(179, 157, 219, 0.45);
-    box-shadow: 0 0 16px rgba(179, 157, 219, 0.2);
+    background: color-mix(in srgb, var(--brand-accent) 20%, transparent);
+    border-color: color-mix(in srgb, var(--brand-accent) 45%, transparent);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--brand-accent) 20%, transparent);
     color: var(--brand-accent);
     transform: translateY(-1px);
 }
 
 .user-badge.active {
-    background: rgba(179, 157, 219, 0.15);
-    border-color: rgba(179, 157, 219, 0.4);
+    background: color-mix(in srgb, var(--brand-accent) 15%, transparent);
+    border-color: color-mix(in srgb, var(--brand-accent) 40%, transparent);
     color: var(--brand-accent);
 }
 
 .user-badge.active:hover {
-    background: rgba(179, 157, 219, 0.22);
-    border-color: rgba(179, 157, 219, 0.55);
-    box-shadow: 0 0 16px rgba(179, 157, 219, 0.25);
+    background: color-mix(in srgb, var(--brand-accent) 22%, transparent);
+    border-color: color-mix(in srgb, var(--brand-accent) 55%, transparent);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--brand-accent) 25%, transparent);
     color: var(--brand-accent);
 }
 
