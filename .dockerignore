@@ -1,0 +1,8 @@
+.env
+.git
+.gitignore
+logs
+backend/database/data
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm

@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    container_name: inventai
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      OLLAMA_URL: http://host.docker.internal:11434
+    volumes:
+      # Persiste o arquivo SQLite entre recriações do container
+      - inventai-data:/var/www/html/backend/database/data
+
+volumes:
+  inventai-data:
